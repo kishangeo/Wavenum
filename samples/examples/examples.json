@@ -1,0 +1,11 @@
+[
+  {"file": "quartz_raman.csv", "technique": "raman", "title": "Quartz Raman (CSV)", "learn": "Two-column CSV with a fluorescence baseline and one cosmic-ray spike at 950 cm⁻¹: try Despike, Baseline and Identify."},
+  {"file": "calcite_rruff_raman.txt", "technique": "raman", "title": "Calcite Raman (RRUFF text)", "learn": "RRUFF-style text file with ##KEY=value metadata lines that are skipped automatically."},
+  {"file": "multi_minerals_raman.xlsx", "technique": "raman", "title": "Quartz, calcite, hematite (Excel)", "learn": "Workbook with several intensity columns: pick one, or add all as separate spectra."},
+  {"file": "calcite_ftir_descending.jdx", "technique": "ftir", "title": "Calcite FTIR (JCAMP-DX)", "learn": "JCAMP-DX absorbance spectrum stored from 4000 to 400 cm⁻¹; the FTIR axis is shown reversed."},
+  {"file": "quartz_powder_xrd.xy", "technique": "xrd", "title": "Quartz powder XRD (.xy)", "learn": "Two-column 2θ / counts pattern, Cu Kα: find peaks to see d-spacings, then Identify."},
+  {"file": "quartz_sample.xrdml", "technique": "xrd", "title": "Quartz XRD (PANalytical XRDML)", "learn": "Instrument XML scan with start/end positions and a counts list."},
+  {"file": "alpha_quartz.cif", "technique": "xrd", "title": "α-quartz structure (CIF)", "learn": "Crystal structure: Wavenum computes its Cu Kα powder pattern."},
+  {"file": "hematite_raman_figure.png", "technique": "raman", "title": "Hematite figure (PNG, digitizer)", "learn": "Plot image for the Digitizer: click four axis points, then the curve.", "digitizer": true},
+  {"file": "hematite_raman_figure.pdf", "technique": "raman", "title": "Hematite figure (PDF, digitizer)", "learn": "One-page PDF figure for the Digitizer.", "digitizer": true}
+]

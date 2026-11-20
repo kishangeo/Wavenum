@@ -98,22 +98,23 @@ export function DigitizerCanvas() {
   )
 }
 
+/** Load an image or PDF page into the digitizer (also used by the Example files menu). */
+export async function loadDigitizerFile(f: File, page = 1) {
+  const fail = useStore.getState().fail
+  try {
+    const src = f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf') ? await pdfPage(f, page) : URL.createObjectURL(f)
+    const img = new Image()
+    img.onload = () => useDig.getState().set({ img, name: f.name.replace(/\.[^.]+$/, ''), pts: [], color: null, curve: [] })
+    img.onerror = () => fail('Could not load that image')
+    img.src = src
+  } catch (e) { fail(e) }
+}
+
 export default function DigitizerPanel() {
   const d = useDig()
   const st = useStore()
 
-  const load = async (f: File, page = 1) => {
-    try {
-      let src: string
-      if (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) {
-        src = await pdfPage(f, page)
-      } else src = URL.createObjectURL(f)
-      const img = new Image()
-      img.onload = () => d.set({ img, name: f.name.replace(/\.[^.]+$/, ''), pts: [], color: null, curve: [] })
-      img.onerror = () => st.fail('Could not load that image')
-      img.src = src
-    } catch (e) { st.fail(e) }
-  }
+  const load = (f: File, page = 1) => loadDigitizerFile(f, page)
   // re-trace whenever colour / tolerance / calibration changes
   useEffect(() => {
     if (d.img && d.pts.length === 4 && d.color) d.set({ curve: trace(d.img, d.pts, d.color, d.tol) })

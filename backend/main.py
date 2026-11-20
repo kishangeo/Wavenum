@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -20,6 +21,7 @@ import processing  # noqa: E402
 
 app = FastAPI(title='Wavenum')
 DIST = Path(__file__).resolve().parent.parent / 'frontend' / 'dist'
+EXAMPLES = Path(__file__).resolve().parent.parent / 'samples' / 'examples'
 
 
 def _guard(fn, *a, **k):
@@ -116,6 +118,22 @@ class PcaReq(BaseModel):
 @app.post('/api/pca')
 def pca(r: PcaReq):
     return _guard(analysis.pca, r.spectra, r.clusters, r.norm)
+
+
+# --- bundled example files for learning the app
+@app.get('/api/examples')
+def examples():
+    import json
+    p = EXAMPLES / 'examples.json'
+    return json.loads(p.read_text(encoding='utf-8')) if p.exists() else []
+
+
+@app.get('/api/examples/{name}')
+def example_file(name: str):
+    p = (EXAMPLES / name).resolve()
+    if p.parent != EXAMPLES.resolve() or not p.is_file():
+        raise HTTPException(404, 'No such example file')
+    return FileResponse(p)
 
 
 # --- download + build the full reference libraries in the background

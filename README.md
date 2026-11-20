@@ -23,6 +23,9 @@ bundled reference libraries.
   Excel, JCAMP-DX, Thermo SPC, Nicolet SPA, Bruker OPUS, Agilent ASP, PANalytical XRDML, Rigaku RAS,
   Bruker UXD, Renishaw WDF and CIF (loaded as a computed powder pattern). See [File formats](#file-formats).
 - Plot digitizer: extract a spectrum from a PNG/JPG or a PDF page with four-point axis calibration.
+- Example files for learning: **Open an example file…** in the sidebar loads Raman, FTIR and XRD examples
+  in each common format (CSV, RRUFF text, Excel, JCAMP-DX, `.xy`, XRDML, CIF) plus figures for the digitizer
+  (`samples/examples`).
 - Export processed data (`.csv`/`.txt`), peak tables, PCA scores, and publication figures
   (SVG or high-DPI PNG with configurable font, labels, ticks and legend).
 - Save and reopen a whole workspace as a `.wavenum.json` session.

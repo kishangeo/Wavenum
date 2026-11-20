@@ -64,7 +64,7 @@ const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 const COMMANDS: Record<string, string> = {
   '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/libraries': 'libraries',
   '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
-  '/match': 'match_spectrum', '/pca': 'pca', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
+  '/match': 'match_spectrum', '/pca': 'pca', '/examples': 'examples', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
 }
 
 async function viaTauri<T>(path: string, body?: unknown): Promise<T> {
@@ -86,6 +86,20 @@ async function viaTauri<T>(path: string, body?: unknown): Promise<T> {
   } catch (e) {
     throw e instanceof Error ? e : new Error(String(e))
   }
+}
+
+export type Example = { file: string; technique: Technique; title: string; learn: string; digitizer?: boolean }
+
+/** One bundled example as a File, from the Python server or the desktop app's resources. */
+export async function exampleFile(name: string): Promise<File> {
+  if (inTauri) {
+    const { invoke } = await import('@tauri-apps/api/core')
+    const buf = await invoke<ArrayBuffer>('example_file', { req: { name } })
+    return new File([buf], name)
+  }
+  const r = await fetch(`/api/examples/${encodeURIComponent(name)}`)
+  if (!r.ok) throw new Error(`Could not load example ${name}`)
+  return new File([await r.blob()], name)
 }
 
 export async function api<T = any>(path: string, body?: unknown): Promise<T> {

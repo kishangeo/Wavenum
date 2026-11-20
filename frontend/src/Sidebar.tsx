@@ -1,6 +1,7 @@
 // Left sidebar: upload, spectra manager, arithmetic, session, pipeline stack. Author: Kishan Tiwari
-import { useState } from 'react'
-import { STEP_LABEL, TECH, api, dataOf, download, interp, newStep, useActive, useStore, type StepType } from './store'
+import { useEffect, useState } from 'react'
+import { loadDigitizerFile } from './Digitizer'
+import { STEP_LABEL, TECH, api, dataOf, download, exampleFile, interp, newStep, useActive, useStore, type Example, type StepType } from './store'
 
 type Pending = { name: string; columns: string[]; data: number[][]; xi: number; yi: number }
 
@@ -13,6 +14,26 @@ export default function Sidebar() {
   const [subK, setSubK] = useState('1')
   const mine = st.spectra.filter(s => s.technique === st.technique)
   const others = st.spectra.length - mine.length
+  const [examples, setExamples] = useState<Example[]>([])
+  useEffect(() => { api<Example[]>('/examples').then(setExamples).catch(() => setExamples([])) }, [])
+  const [exHint, setExHint] = useState('')
+
+  // Example files load exactly like a user's file: same parser, same column picker.
+  const openExample = async (file: string) => {
+    const ex = examples.find(e => e.file === file)
+    if (!ex) return
+    try {
+      const f = await exampleFile(ex.file)
+      setExHint(ex.learn)
+      if (ex.digitizer) {
+        st.set({ tab: 'dig' })
+        await loadDigitizerFile(f)
+        return
+      }
+      if (useStore.getState().technique !== ex.technique) st.setTechnique(ex.technique)
+      await upload([f])
+    } catch (e) { st.fail(e) }
+  }
 
   const upload = async (files: FileList | File[]) => {
     for (const f of Array.from(files)) {
@@ -77,6 +98,20 @@ export default function Sidebar() {
         <span className="text-slate-500">loads as <b>{TECH[st.technique].label}</b> — switch technique first if needed</span>
         <input type="file" multiple className="hidden" onChange={e => { if (e.target.files) upload(e.target.files); e.target.value = '' }} />
       </label>
+
+      {examples.length > 0 && (
+        <div className="space-y-1">
+          <select className="field" value="" onChange={e => { if (e.target.value) openExample(e.target.value) }} title="Load a bundled example file">
+            <option value="">Open an example file…</option>
+            {(['raman', 'ftir', 'xrd'] as const).map(t => (
+              <optgroup key={t} label={TECH[t].label}>
+                {examples.filter(e => e.technique === t).map(e => <option key={e.file} value={e.file}>{e.title}</option>)}
+              </optgroup>
+            ))}
+          </select>
+          {exHint && <p className="text-[11px] text-slate-500">{exHint} <button className="text-slate-400 hover:text-rose-500" onClick={() => setExHint('')}>✕</button></p>}
+        </div>
+      )}
 
       {pending.map((p, k) => (
         <div key={k} className="card space-y-1 text-xs">
