@@ -59,7 +59,37 @@ export function newStep(type: StepType, x: number[], enabled = true): Step {
 export const defaultPipeline = (x: number[]): Step[] =>
   (['crop', 'despike', 'baseline', 'smooth', 'normalize'] as StepType[]).map(t => newStep(t, x, false))
 
+// In the desktop app (Tauri) requests go to Rust commands; in the browser to the Python server.
+const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+const COMMANDS: Record<string, string> = {
+  '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/libraries': 'libraries',
+  '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
+  '/match': 'match_spectrum', '/pca': 'pca',
+}
+
+async function viaTauri<T>(path: string, body?: unknown): Promise<T> {
+  const { invoke } = await import('@tauri-apps/api/core')
+  const [route, query] = path.split('?')
+  try {
+    if (route === '/parse') {
+      const f = (body as FormData).get('file') as File
+      return await invoke<T>('parse', new Uint8Array(await f.arrayBuffer()), { headers: { 'x-name': encodeURIComponent(f.name) } })
+    }
+    const cmd = COMMANDS[route]
+    if (!cmd) throw new Error(`Not available in the desktop app: ${route}`)
+    let req: any = body
+    if (query) {
+      req = Object.fromEntries(new URLSearchParams(query))
+      if ('k' in req) req.k = Number(req.k)
+    }
+    return await invoke<T>(cmd, req === undefined ? {} : { req })
+  } catch (e) {
+    throw e instanceof Error ? e : new Error(String(e))
+  }
+}
+
 export async function api<T = any>(path: string, body?: unknown): Promise<T> {
+  if (inTauri) return viaTauri<T>(path, body)
   const init: RequestInit = body === undefined ? {} : body instanceof FormData
     ? { method: 'POST', body }
     : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }

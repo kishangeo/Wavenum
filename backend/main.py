@@ -2,7 +2,6 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 """
-import base64
 import sys
 from pathlib import Path
 from typing import Optional
@@ -127,18 +126,6 @@ class ImportReq(BaseModel):
 @app.post('/api/libraries/import')
 def import_library(r: ImportReq):
     return _guard(library.import_folder, r.folder, r.technique, r.title)
-
-
-@app.post('/api/pdf')
-async def pdf_page(file: UploadFile = File(...), page: int = 1):
-    """Render one PDF page to PNG for the digitizer."""
-    import fitz
-    try:
-        doc = fitz.open(stream=await file.read(), filetype='pdf')
-        png = doc[max(0, min(page, len(doc)) - 1)].get_pixmap(dpi=150).tobytes('png')
-    except Exception as e:
-        raise HTTPException(400, f'Could not read PDF: {e}')
-    return dict(pages=len(doc), image='data:image/png;base64,' + base64.b64encode(png).decode())
 
 
 if DIST.exists():

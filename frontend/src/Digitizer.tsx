@@ -2,7 +2,7 @@
 // Author: Kishan Tiwari
 import { useEffect, useRef } from 'react'
 import { create } from 'zustand'
-import { api, useStore } from './store'
+import { useStore } from './store'
 
 const NAMES = ['Xmin', 'Xmax', 'Ymin', 'Ymax'] as const
 type D = {
@@ -11,6 +11,20 @@ type D = {
   set: (p: Partial<D>) => void
 }
 const useDig = create<D>(set => ({ img: null, name: 'digitized', pts: [], vals: ['', '', '', ''], color: null, tol: 60, curve: [], set }))
+
+// Render one PDF page to a PNG data URL with pdf.js (loaded only when a PDF is opened).
+async function pdfPage(f: File, page: number): Promise<string> {
+  const pdfjs = await import('pdfjs-dist')
+  pdfjs.GlobalWorkerOptions.workerSrc = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default
+  const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise
+  const p = await doc.getPage(Math.max(1, Math.min(page, doc.numPages)))
+  const vp = p.getViewport({ scale: 150 / 72 })
+  const c = document.createElement('canvas')
+  c.width = Math.round(vp.width)
+  c.height = Math.round(vp.height)
+  await p.render({ canvasContext: c.getContext('2d')!, viewport: vp }).promise
+  return c.toDataURL('image/png')
+}
 
 function pixels(img: HTMLImageElement) {
   const c = document.createElement('canvas')
@@ -92,9 +106,7 @@ export default function DigitizerPanel() {
     try {
       let src: string
       if (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) {
-        const fd = new FormData()
-        fd.append('file', f)
-        src = (await api<{ image: string }>(`/pdf?page=${page}`, fd)).image
+        src = await pdfPage(f, page)
       } else src = URL.createObjectURL(f)
       const img = new Image()
       img.onload = () => d.set({ img, name: f.name.replace(/\.[^.]+$/, ''), pts: [], color: null, curve: [] })

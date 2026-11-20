@@ -141,7 +141,7 @@ def normalize(x, y, p):
         n = np.linalg.norm(y)
         return x, y / n if n else y
     if method == 'area':
-        a = abs(np.trapz(y, x))
+        a = abs(np.trapezoid(y, x))
         return x, y / a if a else y
     s = y.std()  # snv
     return x, (y - y.mean()) / s if s else y
