@@ -2,9 +2,40 @@
 import { useEffect, useState } from 'react'
 import { TECH, api, dataOf, useActive, useStore, type Lib, type Match, type Mixture, type Technique } from './store'
 
-const TUBES: [string, number][] = [['Cu Kα', 1.5406], ['Co Kα', 1.789], ['Mo Kα', 0.7093], ['Fe Kα', 1.936], ['Cr Kα', 2.2897]]
+// K-alpha weighted averages (the XRD library is computed for Cu K-alpha 1.54184 A), plus Cu K-alpha-1
+const TUBES: [string, number][] = [['Cu Kα', 1.54184], ['Cu Kα1', 1.5406], ['Co Kα', 1.79026], ['Mo Kα', 0.71073], ['Fe Kα', 1.93736], ['Cr Kα', 2.29100]]
 type Hit = { lib: string; k: number; name: string; formula: string; system: string; info: string; library: string }
 type Cross = { name: string; mean: number; by: Partial<Record<Technique, number>> }
+type BuildStatus = { running: boolean; step: string; done: number; total: number; log: string[]; error: string | null }
+
+// Download the open databases and build the full libraries (RRUFF, ROD, COD and others) in the background.
+function BuildLibraries({ onDone }: { onDone: () => void }) {
+  const fail = useStore(s => s.fail)
+  const [b, setB] = useState<BuildStatus | null>(null)
+  useEffect(() => { api<BuildStatus>('/libraries/build/status').then(setB).catch(() => {}) }, [])
+  useEffect(() => {
+    if (!b?.running) return
+    const t = setTimeout(() => api<BuildStatus>('/libraries/build/status').then(n => { setB(n); if (!n.running) onDone() }).catch(fail), 1500)
+    return () => clearTimeout(t)
+  }, [b])
+  const start = async () => {
+    if (!window.confirm('Download about 450 MB of open spectral databases (RRUFF, Raman Open Database, COD minerals and others) and build the full libraries? This takes a while; files already downloaded are reused.')) return
+    try { setB(await api<BuildStatus>('/libraries/build', {})) } catch (e) { fail(e) }
+  }
+  const pct = b && b.total ? Math.round((100 * b.done) / b.total) : 0
+  return (
+    <div className="space-y-1 border-t border-slate-200 pt-1.5 dark:border-slate-800">
+      <button className="btn w-full" disabled={!!b?.running} onClick={start}>{b?.running ? 'Building libraries…' : 'Download & build full libraries'}</button>
+      {b && (b.running || b.error || b.step === 'Finished') && (
+        <div className="text-[11px] text-slate-500">
+          <div className="flex justify-between"><span className="truncate">{b.step}</span><span className="tabular-nums">{b.total > 1 ? `${b.done}/${b.total}` : ''}</span></div>
+          {b.running && <div className="h-1 rounded bg-slate-200 dark:bg-slate-800"><div className="h-1 rounded bg-teal-500" style={{ width: `${pct}%` }} /></div>}
+          {b.error && <div className="text-rose-500">{b.error}</div>}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function MineralId() {
   const st = useStore()
@@ -17,7 +48,7 @@ export default function MineralId() {
   const [mixture, setMixture] = useState(false)
   const [autoBase, setAutoBase] = useState(true)
   const [usePeaks, setUsePeaks] = useState(false)
-  const [wl, setWl] = useState(1.5406)
+  const [wl, setWl] = useState(1.54184)
   const [folder, setFolder] = useState('')
   const [busy, setBusy] = useState('')
   const [q, setQ] = useState('')
@@ -107,6 +138,7 @@ export default function MineralId() {
               <span className="flex-1 truncate">{l.title}</span><span className="tabular-nums text-slate-500">{l.n.toLocaleString()}</span>
             </label>
           ))}
+          <BuildLibraries onDone={refresh} />
           {st.technique !== 'xrd' && (
             <div className="flex gap-1 pt-1">
               <input className="field" placeholder="Folder of RRUFF .txt files, e.g. D:\RRUFF\raman" value={folder} onChange={e => setFolder(e.target.value)} />

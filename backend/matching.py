@@ -12,7 +12,8 @@ from scipy.signal import find_peaks
 
 import library as L
 
-CU_KA = 1.5406
+# Wavelength the XRD library was computed at: pymatgen's 'CuKa', the weighted K-alpha average.
+CU_KA = 1.54184
 PREFILTER = 300  # ponytail: peak scoring only for the best N by first-pass score; raise if recall matters
 
 

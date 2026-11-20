@@ -89,12 +89,13 @@ straight after installation:
 
 | Technique | Library | Entries | Licence |
 |---|---|---|---|
-| Raman | Raman Open Database (ROD) | 1,115 | CC0 |
+| Raman | Raman Open Database (ROD) | 1,131 | CC0 |
 | Raman | Starter minerals (synthetic profiles at literature peak positions) | 31 | MIT (this project) |
-| XRD | COD mineral structures 9000000–9017999 (AMCSD-derived), powder patterns computed for Cu Kα | 14,343 (4,108 minerals) | CC0 |
+| XRD | COD mineral structures 9000000–9017999 (AMCSD-derived), powder patterns computed for Cu Kα (1.54184 Å) | 14,343 (4,107 minerals) | CC0 |
 
 The full set adds about 10,000 more spectra, including the RRUFF Raman and infrared collections. These
-are not redistributed here; download and index them yourself (about 450 MB, takes a while):
+are not redistributed here. Click **Mineral ID → Download & build full libraries** in the app, or run
+(about 450 MB; files already downloaded are reused):
 
 ```bash
 python backend/download_databases.py

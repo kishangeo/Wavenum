@@ -152,18 +152,48 @@ def build_sgd():
 
 # ---------------------------------------------------------------- ROD
 def _cif_tag(text, tag):
-    m = re.search(r'^' + re.escape(tag) + r'[ \t]+(.+)$', text, re.M)
-    return m.group(1).strip().strip("'\"") if m else ''
+    """Value of a CIF data item; also when it sits on the next line(s), quoted or as a ;-delimited field."""
+    m = re.search(r'^' + re.escape(tag) + r'[ \t]*(.*)$', text, re.M)
+    if not m:
+        return ''
+    v = m.group(1).strip()
+    if not v:
+        rest = text[m.end():].lstrip('\r\n')
+        if rest.startswith(';'):
+            v = rest[1:].split('\n;', 1)[0]
+        else:
+            v = rest.split('\n', 1)[0]
+    return ' '.join(v.strip().strip("'\"").split())
+
+
+def _rod_spectrum(text):
+    """(shift, intensity) rows of the _raman_spectrum loop, whatever other columns it has
+    (some entries also carry _raman_spectrum.raw_intensity)."""
+    m = re.search(r'loop_\s+((?:_raman_spectrum\.\S+\s+)+)', text)
+    if not m:
+        return None
+    tags = m.group(1).split()
+    if '_raman_spectrum.raman_shift' not in tags or '_raman_spectrum.intensity' not in tags:
+        return None
+    vals = []
+    for tok in text[m.end():].split():
+        try:
+            vals.append(float(tok))
+        except ValueError:
+            break
+    rows = np.array(vals[:len(vals) // len(tags) * len(tags)]).reshape(-1, len(tags))
+    if len(rows) < 2:
+        return None
+    return rows[:, [tags.index('_raman_spectrum.raman_shift'), tags.index('_raman_spectrum.intensity')]]
 
 
 def build_rod():
     items = []
     for p in sorted((RAW / 'rod').glob('*.rod')):
         text = p.read_text(encoding='utf-8', errors='replace')
-        m = re.search(r'_raman_spectrum\.raman_shift\s+_raman_spectrum\.intensity\s+((?:[-+0-9.eE]+[ \t]+[-+0-9.eE]+\s*\n?)+)', text)
-        if not m:
+        xy = _rod_spectrum(text)
+        if xy is None:
             continue
-        xy = np.array(m.group(1).split(), float).reshape(-1, 2)
         name = _cif_tag(text, '_chemical_name_mineral') or _cif_tag(text, '_chemical_name_common') \
             or _cif_tag(text, '_chemical_name_systematic') or _cif_tag(text, '_chemical_formula_sum') or p.stem
         laser = _cif_tag(text, '_raman_measurement_device.excitation_laser_wavelength')

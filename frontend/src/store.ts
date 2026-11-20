@@ -64,7 +64,7 @@ const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 const COMMANDS: Record<string, string> = {
   '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/libraries': 'libraries',
   '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
-  '/match': 'match_spectrum', '/pca': 'pca',
+  '/match': 'match_spectrum', '/pca': 'pca', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
 }
 
 async function viaTauri<T>(path: string, body?: unknown): Promise<T> {

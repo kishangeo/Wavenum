@@ -3,6 +3,7 @@
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 """
 import sys
+import threading
 from pathlib import Path
 from typing import Optional
 
@@ -115,6 +116,43 @@ class PcaReq(BaseModel):
 @app.post('/api/pca')
 def pca(r: PcaReq):
     return _guard(analysis.pca, r.spectra, r.clusters, r.norm)
+
+
+# --- download + build the full reference libraries in the background
+_build = dict(running=False, step='', done=0, total=0, log=[], error=None)
+
+
+def _run_build():
+    import build_library as B
+    import download_databases as D
+    steps = [('Downloading Spectragryph / RRUFF collections', D.spectragryph), ('Downloading Raman Open Database', D.rod),
+             ('Downloading COD mineral structures', D.cod), ('Building starter library', B.build_starter),
+             ('Computing XRD patterns (COD)', B.build_cod), ('Building Spectragryph / RRUFF libraries', B.build_sgd),
+             ('Building Raman Open Database library', B.build_rod)]
+    try:
+        for i, (name, fn) in enumerate(steps):
+            _build.update(step=name, done=i, total=len(steps))
+            fn()
+            _build['log'].append(f'{name}: done')
+        _build.update(step='Finished', done=len(steps))
+    except Exception as e:  # report to the UI instead of dying silently in the thread
+        _build['error'] = f'{_build["step"]}: {e}'
+    finally:
+        _build['running'] = False
+
+
+@app.post('/api/libraries/build')
+def build_libraries():
+    if _build['running']:
+        raise HTTPException(409, 'A build is already running')
+    _build.update(running=True, step='Starting', done=0, total=7, log=[], error=None)
+    threading.Thread(target=_run_build, daemon=True).start()
+    return _build
+
+
+@app.get('/api/libraries/build/status')
+def build_status():
+    return _build
 
 
 class ImportReq(BaseModel):
