@@ -1,0 +1,28 @@
+# environments and build output
+.venv/
+node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+.claude/
+
+# downloaded / extracted databases (rebuild with backend/download_databases.py + build_library.py)
+databases/raw/
+databases/extracted/
+*.part
+
+# built libraries: only the openly licensed ones are committed (see README)
+databases/library/*
+!databases/library/starter.json
+!databases/library/starter.npy
+!databases/library/rod_raman.json
+!databases/library/rod_raman.npy
+!databases/library/cod_minerals_xrd.json
+!databases/library/_minerals.json
+
+# third-party sample files and papers (not ours to redistribute)
+samples/formats/
+papers_raman software/
+
+# user libraries created via Import
+databases/library/user_*
