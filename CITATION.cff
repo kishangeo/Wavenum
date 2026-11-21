@@ -10,6 +10,14 @@ authors:
 version: 0.6.0
 date-released: 2026-11-21
 license: MIT
+doi: 10.5281/zenodo.24421170
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24421170
+    description: Concept DOI (all versions)
+  - type: doi
+    value: 10.5281/zenodo.24421171
+    description: Version 0.6.0
 repository-code: "https://github.com/kishangeo/Wavenum"
 url: "https://wavenum.vercel.app"
 keywords: [Raman spectroscopy, FTIR, XRD, mineral identification, spectral processing, hyperspectral maps, meteorites]

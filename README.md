@@ -6,7 +6,8 @@
 
 <p align="center">
   Local-first Raman, FTIR and XRD processing, peak analysis and mineral identification.<br>
-  Created by <a href="https://kishangeo.github.io/">Kishan Tiwari</a>
+  Created by <a href="https://kishangeo.github.io/">Kishan Tiwari</a><br><br>
+  <a href="https://doi.org/10.5281/zenodo.24421170"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24421170.svg" alt="DOI 10.5281/zenodo.24421170"></a>
 </p>
 
 ---
@@ -227,9 +228,10 @@ For interface work run `npm run dev` in `frontend/` (it proxies `/api` to the ba
 If Wavenum helps your research, please cite it as:
 
 > Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.6.0).
-> Zenodo. https://github.com/kishangeo/Wavenum
+> Zenodo. https://doi.org/10.5281/zenodo.24421170
 
-The Zenodo DOI of each release is listed on the [Releases](https://github.com/kishangeo/Wavenum/releases) page; [CITATION.cff](CITATION.cff) has the details.
+This DOI always resolves to the latest version; each release also has its own DOI on Zenodo
+(0.6.0: [10.5281/zenodo.24421171](https://doi.org/10.5281/zenodo.24421171)). [CITATION.cff](CITATION.cff) has the details.
 
 ## Licence
 
