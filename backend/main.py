@@ -2,6 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 """
+import os
 import sys
 import threading
 from pathlib import Path
@@ -20,6 +21,10 @@ import peaks as pk  # noqa: E402
 import processing  # noqa: E402
 
 app = FastAPI(title='Wavenum')
+# On a hosted deployment (Vercel sets VERCEL=1) the filesystem is read-only and shared:
+# building or importing libraries is only possible when Wavenum runs on your own computer.
+READ_ONLY = bool(os.environ.get('VERCEL') or os.environ.get('WAVENUM_READ_ONLY'))
+READ_ONLY_MSG = 'Not available in the hosted version: run Wavenum on your own computer to build or import libraries'
 DIST = Path(__file__).resolve().parent.parent / 'frontend' / 'dist'
 EXAMPLES = Path(__file__).resolve().parent.parent / 'samples' / 'examples'
 
@@ -161,6 +166,8 @@ def _run_build():
 
 @app.post('/api/libraries/build')
 def build_libraries():
+    if READ_ONLY:
+        raise HTTPException(403, READ_ONLY_MSG)
     if _build['running']:
         raise HTTPException(409, 'A build is already running')
     _build.update(running=True, step='Starting', done=0, total=7, log=[], error=None)
@@ -181,6 +188,8 @@ class ImportReq(BaseModel):
 
 @app.post('/api/libraries/import')
 def import_library(r: ImportReq):
+    if READ_ONLY:
+        raise HTTPException(403, READ_ONLY_MSG)
     return _guard(library.import_folder, r.folder, r.technique, r.title)
 
 

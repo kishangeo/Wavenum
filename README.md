@@ -75,6 +75,7 @@ python -m venv .venv
 # Windows:      .venv\Scripts\activate
 # macOS/Linux:  source .venv/bin/activate
 pip install -r requirements.txt
+pip install -r requirements-xrd.txt   # optional: .cif files and building the XRD library (pymatgen)
 
 cd frontend
 npm ci
@@ -89,6 +90,20 @@ python backend/main.py
 ```
 
 Then open <http://127.0.0.1:8765>. On Windows, `run.bat` starts the server and opens the browser.
+
+## Deploying to Vercel
+
+The repository includes a `vercel.json`, so it can be imported into [Vercel](https://vercel.com) as is: the
+interface is built into static files and the Python backend runs as a function (`app.py`). The hosted version
+differs from running Wavenum on your own computer:
+
+- **Spectra are sent to the server** for processing, so it is no longer local-only. Use your own computer for
+  unpublished data.
+- It is read-only: *Download & build full libraries* and folder *Import* are switched off, and only the
+  libraries in the repository (ROD, the COD-derived XRD patterns and the starter set) are available.
+- Loading `.cif` files is off, because pymatgen and its dependencies are too large for a Vercel function.
+
+To try the same read-only mode locally, set `WAVENUM_READ_ONLY=1` before starting the server.
 
 ## Reference libraries
 
@@ -131,7 +146,7 @@ owners listed on the Spectragryph page for the other collections.
 | Format | Extensions | Tested |
 |---|---|---|
 | Delimited text, RRUFF text | `.txt .csv .xy .xye .dat .asc .dpt .prn` | yes |
-| Excel | `.xlsx .xls` | yes |
+| Excel | `.xlsx` | yes |
 | JCAMP-DX | `.jdx .dx .jcm .jcamp` | yes, real file |
 | Thermo / Galactic SPC | `.spc` (new format) | yes, real file |
 | Nicolet OMNIC | `.spa` | yes, real file |
@@ -173,6 +188,7 @@ the interface summarises these next to the result.
 | Path | Contents |
 |---|---|
 | `backend/main.py` | FastAPI app; serves the built interface |
+| `app.py`, `vercel.json` | Vercel entry point and build configuration |
 | `backend/processing.py` | text parsing and the preprocessing pipeline |
 | `backend/formats.py` | instrument file readers |
 | `backend/peaks.py` | peak finding and fitting |

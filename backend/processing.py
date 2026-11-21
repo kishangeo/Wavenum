@@ -53,10 +53,13 @@ def parse_file(name, raw):
             raise
         except Exception as e:  # corrupt or unexpected variant of a binary format
             raise ValueError(f'Could not read {name}: {e}')
-    if name.lower().endswith(('.xlsx', '.xls')):
-        import pandas as pd
-        df = pd.read_excel(io.BytesIO(raw), header=None)
-        rows = [[v for v in r if not (isinstance(v, float) and np.isnan(v))] for r in df.values.tolist()]
+    if name.lower().endswith('.xls'):
+        raise ValueError('Old .xls workbooks are not supported; save the file as .xlsx')
+    if name.lower().endswith(('.xlsx', '.xlsm')):
+        import openpyxl
+        wb = openpyxl.load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+        rows = [[v for v in r if v is not None and v != ''] for r in wb.worksheets[0].iter_rows(values_only=True)]
+        wb.close()
     else:
         rows = _rows_from_text(raw.decode('utf-8-sig', errors='replace'))
     return parse_table(rows)

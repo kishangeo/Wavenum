@@ -171,6 +171,12 @@ def read_uxd(raw):
 
 def read_cif(raw):
     """Crystal structure -> computed Cu K-alpha powder pattern (pymatgen), as a profile."""
+    try:
+        import pymatgen  # noqa: F401  (optional: pip install -r requirements-xrd.txt)
+    except ImportError:
+        raise ValueError('Loading CIF files needs pymatgen (pip install -r requirements-xrd.txt); '
+                         'it is not installed on this server')
+
     def go(path):
         import warnings
         from pymatgen.analysis.diffraction.xrd import XRDCalculator

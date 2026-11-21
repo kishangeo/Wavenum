@@ -26,3 +26,7 @@ papers_raman software/
 
 # user libraries created via Import
 databases/library/user_*
+
+# Vercel build output and local CLI state
+public/
+.vercel/

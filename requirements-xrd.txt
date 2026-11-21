@@ -1,0 +1,2 @@
+# Optional: load .cif files as computed XRD patterns and build the COD XRD library.
+pymatgen>=2024.1
