@@ -80,6 +80,19 @@ def fit(r: FitReq):
     return _guard(pk.fit, r.x, r.y, r.centers, r.profile, r.xmin, r.xmax)
 
 
+class McReq(FitReq):
+    runs: int = 100
+    max_shift: float = 5.0
+    seed: int = 1
+
+
+@app.post('/api/peaks/mc')
+def mc_fit(r: McReq):
+    if not 2 <= r.runs <= 1000:
+        raise HTTPException(400, 'Runs must be between 2 and 1000')
+    return _guard(pk.mc_fit, r.x, r.y, r.centers, r.profile, r.xmin, r.xmax, r.runs, r.max_shift, r.seed)
+
+
 @app.post('/api/map/wdf')
 async def map_wdf(file: UploadFile = File(...)):
     """Renishaw map -> binary payload (see maps.py); text maps are read in the browser."""

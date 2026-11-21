@@ -50,6 +50,10 @@ saved as a JSON preset and batch-applied to all spectra.
 - Automatic peak finding (prominence, height, distance) plus click-to-add/remove.
 - Gaussian, Lorentzian and Voigt fitting with components, residuals and a table of centre, height,
   FWHM, area and R²; XRD d-spacings.
+- **Monte Carlo deconvolution** (after SpecXY, Gies et al. 2024): the fit is repeated up to 1,000 times from
+  random starting positions, widths and heights, with each peak limited to a maximum shift. It reports mean ± sd
+  of position, FWHM, area and height over the runs within a chosen R² of the best, a histogram per peak and
+  parameter, and a CSV of every run, so you can see how well each parameter is constrained.
 - **Olivine composition** from the ~820/850 cm⁻¹ doublet (Kuebler et al. 2006).
 - **Carbonaceous-matter thermometry** from fitted D and G bands (Beyssac et al. 2002; Kouketsu et al. 2014;
   Busemann et al. 2007), with each calibration's fitting protocol shown alongside.

@@ -62,7 +62,7 @@ export const defaultPipeline = (x: number[]): Step[] =>
 // In the desktop app (Tauri) requests go to Rust commands; in the browser to the Python server.
 const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 const COMMANDS: Record<string, string> = {
-  '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/libraries': 'libraries',
+  '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/peaks/mc': 'peaks_mc', '/libraries': 'libraries',
   '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
   '/match': 'match_spectrum', '/pca': 'pca', '/examples': 'examples', '/config': 'config', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
 }
