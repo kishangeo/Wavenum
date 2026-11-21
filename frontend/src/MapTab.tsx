@@ -9,7 +9,7 @@ import {
   MAP_KINDS, METRICS, calc, classify, decodeBinaryMap, makeMask, meanSpectrum, metric, nearestPixel, newLayer, normalize01,
   parseMapImage, parseMapText, pixelSpectrum, profile, rectPixels, type CalcOp, type Layer, type MapKind, type MetricKind, type SpecMap,
 } from './maps'
-import { ptToPx } from './Plot'
+import { ptToPx, touch } from './Plot'
 import Water from './Water'
 import { TECH, download, exampleFile, mapBinary, useStore, type Example } from './store'
 
@@ -90,7 +90,7 @@ export function MapCanvas() {
     if (!ref.current) return
     if (!ready) return void Plotly.purge(ref.current)
     const { data, layout } = mapFigure(ms, dark, fig, false)
-    Plotly.react(ref.current, data, layout, { responsive: true, displaylogo: false })
+    Plotly.react(ref.current, data, layout, { responsive: true, displaylogo: false, displayModeBar: !touch() })
   }, [ms.map, ms.layers, ms.active, ms.mask, ms.colors, ms.clip, ms.log, ms.clicks, ms.tool, dark, fig, ready])
 
   useEffect(() => {

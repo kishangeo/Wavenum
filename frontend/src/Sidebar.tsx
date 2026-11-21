@@ -93,7 +93,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col gap-2 overflow-y-auto border-r border-slate-200 p-2 dark:border-slate-800">
+    <aside className="flex w-full min-w-0 flex-1 flex-col gap-2 overflow-y-auto border-r border-slate-200 p-2 dark:border-slate-800">
       <label
         onDragOver={e => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)}
         onDrop={e => { e.preventDefault(); setOver(false); upload(e.dataTransfer.files) }}

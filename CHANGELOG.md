@@ -2,6 +2,10 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## Unreleased
+- Layout for phones and tablets: one panel at a time on phones (Data, Plot, Tools bar), plot beside a side panel on
+  tablets; popovers stay on screen; no Plotly toolbar on touch screens.
+
 ## 0.7.1 (2026-11-21)
 - Include the user manual (frontend/public/manual.html), which 0.7.0 left out of the repository because of
   an over-broad ignore rule.

@@ -21,6 +21,12 @@ export default function App() {
   const [stats, setStats] = useState<Stats | null>(null)
   useEffect(() => { api<Stats>('/stats').then(setStats).catch(() => {}) }, [])
   const ts = stats?.[st.technique]
+  // below 1280 px not all three panels fit: phones show one panel, tablets the plot plus one side panel
+  const [pane, setPane] = useState<'data' | 'plot' | 'tools'>('plot')
+  useEffect(() => { dispatchEvent(new Event('resize')) }, [pane]) // Plotly re-measures panels that became visible
+  const sideCls = pane === 'data' ? 'flex' : 'hidden xl:flex'
+  const plotCls = pane === 'plot' ? 'flex' : 'hidden md:flex'
+  const toolCls = pane === 'tools' ? 'flex' : pane === 'plot' ? 'hidden md:flex' : 'hidden xl:flex'
   useEffect(() => { document.documentElement.classList.toggle('dark', st.dark) }, [st.dark])
   useEffect(() => {
     if (!st.error) return
@@ -30,7 +36,7 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex items-center gap-3 border-b border-slate-200 px-3 py-1.5 dark:border-slate-800">
+      <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-slate-200 px-3 py-1.5 dark:border-slate-800">
         <h1 className="flex items-center gap-1.5 text-base font-bold tracking-tight"><img src="/logo.svg" alt="" className="h-6 w-6" />Wave<span className="-ml-1.5 text-teal-600 dark:text-teal-400">num</span></h1>
         <a href="https://github.com/kishangeo/Wavenum/releases" target="_blank" rel="noopener noreferrer" title="Release notes"
           className="rounded border border-slate-300 px-1.5 py-0.5 font-mono text-[10px] text-slate-500 hover:text-teal-600 dark:border-slate-700">v{__APP_VERSION__}</a>
@@ -49,12 +55,14 @@ export default function App() {
               className={`px-3 py-1 text-xs font-medium ${st.technique === t ? 'bg-teal-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{TECH[t].label}</button>
           ))}
         </div>
-        <button className="btn" onClick={() => st.set({ dark: !st.dark })}>{st.dark ? <><SunIcon /> Light</> : <><MoonIcon /> Dark</>}</button>
+        <button className="btn" aria-label={st.dark ? 'Light theme' : 'Dark theme'} onClick={() => st.set({ dark: !st.dark })}>{st.dark ? <><SunIcon /><span className="hidden sm:inline"> Light</span></> : <><MoonIcon /><span className="hidden sm:inline"> Dark</span></>}</button>
       </header>
       <div className="flex min-h-0 flex-1">
-        <Sidebar />
-        {st.tab === 'dig' ? <DigitizerCanvas /> : st.tab === 'pca' ? <PcaCanvas /> : st.tab === 'map' ? <MapCanvas /> : <Plot />}
-        <aside className="flex w-88 shrink-0 flex-col border-l border-slate-200 dark:border-slate-800">
+        <div className={`${sideCls} w-full min-w-0 shrink-0 md:w-72`}><Sidebar /></div>
+        <div className={`${plotCls} min-w-0 flex-1`}>
+          {st.tab === 'dig' ? <DigitizerCanvas /> : st.tab === 'pca' ? <PcaCanvas /> : st.tab === 'map' ? <MapCanvas /> : <Plot />}
+        </div>
+        <aside className={`${toolCls} w-full shrink-0 flex-col border-l md:w-88 border-slate-200 dark:border-slate-800`}>
           <nav className="flex border-b border-slate-200 dark:border-slate-800">
             {TABS.map(([id, label]) => (
               <button key={id} onClick={() => st.set({ tab: id })}
@@ -71,6 +79,12 @@ export default function App() {
           </div>
         </aside>
       </div>
+      <nav className="flex border-t border-slate-200 xl:hidden dark:border-slate-800" aria-label="Panels">
+        {([['data', 'Data'], ['plot', 'Plot'], ['tools', 'Tools']] as const).map(([id, label]) => (
+          <button key={id} onClick={() => setPane(id)} aria-pressed={pane === id}
+            className={`flex-1 py-2 text-sm font-medium ${id === 'plot' ? 'md:hidden' : ''} ${pane === id ? 'text-teal-600 dark:text-teal-400' : id === 'tools' && pane === 'plot' ? 'text-slate-500 md:text-teal-600 md:dark:text-teal-400' : 'text-slate-500'} ${pane === id ? 'bg-teal-50 dark:bg-teal-950' : ''}`}>{label}</button>
+        ))}
+      </nav>
       {st.help && <Help version={__APP_VERSION__} onClose={() => st.set({ help: false })} />}
       {st.error && (
         <div role="alert" onClick={() => st.set({ error: null })}

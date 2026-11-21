@@ -4,7 +4,7 @@ import Plotly from 'plotly.js-dist-min'
 import { useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import FigureExport from './FigureExport'
-import { ptToPx } from './Plot'
+import { ptToPx, touch } from './Plot'
 import { TECH, api, dataOf, download, useStore } from './store'
 
 type Res = { scores: number[][]; explained: number[]; x: number[]; loadings: number[][]; clusters: number[] | null; names: string[]; colors: string[] }
@@ -50,7 +50,7 @@ export function PcaCanvas() {
     if (!ref.current) return
     if (!res) return void Plotly.purge(ref.current)
     const { data, layout } = pcaFigure(res, dark, technique, fig, false)
-    Plotly.react(ref.current, data, layout, { responsive: true, displaylogo: false })
+    Plotly.react(ref.current, data, layout, { responsive: true, displaylogo: false, displayModeBar: !touch() })
   }, [res, dark, technique, fig])
 
   return (

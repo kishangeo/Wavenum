@@ -9,6 +9,8 @@ type S = ReturnType<typeof useStore.getState>
 export type Curve = { key: string; label: string; color: string; shown: boolean; spectrumId?: string }
 
 export const ptToPx = (pt: number) => (pt * 96) / 72 // Plotly sizes text in CSS pixels
+/** Touch screens: no Plotly toolbar (pinch and drag zoom and pan, double-tap resets). */
+export const touch = () => matchMedia("(pointer: coarse)").matches
 
 /** Every curve the current view can draw, with whether it is shown. Spectra use their own visibility;
  *  derived curves (baseline, fit, …) use the hidden-curves list. */
@@ -143,7 +145,7 @@ function Curves() {
         Curves ({curves.filter(c => c.shown).length}/{curves.length}) <ChevronDown className="h-3 w-3" />
       </button>
       {open && (
-        <div className="card absolute right-0 z-30 mt-1 max-h-96 w-72 space-y-0.5 overflow-y-auto text-xs shadow-lg">
+        <div className="card absolute right-0 z-30 mt-1 max-h-96 w-72 max-xl:fixed max-xl:left-2 max-xl:right-auto max-xl:top-28 max-xl:w-[min(24rem,calc(100vw-1rem))] space-y-0.5 overflow-y-auto text-xs shadow-lg">
           <div className="mb-1 flex gap-1">
             <button className="btn flex-1" onClick={() => curves.filter(c => !c.shown).forEach(c => toggleCurve(c.key))}>Show all</button>
             <button className="btn flex-1" onClick={() => curves.filter(c => c.shown && !c.spectrumId).forEach(c => toggleCurve(c.key))}>Hide extras</button>
@@ -173,7 +175,7 @@ export default function Plot() {
     // so start from a clean plot whenever the technique changes.
     if (lastTech.current !== st.technique) Plotly.purge(ref.current!)
     lastTech.current = st.technique
-    Plotly.react(ref.current!, data, layout, { responsive: true, displaylogo: false, scrollZoom: true })
+    Plotly.react(ref.current!, data, layout, { responsive: true, displaylogo: false, scrollZoom: true, displayModeBar: !touch() })
   }, [st.spectra, st.activeId, st.technique, st.dark, st.plotMode, st.showBaseline, st.matches, st.selMatch, st.tab, st.fig, st.hiddenCurves])
 
   useEffect(() => {
@@ -222,7 +224,7 @@ export default function Plot() {
         <div ref={ref} className="absolute inset-0" />
         {!st.spectra.some(s => s.technique === st.technique) && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-slate-400">
-            Drop {TECH[st.technique].label} spectra on the left to begin
+            Drop {TECH[st.technique].label} spectra in the Data panel to begin
           </div>
         )}
       </div>

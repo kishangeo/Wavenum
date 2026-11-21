@@ -33,7 +33,7 @@ export default function FigureExport({ figure, filename }: { figure: (print: boo
     <div className="relative">
       <button className="btn" onClick={() => setOpen(o => !o)}>Figure export <ChevronDown className="h-3 w-3" /></button>
       {open && (
-        <div className="card absolute right-0 z-30 mt-1 w-72 space-y-1.5 text-xs shadow-lg">
+        <div className="card absolute right-0 z-30 mt-1 w-72 space-y-1.5 max-xl:fixed max-xl:left-2 max-xl:right-auto max-xl:top-28 max-xl:w-[min(24rem,calc(100vw-1rem))] max-xl:max-h-[70vh] max-xl:overflow-y-auto text-xs shadow-lg">
           <label className="flex items-center justify-between gap-2">Format
             <select className="field !w-36" value={f.format} onChange={e => setFig({ format: e.target.value as any })}>
               {FORMATS.map(x => <option key={x.id} value={x.id}>{x.label}</option>)}
