@@ -117,7 +117,10 @@ def read_wdf(raw):
         r = WDFReader(path)
         try:
             s = np.asarray(r.spectra, float)
-            return _xy(r.xdata, s.reshape(-1, s.shape[-1])[0], 'Raman shift', 'Counts')
+            s = s.reshape(-1, s.shape[-1])
+            # first spectrum that is not all zero (depth series can start with an empty one); maps -> Map tab
+            k = next((i for i in range(len(s)) if np.any(s[i] != 0)), 0)
+            return _xy(r.xdata, s[k], 'Raman shift', 'Counts')
         finally:
             r.close()
     return _with_tempfile(raw, '.wdf', go)

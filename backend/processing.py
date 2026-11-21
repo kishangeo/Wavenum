@@ -72,27 +72,35 @@ def crop(x, y, p):
 
 
 def despike(x, y, p):
-    """Whitaker-Hayes: modified Z-score of the first difference; spikes replaced by neighbour mean."""
-    thr, m = float(p.get('threshold', 7)), int(p.get('width', 3))
+    """Cosmic-ray removal. A spike is an up-jump followed within `width` points by a down-jump, both
+    outliers of the first difference (modified Z-score > threshold, Whitaker & Hayes 2018), and both
+    much larger than the steps just outside it: real bands rise over several steps, cosmic rays in one.
+    Spike points are replaced by a straight line between their neighbours."""
+    thr, width, sharp = float(p.get('threshold', 7)), int(p.get('width', 3)), 0.25
+    y = np.asarray(y, float)
+    n = len(y)
+    if n < 5:
+        return x, y
     d = np.diff(y)
-    mad = np.median(np.abs(d - np.median(d)))
+    med = np.median(d)
+    mad = np.median(np.abs(d - med))
     if mad == 0:
         return x, y
-    z = np.abs(0.6745 * (d - np.median(d)) / mad)
-    spike = np.concatenate([[False], z > thr])
-    spike |= np.concatenate([spike[1:], [False]])  # both sides of the jump
-    # A cosmic ray is at most `width` points wide; longer flagged runs are the steep
-    # flanks of real, sharp peaks and must be left alone.
-    edges = np.flatnonzero(np.diff(np.concatenate([[0], spike.astype(int), [0]])))
-    for a, b in zip(edges[::2], edges[1::2]):
-        if b - a > m + 2:
-            spike[a:b] = False
+    z = 0.6745 * (d - med) / mad
     out = y.copy()
-    for i in np.flatnonzero(spike):
-        w = np.arange(max(0, i - m), min(len(y), i + m + 1))
-        w = w[~spike[w]]
-        if len(w):
-            out[i] = y[w].mean()
+    i = 1
+    while i < n - 1:
+        if z[i - 1] > thr:
+            for k in range(i, min(i + width, n - 1)):
+                if z[k] < -thr:
+                    before = abs(d[i - 2]) if i >= 2 else 0.0
+                    after = abs(d[k + 1]) if k + 1 < n - 1 else 0.0
+                    if before < sharp * abs(d[i - 1]) and after < sharp * abs(d[k]):
+                        a, b = i - 1, k + 1
+                        out[a + 1:b] = y[a] + (y[b] - y[a]) * (np.arange(a + 1, b) - a) / (b - a)
+                        i = k
+                    break
+        i += 1
     return x, out
 
 

@@ -1,6 +1,7 @@
 // Plot digitizer: calibrate 4 axis points on an image / PDF page, trace the curve by colour.
 // Author: Kishan Tiwari
 import { useEffect, useRef } from 'react'
+import { CheckIcon, CircleIcon } from './icons'
 import { create } from 'zustand'
 import { useStore } from './store'
 
@@ -147,7 +148,7 @@ export default function DigitizerPanel() {
         <p className="text-slate-500">Click the four points on the image in order, then type their axis values (linear axes).</p>
         {NAMES.map((n, i) => (
           <label key={n} className="flex items-center gap-2">
-            <span className={`w-10 ${d.pts[i] ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`}>{d.pts[i] ? '✓' : '○'} {n}</span>
+            <span className={`w-10 ${d.pts[i] ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`}>{d.pts[i] ? <CheckIcon className="h-3 w-3" /> : <CircleIcon className="h-3 w-3" />} {n}</span>
             <input className="field" placeholder={`${n} value`} value={d.vals[i]} onChange={e => d.set({ vals: d.vals.map((s, k) => (k === i ? e.target.value : s)) })} />
           </label>
         ))}

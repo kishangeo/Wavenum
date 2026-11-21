@@ -1,6 +1,7 @@
 // Mineral ID tab: libraries, browsing, matching, cross-technique identification. Author: Kishan Tiwari
 import { useEffect, useState } from 'react'
-import { TECH, api, dataOf, useActive, useStore, type Lib, type Match, type Mixture, type Technique } from './store'
+import { XIcon } from './icons'
+import { TECH, api, appConfig, dataOf, useActive, useStore, type Lib, type Match, type Mixture, type Technique } from './store'
 
 // K-alpha weighted averages (the XRD library is computed for Cu K-alpha 1.54184 A), plus Cu K-alpha-1
 const TUBES: [string, number][] = [['Cu Kα', 1.54184], ['Cu Kα1', 1.5406], ['Co Kα', 1.79026], ['Mo Kα', 0.71073], ['Fe Kα', 1.93736], ['Cr Kα', 2.29100]]
@@ -41,7 +42,9 @@ export default function MineralId() {
   const st = useStore()
   const a = useActive()
   const tech = TECH[st.technique]
-  const [libs, setLibs] = useState<Lib[]>([])
+  const [libs, setLibs] = useState<Lib[] | null>(null)  // null while loading
+  const [readOnly, setReadOnly] = useState(false)
+  useEffect(() => { appConfig().then(c => setReadOnly(c.read_only)) }, [])
   const [off, setOff] = useState<Set<string>>(new Set())  // deselected library ids
   const [tol, setTol] = useState(tech.tol)
   const [w, setW] = useState([0.4, 0.2, 0.4])
@@ -65,13 +68,13 @@ export default function MineralId() {
     return () => clearTimeout(t)
   }, [q, st.technique])
 
-  const mine = libs.filter(l => l.technique === st.technique)
+  const mine = (libs ?? []).filter(l => l.technique === st.technique)
   // has the user already baseline-corrected this spectrum?
   const corrected = !!a?.pipeline.some(s => s.enabled && (s.type === 'baseline' || s.type === 'derivative'))
   const techsWithData = (Object.keys(TECH) as Technique[]).filter(t => st.spectra.some(s => s.technique === t))
 
   const body = (t: Technique, d: { x: number[]; y: number[] }, extra: object) => ({
-    x: d.x, y: d.y, technique: t, libraries: libs.filter(l => l.technique === t && !off.has(l.id)).map(l => l.id),
+    x: d.x, y: d.y, technique: t, libraries: (libs ?? []).filter(l => l.technique === t && !off.has(l.id)).map(l => l.id),
     tolerance: t === st.technique ? tol : TECH[t].tol, weights: w, wavelength: wl, ...extra,
   })
   const search = async () => {
@@ -131,15 +134,18 @@ export default function MineralId() {
       <details className="card" open={mine.length <= 3}>
         <summary className="label cursor-pointer">{tech.label} libraries ({mine.reduce((n, l) => n + l.n, 0).toLocaleString()} entries)</summary>
         <div className="mt-1 space-y-1">
-          {!mine.length && <p className="text-xs text-slate-500">No {tech.label} library installed. Run <code>python backend/build_library.py</code> or import a folder below.</p>}
+          {libs === null && <p className="text-xs text-slate-500">Loading libraries…</p>}
+          {libs !== null && !mine.length && <p className="text-xs text-slate-500">No {tech.label} library installed{readOnly ? ' on this server.' : '. Use Download & build full libraries, or import a folder below.'}</p>}
           {mine.map(l => (
             <label key={l.id} className="flex items-center gap-2 text-xs" title={l.citation}>
               <input type="checkbox" checked={!off.has(l.id)} onChange={e => { const s = new Set(off); e.target.checked ? s.delete(l.id) : s.add(l.id); setOff(s) }} />
               <span className="flex-1 truncate">{l.title}</span><span className="tabular-nums text-slate-500">{l.n.toLocaleString()}</span>
             </label>
           ))}
-          <BuildLibraries onDone={refresh} />
-          {st.technique !== 'xrd' && (
+          {readOnly
+            ? <p className="text-[11px] text-slate-500">Hosted version: open libraries only. Run Wavenum on your own computer for the full RRUFF collections and your own imports.</p>
+            : <BuildLibraries onDone={refresh} />}
+          {st.technique !== 'xrd' && !readOnly && (
             <div className="flex gap-1 pt-1">
               <input className="field" placeholder="Folder of RRUFF .txt files, e.g. D:\RRUFF\raman" value={folder} onChange={e => setFolder(e.target.value)} />
               <button className="btn" disabled={!folder || !!busy} onClick={importFolder}>Import</button>
@@ -172,7 +178,7 @@ export default function MineralId() {
         </label>
         {st.technique === 'xrd' && (
           <label className="flex items-center justify-between gap-2 text-xs">Radiation
-            <select className="field !w-28" value={wl} onChange={e => setWl(+e.target.value)}>{TUBES.map(([n, v]) => <option key={n} value={v}>{n} ({v} Å)</option>)}</select>
+            <select className="field !w-44" value={wl} onChange={e => setWl(+e.target.value)}>{TUBES.map(([n, v]) => <option key={n} value={v}>{n} ({v} Å)</option>)}</select>
           </label>
         )}
         {weight(0, 'Weight: cosine similarity')}{weight(1, 'Weight: Pearson correlation')}{weight(2, 'Weight: peak matching')}
@@ -193,7 +199,7 @@ export default function MineralId() {
       {cross && (
         <div className="card text-xs">
           <div className="mb-1 flex items-center"><span className="label flex-1">Supported by several techniques</span>
-            <button className="text-slate-400 hover:text-rose-500" onClick={() => setCross(null)}>✕</button></div>
+            <button className="text-slate-400 hover:text-rose-500" onClick={() => setCross(null)}><XIcon /></button></div>
           {!cross.length && <p className="text-slate-500">No phase appears in the top matches of more than one technique.</p>}
           {cross.map(c => (
             <div key={c.name} className="flex items-baseline gap-2 border-t border-slate-200 py-0.5 dark:border-slate-800">

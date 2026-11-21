@@ -3,45 +3,67 @@
 import Plotly from 'plotly.js-dist-min'
 import { useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
+import FigureExport from './FigureExport'
+import { ptToPx } from './Plot'
 import { TECH, api, dataOf, download, useStore } from './store'
 
 type Res = { scores: number[][]; explained: number[]; x: number[]; loadings: number[][]; clusters: number[] | null; names: string[]; colors: string[] }
 const usePca = create<{ res: Res | null; set: (r: Res | null) => void }>(set => ({ res: null, set: res => set({ res }) }))
 const GROUP = ['#0d9488', '#e11d48', '#2563eb', '#d97706', '#7c3aed', '#16a34a', '#db2777', '#0891b2']
 
+// Scores and loadings figure; `print` gives the white publication theme (used by Figure export).
+function pcaFigure(res: Res, dark: boolean, technique: keyof typeof TECH, fig: ReturnType<typeof useStore.getState>['fig'], print: boolean) {
+  const fg = dark && !print ? '#cbd5e1' : '#0f172a', grid = dark && !print ? '#1e293b' : '#e2e8f0', bg = dark && !print ? '#0b1220' : '#ffffff'
+  const ax = { color: fg, gridcolor: grid, zerolinecolor: grid, showline: true, linecolor: fg, mirror: true, automargin: true, ticks: fig.ticks }
+  const pct = (i: number) => `PC${i + 1} (${(res.explained[i] * 100).toFixed(1)}%)`
+  const short = (n: string) => (n.length > 18 ? n.slice(0, 17) + '…' : n)
+  // pad the score axes so labels at the edges are not clipped
+  const pad = (v: number[]) => { const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return [lo - 0.12 * r, hi + 0.18 * r] }
+  const pc1 = res.scores.map(s => s[0]), pc2 = res.scores.map(s => s[1] ?? 0)
+  const data = [
+    {
+      x: pc1, y: pc2, text: res.names.map(short), customdata: res.names, mode: 'markers+text', type: 'scatter', showlegend: false,
+      textposition: res.names.map((_, i) => (i % 2 ? 'bottom center' : 'top center')), textfont: { size: ptToPx(fig.size) * 0.75, color: fg },
+      hovertemplate: '%{customdata}<br>PC1 %{x:.3g}<br>PC2 %{y:.3g}<extra></extra>', cliponaxis: false,
+      marker: { size: 10, color: res.clusters ? res.clusters.map(c => GROUP[c % GROUP.length]) : res.colors, line: { color: fg, width: 1 } },
+    },
+    ...res.loadings.slice(0, 2).map((l, i) => ({ x: res.x, y: l, name: `PC${i + 1} loading`, xaxis: 'x2', yaxis: 'y2', line: { width: 1.3, color: GROUP[i + 1] } })),
+  ]
+  const layout = {
+    paper_bgcolor: bg, plot_bgcolor: bg, font: { family: fig.font, color: fg, size: ptToPx(fig.size) }, margin: { l: 70, r: 30, t: 20, b: 50 },
+    showlegend: fig.legend, legend: { x: 1, xanchor: 'right', y: 0.36, bgcolor: 'rgba(0,0,0,0)' },
+    xaxis: { ...ax, title: { text: pct(0) }, domain: [0, 1], anchor: 'y', range: pad(pc1) }, yaxis: { ...ax, title: { text: pct(1) }, domain: [0.5, 1], range: pad(pc2) },
+    xaxis2: { ...ax, title: { text: TECH[technique].x }, anchor: 'y2', autorange: TECH[technique].reversed ? 'reversed' : true },
+    yaxis2: { ...ax, title: { text: 'Loading' }, domain: [0, 0.36], anchor: 'x2' },
+  }
+  return { data, layout }
+}
+
 export function PcaCanvas() {
   const res = usePca(s => s.res)
   const dark = useStore(s => s.dark)
   const technique = useStore(s => s.technique)
+  const fig = useStore(s => s.fig)
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!ref.current) return
     if (!res) return void Plotly.purge(ref.current)
-    const fg = dark ? '#cbd5e1' : '#0f172a', grid = dark ? '#1e293b' : '#e2e8f0', bg = dark ? '#0b1220' : '#ffffff'
-    const ax = { color: fg, gridcolor: grid, zerolinecolor: grid, showline: true, linecolor: fg, mirror: true }
-    const pct = (i: number) => `PC${i + 1} (${(res.explained[i] * 100).toFixed(1)}%)`
-    const data = [
-      {
-        x: res.scores.map(s => s[0]), y: res.scores.map(s => s[1] ?? 0), text: res.names, mode: 'markers+text', type: 'scatter',
-        textposition: 'top center', textfont: { size: 10, color: fg }, hovertemplate: '%{text}<br>PC1 %{x:.3g}<br>PC2 %{y:.3g}<extra></extra>',
-        marker: { size: 11, color: res.clusters ? res.clusters.map(c => GROUP[c % GROUP.length]) : res.colors, line: { color: fg, width: 1 } },
-      },
-      ...res.loadings.slice(0, 2).map((l, i) => ({ x: res.x, y: l, name: `PC${i + 1} loading`, xaxis: 'x2', yaxis: 'y2', line: { width: 1.3, color: GROUP[i + 1] } })),
-    ]
-    Plotly.react(ref.current, data, {
-      paper_bgcolor: bg, plot_bgcolor: bg, font: { color: fg, size: 13 }, margin: { l: 70, r: 20, t: 20, b: 50 },
-      showlegend: true, legend: { x: 1, xanchor: 'right', y: 0.36, bgcolor: 'rgba(0,0,0,0)' },
-      xaxis: { ...ax, title: { text: pct(0) }, domain: [0, 1], anchor: 'y' }, yaxis: { ...ax, title: { text: pct(1) }, domain: [0.48, 1] },
-      xaxis2: { ...ax, title: { text: TECH[technique].x }, anchor: 'y2', autorange: TECH[technique].reversed ? 'reversed' : true },
-      yaxis2: { ...ax, title: { text: 'Loading' }, domain: [0, 0.36], anchor: 'x2' },
-    }, { responsive: true, displaylogo: false })
-  }, [res, dark, technique])
+    const { data, layout } = pcaFigure(res, dark, technique, fig, false)
+    Plotly.react(ref.current, data, layout, { responsive: true, displaylogo: false })
+  }, [res, dark, technique, fig])
 
   return (
-    <div className="relative h-full min-w-0 flex-1">
-      <div ref={ref} className="absolute inset-0" />
-      {!res && <div className="absolute inset-0 flex items-center justify-center text-slate-400">Run PCA from the Chemometrics tab (needs 3 or more spectra)</div>}
+    <div className="flex h-full min-w-0 flex-1 flex-col">
+      {res && (
+        <div className="flex justify-end border-b border-slate-200 px-2 py-1 dark:border-slate-800">
+          <FigureExport figure={print => pcaFigure(res, dark, technique, useStore.getState().fig, print)} filename="wavenum_pca" />
+        </div>
+      )}
+      <div className="relative min-h-0 flex-1">
+        <div ref={ref} className="absolute inset-0" />
+        {!res && <div className="absolute inset-0 flex items-center justify-center text-slate-400">Run PCA from the PCA tab (needs 3 or more spectra)</div>}
+      </div>
     </div>
   )
 }

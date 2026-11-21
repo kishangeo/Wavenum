@@ -31,13 +31,16 @@ bundled reference libraries.
 - Example files for learning: **Open an example file…** in the sidebar loads Raman, FTIR and XRD examples
   in each common format (CSV, RRUFF text, Excel, JCAMP-DX, `.xy`, XRDML, CIF) plus figures for the digitizer
   (`samples/examples`).
-- Export processed data (`.csv`/`.txt`), peak tables, PCA scores, and publication figures
-  (SVG or high-DPI PNG with configurable font, labels, ticks and legend).
+- Export processed data (`.csv`/`.txt`), peak tables, PCA scores, and publication figures as PNG, JPG,
+  TIFF, EPS, SVG or PDF (vector) at 150–1200 DPI, with the size in mm (journal column presets), font,
+  labels, ticks and legend. The DPI is written into PNG, JPG and TIFF files.
+- **Curve selector:** choose which curves are shown (each spectrum, baseline, fit, components, residual,
+  reference, peak markers); the plot and the exported figure follow the selection.
 - Save and reopen a whole workspace as a `.wavenum.json` session.
 
 **Processing** — a non-destructive pipeline per spectrum: every step can be toggled, reordered, undone,
 saved as a JSON preset and batch-applied to all spectra.
-- Crop, cosmic-ray despiking (Whitaker–Hayes), baseline (ALS, airPLS, iterative polynomial, rubberband,
+- Crop, cosmic-ray despiking (paired up/down jumps in the modified z-score, so narrow real peaks are kept), baseline (ALS, airPLS, iterative polynomial, rubberband,
   with baseline overlay), Savitzky–Golay or moving-average smoothing, normalization (min–max, vector,
   area, SNV), derivatives, unit conversion (transmittance ↔ absorbance, nm → Raman shift), resampling,
   x-axis calibration shift.
@@ -62,6 +65,16 @@ saved as a JSON preset and batch-applied to all spectra.
 - Import your own folders of RRUFF-style `.txt` spectra as additional libraries.
 
 **Chemometrics** — PCA scores and loadings with optional k-means grouping.
+
+**Maps** (Map tab, after SpecXY; Gies et al. 2024, [doi:10.1016/j.cageo.2024.105626](https://doi.org/10.1016/j.cageo.2024.105626))
+- Load Raman, FTIR or XRD maps from text (wide `X, Y, spectrum…`, long `X, Y, shift, intensity`, or the SpecXY
+  matrix with the signal axis in column 1), Renishaw `.wdf` maps, line and depth scans, and element maps
+  (EPMA, EDS, LA-ICP-MS value grids or images) as layers of the same area.
+- Map types: intensity at a position, band area with a linear baseline, ratio and log ratio of two
+  bands, band position, FWHM and a signal quality index; calibration factor and 0–1 normalisation.
+- Map calculator (A + − × ÷ B), masks by value range, k-means classes of the spectra with class means
+  sent to the workspace, pixel spectra, region means and line profiles, CSV export of every layer.
+- An example Raman map with matching SiO₂, CaO and Fe₂O₃ element maps is in **Open an example map…**.
 
 ## Installation
 
@@ -100,7 +113,7 @@ differs from running Wavenum on your own computer:
 - **Spectra are sent to the server** for processing, so it is no longer local-only. Use your own computer for
   unpublished data.
 - It is read-only: *Download & build full libraries* and folder *Import* are switched off, and only the
-  libraries in the repository (ROD, the COD-derived XRD patterns and the starter set) are available.
+  libraries in the repository (ROD, the COD-derived XRD patterns and the Raman and FTIR starter sets) are available.
 - Loading `.cif` files is off, because pymatgen and its dependencies are too large for a Vercel function.
 
 To try the same read-only mode locally, set `WAVENUM_READ_ONLY=1` before starting the server.
@@ -114,6 +127,7 @@ straight after installation:
 |---|---|---|---|
 | Raman | Raman Open Database (ROD) | 1,131 | CC0 |
 | Raman | Starter minerals (synthetic profiles at literature peak positions) | 31 | MIT (this project) |
+| FTIR | Starter minerals (synthetic profiles at RRUFF infrared band positions) | 38 | MIT (this project) |
 | XRD | COD mineral structures 9000000–9017999 (AMCSD-derived), powder patterns computed for Cu Kα (1.54184 Å) | 14,343 (4,107 minerals) | CC0 |
 
 The full set adds about 10,000 more spectra, including the RRUFF Raman and infrared collections. These
@@ -156,9 +170,9 @@ owners listed on the Spectragryph page for the other collections.
 | PANalytical | `.xrdml` | synthetic input only |
 | Rigaku | `.ras` | synthetic input only |
 | Bruker / Siemens | `.uxd` | synthetic input only |
-| Renishaw WiRE | `.wdf` | not yet tested |
+| Renishaw WiRE | `.wdf` (single spectra, maps, line and depth scans) | yes, real files |
 
-Files containing several spectra (maps) load the first one. Old-format SPC, Horiba, WITec, Bruker
+Files containing several spectra load the first non-empty one in the workspace; open them in the Map tab to use all of them. Old-format SPC, Horiba, WITec, Bruker
 `.raw/.brml` and PerkinElmer `.sp` are not supported; export those to text or JCAMP-DX.
 Sample files and bug reports for any format are welcome.
 
@@ -181,6 +195,8 @@ the interface summarises these next to the result.
   400 atoms are skipped.
 - Mixture fractions are spectral weights, not modal abundances.
 - The digitizer assumes linear axes.
+- EPS figures are embedded high-resolution images; use PDF or SVG for vector output.
+- Maps are held in memory in the browser (a 100 × 100 map of 1,000-point spectra uses about 40 MB).
 - Each spectrum belongs to the technique selected when it was loaded.
 
 ## Development

@@ -61,6 +61,50 @@ STARTER = [
 ]
 
 
+# FTIR starter set: positions and relative absorbances of the strongest bands (>= 10 %) of the most
+# representative RRUFF infrared spectrum (medoid of all spectra of that mineral) (Lafuente et al. 2015), drawn as synthetic Lorentzian profiles.
+# Generated from the RRUFF infrared library; RRUFF IDs in the 4th field.
+STARTER_FTIR = [
+    ('Quartz', 'O2 Si', 'trigonal', 'R050125-1', [(454, 84.7), (694, 29.4), (776, 62.0), (1054, 100.0), (1162, 44.7)]),
+    ('Calcite', 'C Ca O3', 'trigonal', 'R050307-1', [(712, 17.6), (872, 47.5), (1394, 100.0)]),
+    ('Aragonite', 'C Ca O3', 'orthorhombic', 'R040078-1', [(700, 12.2), (712, 17.6), (856, 51.8), (1082, 15.7), (1446, 100.0)]),
+    ('Dolomite', 'C2 Ca Mg O6', 'trigonal', 'R050241-1', [(728, 26.3), (880, 54.9), (1434, 100.0)]),
+    ('Magnesite', 'C Mg O3', 'trigonal', 'R050443-1', [(402, 28.6), (748, 25.1), (880, 47.1), (1430, 100.0)]),
+    ('Siderite', 'C Fe O3', 'trigonal', 'R040034-1', [(402, 18.4), (738, 28.6), (864, 54.1), (1406, 100.0)]),
+    ('Rhodochrosite', 'C Mn O3', 'trigonal', 'R040133-1', [(726, 32.9), (860, 58.4), (1398, 100.0)]),
+    ('Cerussite', 'C O3 Pb', 'orthorhombic', 'R050011-1', [(676, 51.8), (836, 52.2), (1050, 43.1), (1372, 100.0), (3986, 27.1)]),
+    ('Gypsum', 'Ca H4 O6 S', 'monoclinic', 'R040029-1', [(458, 16.9), (598, 34.1), (668, 28.2), (1104, 100.0), (1620, 23.1), (3404, 53.7), (3532, 42.0)]),
+    ('Anhydrite', 'Ca O4 S', 'orthorhombic', 'R040012-1', [(592, 52.2), (610, 31.4), (674, 38.4), (1096, 100.0)]),
+    ('Baryte', 'Ba O4 S', 'orthorhombic', 'R040036-1', [(604, 67.5), (632, 29.0), (982, 45.9), (1062, 100.0)]),
+    ('Celestine', 'O4 S Sr', 'orthorhombic', 'R040007-1', [(604, 67.5), (640, 31.0), (992, 55.3), (1068, 100.0)]),
+    ('Talc', 'H2 Mg3 O12 Si4', 'monoclinic', 'R050058-1', [(406, 65.9), (460, 42.4), (666, 56.9), (986, 100.0), (3674, 33.7)]),
+    ('Muscovite', 'Al3 H2 K O12 Si3', 'monoclinic', 'R050080-1', [(454, 91.8), (528, 85.1), (648, 56.9), (980, 100.0), (3630, 22.7)]),
+    ('Phlogopite', 'Al F H K Mg3 O11 Si3', 'monoclinic', 'R050068-1', [(444, 100.0), (610, 69.4), (644, 70.6), (974, 96.5), (1000, 96.1)]),
+    ('Albite', 'Al Na O8 Si3', 'triclinic', 'R040068-1', [(416, 55.3), (462, 37.3), (530, 41.2), (586, 43.9), (648, 27.8), (722, 26.7), (744, 29.4), (760, 29.4), (788, 23.9), (984, 100.0), (1096, 47.5), (1148, 42.7)]),
+    ('Orthoclase', 'Al K O8 Si3', 'monoclinic', 'R050185-1', [(414, 62.7), (542, 40.0), (578, 45.9), (640, 23.1), (724, 27.8), (992, 100.0)]),
+    ('Microcline', 'Al0.93 K O8 Si3.07', 'triclinic', 'R050054-1', [(416, 63.1), (536, 34.9), (578, 42.4), (648, 22.4), (726, 32.2), (768, 27.1), (996, 100.0), (1134, 42.7)]),
+    ('Anorthite', 'Al2 Ca O8 Si2', 'triclinic', 'R060082-1', [(538, 68.6), (574, 72.5), (740, 34.5), (932, 100.0)]),
+    ('Forsterite', 'Fe0.2 Mg1.8 O4 Si', 'orthorhombic', 'R040018-1', [(410, 99.2), (468, 45.5), (502, 74.5), (606, 32.2), (836, 68.6), (878, 100.0), (980, 46.3)]),
+    ('Enstatite', 'Ca0.052 Mg1.948 O6 Si2', 'orthorhombic', 'R050644-1', [(446, 94.9), (496, 91.0), (540, 58.4), (644, 38.8), (690, 32.5), (724, 32.9), (854, 90.2), (922, 100.0), (1008, 52.9), (1058, 69.0), (3360, 12.2), (3952, 13.7)]),
+    ('Diopside', 'Ca Mg O6 Si2', 'monoclinic', 'R070123-1', [(468, 91.4), (502, 80.8), (630, 34.9), (672, 24.7), (858, 100.0), (960, 79.6), (1064, 82.7)]),
+    ('Tremolite', 'Ca2 H2 Mg5 O24 Si8', 'monoclinic', 'R050498-1', [(414, 75.3), (442, 100.0), (508, 67.5), (662, 18.0), (686, 24.3), (756, 36.1), (916, 87.8), (950, 94.1), (1038, 40.8)]),
+    ('Epidote', 'Al2 Ca2 Fe H O13 Si3', 'monoclinic', 'R050131-1', [(452, 72.9), (512, 82.7), (644, 70.2), (878, 90.2), (946, 87.8), (1036, 40.4), (1078, 39.2), (3354, 21.6)]),
+    ('Almandine', 'Al2 Ca0.12 Fe2.58 Mg0.27 O12 Si3', 'cubic', 'R040076-1', [(440, 89.4), (472, 72.9), (568, 54.5), (862, 100.0), (894, 83.5), (960, 85.1)]),
+    ('Pyrope', 'Al2 Mg3 O12 Si3', 'cubic', 'R050112-1', [(454, 100.0), (476, 90.6), (570, 64.7), (860, 93.3), (896, 82.7), (962, 82.0)]),
+    ('Zircon', 'O4 Si Zr', 'tetragonal', 'R050286-1', [(430, 58.0), (608, 61.6), (868, 100.0), (3566, 20.4), (3780, 21.6), (3986, 22.0)]),
+    ('Fluorapatite', 'Ca5 F O12 P3', 'hexagonal', 'R050529-1', [(470, 12.9), (566, 85.1), (600, 65.9), (864, 21.6), (964, 38.8), (1024, 100.0), (1424, 17.6)]),
+    ('Hematite', 'Fe2 O3', 'trigonal', 'R050300-1', [(422, 89.0), (428, 88.2), (514, 90.6), (3992, 100.0)]),
+    ('Goethite', 'Fe H O2', 'orthorhombic', 'R050142-1', [(450, 80.0), (562, 39.2), (798, 58.4), (892, 39.6), (1654, 39.6), (1774, 39.6), (3072, 95.3), (3998, 67.5)]),
+    ('Rutile', 'Al0.011 Cr0.012 Fe0.008 H0.108 Nb0.011 O2 Ti0.96', 'tetragonal', 'R050031-1', [(492, 100.0), (3986, 97.3), (3996, 97.3)]),
+    ('Corundum', 'Al2 O3', 'trigonal', 'R040096-1', [(446, 93.3), (494, 45.1), (556, 98.4), (592, 100.0), (636, 89.8)]),
+    ('Antigorite', 'H79 Mg48 O147 Si34', 'monoclinic', 'R070228-1', [(436, 94.1), (446, 94.1), (556, 61.6), (616, 78.8), (984, 100.0), (3670, 37.3)]),
+    ('Brucite', 'H2 Mg O2', 'trigonal', 'R040077-1', [(402, 56.1), (3690, 100.0)]),
+    ('Beryl', 'Al2.15 Be2.58 Ca0.02 Cs0.09 Fe0.01 H2 K0.05 Li0.39 Mg0.02 Na0.21 O18.55 Si5.88', 'hexagonal', 'R050121-1', [(428, 97.3), (492, 83.1), (518, 82.4), (590, 65.1), (652, 52.2), (676, 81.2), (740, 48.2), (806, 58.8), (950, 100.0), (1014, 48.2), (1200, 69.4)]),
+    ('Topaz', 'Al2 H2 O6 Si', 'orthorhombic', 'R050176-1', [(452, 94.1), (480, 80.8), (524, 59.2), (558, 50.2), (616, 96.5), (706, 18.4), (868, 100.0), (1000, 28.6), (1164, 12.2)]),
+    ('Malachite', 'C H2 Cu2 O5', 'monoclinic', 'R050508-1', [(426, 69.0), (504, 68.6), (524, 67.8), (572, 53.3), (712, 46.7), (748, 64.7), (774, 40.4), (818, 96.1), (872, 60.4), (1044, 68.2), (1382, 100.0), (1488, 59.6)]),
+    ('Azurite', 'C2 H2 Cu3 O8', 'monoclinic', 'R050638-1', [(402, 31.8), (446, 42.4), (492, 24.3), (768, 21.2), (814, 43.5), (832, 43.9), (950, 35.3), (1092, 10.2), (1406, 100.0), (1462, 47.5), (1492, 39.6), (3426, 43.5)]),
+]
+
 def build_starter():
     g = L.grid('raman')
     items = []
@@ -71,6 +115,18 @@ def build_starter():
     n = L.save_spectra('starter', 'Starter minerals (synthetic)', 'raman',
                        'Built-in synthetic Lorentzian profiles from characteristic literature peak positions.', items)
     print('starter', n)
+
+
+def build_starter_ftir():
+    g = L.grid('ftir')
+    items = []
+    for name, formula, system, rruff_id, peaks in STARTER_FTIR:
+        w = 16  # Lorentzian HWHM, cm-1 (infrared bands are broader than Raman bands)
+        y = sum(i * w * w / ((g - c) ** 2 + w * w) for c, i in peaks)
+        items.append(dict(name=name, formula=formula, system=system, info=f'synthetic, after RRUFF {rruff_id}', x=g, y=y))
+    n = L.save_spectra('starter_ftir', 'Starter minerals (synthetic FTIR)', 'ftir',
+                       'Synthetic Lorentzian profiles at band positions of RRUFF infrared spectra (Lafuente et al. 2015).', items)
+    print('starter_ftir', n)
 
 
 # ---------------------------------------------------------------- spectragryph
@@ -259,6 +315,6 @@ def build_cod():
 
 
 if __name__ == '__main__':
-    steps = dict(starter=build_starter, cod=build_cod, sgd=build_sgd, rod=build_rod)
+    steps = dict(starter=build_starter, starter_ftir=build_starter_ftir, cod=build_cod, sgd=build_sgd, rod=build_rod)
     for name in (sys.argv[1:] or list(steps)):
         steps[name]()

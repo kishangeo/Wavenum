@@ -27,8 +27,8 @@ export type Match = {
 }
 export type Mixture = { r2: number; single_r2: number; gain: number; likely: boolean; components: { name: string; fraction: number }[] }
 export type Lib = { id: string; title: string; technique: Technique; kind: string; citation: string; n: number }
-export type Fig = { font: string; size: number; xLabel: string; yLabel: string; ticks: 'outside' | 'inside'; legend: boolean; width: number; height: number; scale: number }
-export type Tab = 'pre' | 'peaks' | 'id' | 'pca' | 'dig'
+export type Fig = { font: string; size: number; xLabel: string; yLabel: string; ticks: 'outside' | 'inside'; legend: boolean; widthMm: number; heightMm: number; dpi: number; format: import('./exporter').ExportFormat }
+export type Tab = 'pre' | 'peaks' | 'id' | 'pca' | 'map' | 'dig'
 
 const COLORS = ['#0d9488', '#e11d48', '#2563eb', '#d97706', '#7c3aed', '#16a34a', '#db2777', '#0891b2', '#ca8a04', '#475569']
 const uid = () => Math.random().toString(36).slice(2, 9)
@@ -64,7 +64,7 @@ const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 const COMMANDS: Record<string, string> = {
   '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/libraries': 'libraries',
   '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
-  '/match': 'match_spectrum', '/pca': 'pca', '/examples': 'examples', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
+  '/match': 'match_spectrum', '/pca': 'pca', '/examples': 'examples', '/config': 'config', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
 }
 
 async function viaTauri<T>(path: string, body?: unknown): Promise<T> {
@@ -88,7 +88,12 @@ async function viaTauri<T>(path: string, body?: unknown): Promise<T> {
   }
 }
 
-export type Example = { file: string; technique: Technique; title: string; learn: string; digitizer?: boolean }
+/** Server capabilities: a hosted deployment is read-only (no library build or folder import). */
+export type AppConfig = { read_only: boolean; desktop: boolean }
+let configPromise: Promise<AppConfig> | null = null
+export const appConfig = () => (configPromise ??= api<AppConfig>('/config').catch(() => ({ read_only: false, desktop: false })))
+
+export type Example = { file: string; technique: Technique; title: string; learn: string; digitizer?: boolean; map?: boolean }
 
 /** One bundled example as a File, from the Python server or the desktop app's resources. */
 export async function exampleFile(name: string): Promise<File> {
@@ -100,6 +105,19 @@ export async function exampleFile(name: string): Promise<File> {
   const r = await fetch(`/api/examples/${encodeURIComponent(name)}`)
   if (!r.ok) throw new Error(`Could not load example ${name}`)
   return new File([await r.blob()], name)
+}
+
+/** Renishaw .wdf map -> binary map (u32 header length, JSON header, float32 spectra), from either backend. */
+export async function mapBinary(f: File): Promise<ArrayBuffer> {
+  if (inTauri) {
+    const { invoke } = await import('@tauri-apps/api/core')
+    return invoke<ArrayBuffer>('map_wdf', new Uint8Array(await f.arrayBuffer()), { headers: { 'x-name': encodeURIComponent(f.name) } })
+  }
+  const fd = new FormData()
+  fd.append('file', f)
+  const r = await fetch('/api/map/wdf', { method: 'POST', body: fd })
+  if (!r.ok) throw new Error((await r.json().catch(() => null))?.detail ?? `${r.status} ${r.statusText}`)
+  return r.arrayBuffer()
 }
 
 export async function api<T = any>(path: string, body?: unknown): Promise<T> {
@@ -117,7 +135,7 @@ type State = {
   spectra: Spectrum[]; activeId: string | null
   plotMode: 'overlay' | 'stacked'; showBaseline: boolean; peakEdit: boolean
   matches: Match[]; mixture: Mixture | null; selMatch: number | null
-  fig: Fig; history: { id: string; pipeline: Step[] }[]; error: string | null
+  fig: Fig; hiddenCurves: string[]; history: { id: string; pipeline: Step[] }[]; error: string | null
   set: (p: Partial<State>) => void
   setTechnique: (t: Technique) => void
   addSpectrum: (name: string, x: number[], y: number[], technique?: Technique) => void
@@ -150,7 +168,8 @@ export const useStore = create<State>((set, get) => {
     technique: 'raman', dark: true, tab: 'pre', spectra: [], activeId: null,
     plotMode: 'overlay', showBaseline: false, peakEdit: false,
     matches: [], mixture: null, selMatch: null,
-    fig: { font: 'Arial', size: 14, xLabel: '', yLabel: '', ticks: 'outside', legend: true, width: 1200, height: 700, scale: 3 },
+    fig: { font: 'Arial', size: 10, xLabel: '', yLabel: '', ticks: 'outside', legend: true, widthMm: 180, heightMm: 110, dpi: 600, format: 'png' },
+    hiddenCurves: [],
     history: [], error: null,
     set: p => set(p),
     setTechnique: technique => set(st => ({
@@ -203,7 +222,7 @@ export const useStore = create<State>((set, get) => {
       if (o?.app !== 'Wavenum' || !Array.isArray(o.spectra)) throw new Error('Not a Wavenum session file')
       const spectra: Spectrum[] = o.spectra.map((s: any) => ({ ...s, id: uid(), peaks: s.peaks ?? [], proc: undefined, fit: undefined }))
       const technique: Technique = o.technique in TECH ? o.technique : 'raman'
-      set({ spectra, technique, fig: { ...get().fig, ...o.fig }, history: [], matches: [], mixture: null, selMatch: null,
+      set({ spectra, technique, fig: { ...get().fig, ...Object.fromEntries(Object.entries(o.fig ?? {}).filter(([k]) => k in get().fig)) }, history: [], matches: [], mixture: null, selMatch: null,
         activeId: spectra.find(s => s.technique === technique)?.id ?? null })
       spectra.forEach(s => reprocess(s.id))
     },

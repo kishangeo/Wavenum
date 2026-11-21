@@ -1,5 +1,6 @@
 // Left sidebar: upload, spectra manager, arithmetic, session, pipeline stack. Author: Kishan Tiwari
 import { useEffect, useState } from 'react'
+import { DownIcon, UpIcon, XIcon } from './icons'
 import { loadDigitizerFile } from './Digitizer'
 import { STEP_LABEL, TECH, api, dataOf, download, exampleFile, interp, newStep, useActive, useStore, type Example, type StepType } from './store'
 
@@ -15,8 +16,11 @@ export default function Sidebar() {
   const mine = st.spectra.filter(s => s.technique === st.technique)
   const others = st.spectra.length - mine.length
   const [examples, setExamples] = useState<Example[]>([])
-  useEffect(() => { api<Example[]>('/examples').then(setExamples).catch(() => setExamples([])) }, [])
-  const [exHint, setExHint] = useState('')
+  useEffect(() => { api<Example[]>('/examples').then(e => setExamples(e.filter(x => !x.map))).catch(() => setExamples([])) }, [])
+  // the tip belongs to the technique it was shown for, so switching technique hides it
+  const [hint, setHint] = useState<{ tech: string; text: string } | null>(null)
+  const exHint = hint?.tech === st.technique ? hint.text : ''
+  const setExHint = (text: string) => setHint(text ? { tech: useStore.getState().technique, text } : null)
 
   // Example files load exactly like a user's file: same parser, same column picker.
   const openExample = async (file: string) => {
@@ -24,13 +28,14 @@ export default function Sidebar() {
     if (!ex) return
     try {
       const f = await exampleFile(ex.file)
-      setExHint(ex.learn)
       if (ex.digitizer) {
+        setExHint(ex.learn)
         st.set({ tab: 'dig' })
         await loadDigitizerFile(f)
         return
       }
       if (useStore.getState().technique !== ex.technique) st.setTechnique(ex.technique)
+      setExHint(ex.learn)
       await upload([f])
     } catch (e) { st.fail(e) }
   }
@@ -109,7 +114,7 @@ export default function Sidebar() {
               </optgroup>
             ))}
           </select>
-          {exHint && <p className="text-[11px] text-slate-500">{exHint} <button className="text-slate-400 hover:text-rose-500" onClick={() => setExHint('')}>✕</button></p>}
+          {exHint && <p className="text-[11px] text-slate-500">{exHint} <button className="text-slate-400 hover:text-rose-500" onClick={() => setExHint('')}><XIcon className="h-3 w-3" /></button></p>}
         </div>
       )}
 
@@ -139,7 +144,7 @@ export default function Sidebar() {
             <input type="checkbox" title="Show / hide" checked={s.visible} onClick={e => e.stopPropagation()} onChange={e => st.patch(s.id, { visible: e.target.checked })} />
             <input type="color" title="Colour" value={s.color} onClick={e => e.stopPropagation()} onChange={e => st.patch(s.id, { color: e.target.value })} className="h-5 w-5 shrink-0 cursor-pointer border-0 bg-transparent p-0" />
             <input className="min-w-0 flex-1 bg-transparent text-xs outline-none" title="Rename" value={s.name} onChange={e => st.patch(s.id, { name: e.target.value })} />
-            <button title="Delete" className="px-1 text-slate-400 hover:text-rose-500" onClick={e => { e.stopPropagation(); st.remove(s.id) }}>✕</button>
+            <button title="Delete" className="px-1 text-slate-400 hover:text-rose-500" onClick={e => { e.stopPropagation(); st.remove(s.id) }}><XIcon /></button>
           </li>
         ))}
       </ul>
@@ -182,8 +187,8 @@ export default function Sidebar() {
                 <input type="checkbox" checked={step.enabled} title="Enable / disable"
                   onChange={e => st.setPipeline(active.id, active.pipeline.map(s => (s.id === step.id ? { ...s, enabled: e.target.checked } : s)))} />
                 <span className={`flex-1 truncate ${step.enabled ? '' : 'text-slate-400 line-through'}`}>{i + 1}. {STEP_LABEL[step.type]}</span>
-                <button className="px-0.5 hover:text-teal-500" title="Move up" onClick={() => move(i, -1)}>↑</button>
-                <button className="px-0.5 hover:text-teal-500" title="Move down" onClick={() => move(i, 1)}>↓</button>
+                <button className="px-0.5 hover:text-teal-500" title="Move up" onClick={() => move(i, -1)}><UpIcon className="h-3 w-3" /></button>
+                <button className="px-0.5 hover:text-teal-500" title="Move down" onClick={() => move(i, 1)}><DownIcon className="h-3 w-3" /></button>
                 <button className="px-0.5 text-slate-400 hover:text-rose-500" title="Remove step" onClick={() => st.setPipeline(active.id, active.pipeline.filter(s => s.id !== step.id))}>✕</button>
               </li>
             ))}

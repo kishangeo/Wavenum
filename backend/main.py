@@ -9,13 +9,14 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import analysis  # noqa: E402
 import library  # noqa: E402
+import maps  # noqa: E402
 import matching  # noqa: E402
 import peaks as pk  # noqa: E402
 import processing  # noqa: E402
@@ -77,6 +78,20 @@ class FitReq(BaseModel):
 @app.post('/api/peaks/fit')
 def fit(r: FitReq):
     return _guard(pk.fit, r.x, r.y, r.centers, r.profile, r.xmin, r.xmax)
+
+
+@app.post('/api/map/wdf')
+async def map_wdf(file: UploadFile = File(...)):
+    """Renishaw map -> binary payload (see maps.py); text maps are read in the browser."""
+    try:
+        return Response(maps.wdf_map(file.filename, await file.read()), media_type='application/octet-stream')
+    except Exception as e:
+        raise HTTPException(400, f'Could not read {file.filename} as a Renishaw map: {e}')
+
+
+@app.get('/api/config')
+def config():
+    return dict(read_only=READ_ONLY, desktop=False)
 
 
 @app.get('/api/libraries')
@@ -149,7 +164,7 @@ def _run_build():
     import build_library as B
     import download_databases as D
     steps = [('Downloading Spectragryph / RRUFF collections', D.spectragryph), ('Downloading Raman Open Database', D.rod),
-             ('Downloading COD mineral structures', D.cod), ('Building starter library', B.build_starter),
+             ('Downloading COD mineral structures', D.cod), ('Building starter library', B.build_starter), ('Building FTIR starter library', B.build_starter_ftir),
              ('Computing XRD patterns (COD)', B.build_cod), ('Building Spectragryph / RRUFF libraries', B.build_sgd),
              ('Building Raman Open Database library', B.build_rod)]
     try:

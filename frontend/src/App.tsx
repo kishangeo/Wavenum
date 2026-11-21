@@ -1,7 +1,9 @@
 // Wavenum shell: header + three-panel studio. Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 import { useEffect } from 'react'
+import { MoonIcon, SunIcon } from './icons'
 import DigitizerPanel, { DigitizerCanvas } from './Digitizer'
 import MineralId from './MineralId'
+import MapPanel, { MapCanvas } from './MapTab'
 import PcaPanel, { PcaCanvas } from './Pca'
 import Peaks from './Peaks'
 import Plot from './Plot'
@@ -9,7 +11,7 @@ import Preprocess from './Preprocess'
 import Sidebar from './Sidebar'
 import { TECH, useStore, type Technique } from './store'
 
-const TABS = [['pre', 'Preprocess'], ['peaks', 'Peaks'], ['id', 'Mineral ID'], ['pca', 'PCA'], ['dig', 'Digitizer']] as const
+const TABS = [['pre', 'Preprocess'], ['peaks', 'Peaks'], ['id', 'Mineral ID'], ['pca', 'PCA'], ['map', 'Map'], ['dig', 'Digitizer']] as const
 
 export default function App() {
   const st = useStore()
@@ -33,11 +35,11 @@ export default function App() {
               className={`px-3 py-1 text-xs font-medium ${st.technique === t ? 'bg-teal-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{TECH[t].label}</button>
           ))}
         </div>
-        <button className="btn" onClick={() => st.set({ dark: !st.dark })}>{st.dark ? '☀ Light' : '☾ Dark'}</button>
+        <button className="btn" onClick={() => st.set({ dark: !st.dark })}>{st.dark ? <><SunIcon /> Light</> : <><MoonIcon /> Dark</>}</button>
       </header>
       <div className="flex min-h-0 flex-1">
         <Sidebar />
-        {st.tab === 'dig' ? <DigitizerCanvas /> : st.tab === 'pca' ? <PcaCanvas /> : <Plot />}
+        {st.tab === 'dig' ? <DigitizerCanvas /> : st.tab === 'pca' ? <PcaCanvas /> : st.tab === 'map' ? <MapCanvas /> : <Plot />}
         <aside className="flex w-88 shrink-0 flex-col border-l border-slate-200 dark:border-slate-800">
           <nav className="flex border-b border-slate-200 dark:border-slate-800">
             {TABS.map(([id, label]) => (
@@ -50,6 +52,7 @@ export default function App() {
             {st.tab === 'peaks' && <Peaks />}
             {st.tab === 'id' && <MineralId />}
             {st.tab === 'pca' && <PcaPanel />}
+            {st.tab === 'map' && <MapPanel />}
             {st.tab === 'dig' && <DigitizerPanel />}
           </div>
         </aside>
