@@ -1,6 +1,7 @@
 // Peak Analyzer tab: auto/manual peaks, profile fitting, peak table. Author: Kishan Tiwari
 import { useEffect, useState } from 'react'
 import McFit from './McFit'
+import Water from './Water'
 import { api, dataOf, download, useActive, useStore, type Fit, type FitRow, type Peak } from './store'
 
 // Carbonaceous-matter Raman parameters from fitted D and G bands, with published thermometers.
@@ -158,6 +159,7 @@ export default function Peaks() {
 
       <McFit a={a} profile={profile} range={range} />
 
+      {st.technique === 'ftir' && <Water spectrum={(() => { const d = dataOf(a); const o = d.x.map((_, i) => i).sort((i, j) => d.x[i] - d.x[j]); return { x: o.map(i => d.x[i]), y: o.map(i => d.y[i]) } })()} fitAreas={a.fit?.table} />}
       {st.technique === 'raman' && a.fit && <Carbon rows={a.fit.table} />}
       {st.technique === 'raman' && <Olivine peaks={a.fit ? a.fit.table.map(r => ({ x: r.center, y: r.height })) : a.peaks} />}
 

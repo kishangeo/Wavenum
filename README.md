@@ -69,6 +69,15 @@ saved as a JSON preset and batch-applied to all spectra.
 - Library browser: look up any reference by mineral name or formula and overlay it.
 - Import your own folders of RRUFF-style `.txt` spectra as additional libraries.
 
+**H₂O quantification** (FTIR; after SpecXY/SpecDB, Gies et al. 2024, Eq. 9)
+- Beer–Lambert water content from the integrated O–H absorbance of a spectrum or of fitted peaks:
+  c = 10⁶ · M(H₂O) · f · A / (t · ρ · ε), with thickness, density and orientation factor (sum of three
+  polarised spectra, isotropic, or unpolarised random grains).
+- Absorption coefficients: Libowitzky & Rossman 1997 (wavenumber-dependent, any mineral), Bell et al. 1995
+  (clinopyroxene, orthopyroxene, garnet), Bell et al. 2003 and Withers et al. 2012 (olivine), Johnson &
+  Rossman 2003 (plagioclase), or your own ε.
+- On FTIR maps the same calibration turns an integrated-absorbance map into a ppm H₂O map.
+
 **Chemometrics** — PCA scores and loadings with optional k-means grouping.
 
 **Maps** (Map tab, after SpecXY; Gies et al. 2024, [doi:10.1016/j.cageo.2024.105626](https://doi.org/10.1016/j.cageo.2024.105626))
@@ -227,7 +236,7 @@ For interface work run `npm run dev` in `frontend/` (it proxies `/api` to the ba
 
 If Wavenum helps your research, please cite it as:
 
-> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.6.0).
+> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.7.0).
 > Zenodo. https://doi.org/10.5281/zenodo.24421170
 
 This DOI always resolves to the latest version; each release also has its own DOI on Zenodo

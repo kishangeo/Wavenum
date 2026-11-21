@@ -10,6 +10,7 @@ import {
   parseMapImage, parseMapText, pixelSpectrum, profile, rectPixels, type CalcOp, type Layer, type MapKind, type MetricKind, type SpecMap,
 } from './maps'
 import { ptToPx } from './Plot'
+import Water from './Water'
 import { TECH, download, exampleFile, mapBinary, useStore, type Example } from './store'
 
 type Tool = 'pixel' | 'region' | 'line'
@@ -316,6 +317,10 @@ export default function MapPanel() {
           <button className="btn btn-primary w-full" onClick={addMetric}>Add map</button>
           <p className="text-[11px] text-slate-500">{METRICS.find(q => q[0] === mk)?.[2]}. Click a pixel to see its spectrum and read off band positions.</p>
         </div>
+      )}
+
+      {m?.axis && m.technique === 'ftir' && (
+        <Water onFactor={(k, [a, b]) => addLayer(newLayer(`H₂O ppm ${Math.min(a, b)}–${Math.max(a, b)}`, metric(m, 'area', a, b).map(v => v * k), `integrated absorbance × ${k.toPrecision(4)} ppm per cm⁻²`))} />
       )}
 
       {ms.layers.length > 0 && (
