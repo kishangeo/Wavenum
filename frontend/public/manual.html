@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Kishan Tiwari">
+<title>Wavenum User Manual</title>
+<style>
+  :root { --fg: #1e293b; --muted: #64748b; --accent: #0d9488; --line: #e2e8f0; --code: #f1f5f9; --bg: #ffffff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --fg: #e2e8f0; --muted: #94a3b8; --accent: #2dd4bf; --line: #1e293b; --code: #1e293b; --bg: #0f172a; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 30px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 40px 0 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+  h3 { font-size: 17px; margin: 24px 0 6px; }
+  p, li { max-width: 75ch; }
+  a { color: var(--accent); }
+  code, kbd { background: var(--code); border-radius: 4px; padding: 1px 5px; font: 13px/1.4 ui-monospace, Consolas, monospace; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 16px; font-size: 14px; }
+  th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--code); }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .note { border-left: 3px solid var(--accent); padding: 6px 12px; background: var(--code); border-radius: 0 6px 6px 0; }
+  .toc { columns: 2; column-gap: 32px; padding-left: 18px; }
+  .toc li { break-inside: avoid; }
+  .ui { font-weight: 600; }
+  @media (max-width: 640px) { .toc { columns: 1; } }
+  @media print {
+    :root { --fg: #000; --muted: #444; --accent: #0f5f58; --line: #bbb; --code: #f2f2f2; --bg: #fff; }
+    body { font-size: 11pt; }
+    main { max-width: none; padding: 0; }
+    h2 { break-before: page; border-top: none; }
+    h2.first { break-before: auto; }
+    h2, h3 { break-after: avoid; }
+    table, .note, pre { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+    @page { margin: 18mm 16mm; }
+  }
+</style>
+</head>
+<body>
+<main>
+<h1>Wavenum User Manual</h1>
+<p class="sub">Version <span id="ver">0.7.1</span> · Kishan Tiwari (kishantiwari@iitkgp.ac.in) ·
+  <a href="https://doi.org/10.5281/zenodo.24421170">doi:10.5281/zenodo.24421170</a> ·
+  <a href="https://github.com/kishangeo/Wavenum">github.com/kishangeo/Wavenum</a></p>
+
+<h2 class="first" id="contents">Contents</h2>
+<ol class="toc">
+  <li><a href="#about">What Wavenum does</a></li>
+  <li><a href="#start">Getting started</a></li>
+  <li><a href="#screen">The screen</a></li>
+  <li><a href="#loading">Loading data</a></li>
+  <li><a href="#pre">Preprocessing</a></li>
+  <li><a href="#plot">Plot, curves and figures</a></li>
+  <li><a href="#peaks">Peaks and fitting</a></li>
+  <li><a href="#mc">Monte Carlo deconvolution</a></li>
+  <li><a href="#water">H₂O content from FTIR</a></li>
+  <li><a href="#calc">Mineral calculators</a></li>
+  <li><a href="#id">Mineral identification</a></li>
+  <li><a href="#libs">Reference libraries</a></li>
+  <li><a href="#pca">PCA</a></li>
+  <li><a href="#map">Maps</a></li>
+  <li><a href="#dig">Digitizer</a></li>
+  <li><a href="#sessions">Sessions and export</a></li>
+  <li><a href="#formats">File formats</a></li>
+  <li><a href="#desktop">Desktop app, web app and hosted site</a></li>
+  <li><a href="#trouble">Troubleshooting</a></li>
+  <li><a href="#cite">Citing Wavenum and the data</a></li>
+</ol>
+
+<h2 id="about">1. What Wavenum does</h2>
+<p>Wavenum is a workbench for Raman, FTIR and XRD data. It loads spectra and diffraction patterns from common
+instrument and text formats, corrects them with a non-destructive processing pipeline, finds and fits peaks,
+identifies minerals against reference libraries, and analyses whole maps. It was written for meteorites and rocks
+but also covers pigments, polymers and other materials in the bundled libraries.</p>
+<p>On your own computer (desktop app, or the web app started locally) your data never leave the machine.
+The public website is a demonstration: data you load there are sent to its server for processing
+(see <a href="#desktop">section 18</a>).</p>
+<p class="note">The header shows, for the technique you have selected, how many reference spectra, distinct
+phase names and libraries Wavenum is currently searching. Hover over it for details. Section
+<a href="#libs">12</a> lists where every library comes from.</p>
+
+<h2 id="start">2. Getting started</h2>
+<ol>
+  <li>Choose the technique in the header: <span class="ui">Raman</span>, <span class="ui">XRD</span> or <span class="ui">FTIR</span>. Each technique keeps its own spectra, axis labels and libraries.</li>
+  <li>Drop files onto the box at the top left, click it to browse, or pick <span class="ui">Open an example file…</span>. Every example has a one-line note on what it teaches.</li>
+  <li>Open <span class="ui">Preprocess</span> to switch on despiking, baseline correction, smoothing and normalization.</li>
+  <li>Open <span class="ui">Peaks</span> and click <span class="ui">Find peaks</span>, then <span class="ui">Fit</span>.</li>
+  <li>Open <span class="ui">Mineral ID</span> and click <span class="ui">Identify</span>. Click a match to see the mirror plot of your spectrum against the reference.</li>
+  <li>Export the figure with <span class="ui">Figure export</span>, the data with <span class="ui">Data .csv</span>, and save everything with <span class="ui">Session</span> in the sidebar.</li>
+</ol>
+<p>A good first exercise: load <code>quartz_raman.csv</code> from the examples. It contains a fluorescence background and one
+cosmic-ray spike at 950 cm⁻¹; switch on Despike and Baseline, then identify it.</p>
+
+<h2 id="screen">3. The screen</h2>
+<table>
+  <tr><th>Area</th><th>Contents</th></tr>
+  <tr><td>Header</td><td>Version (links to the release notes), reference-data counts, Help, technique switch, light/dark theme.</td></tr>
+  <tr><td>Left sidebar</td><td>File drop zone and examples; the spectrum list (tick to show, click to make active, colour swatch, rename, remove);
+    <span class="ui">Arithmetic · Session · Export</span>; the processing pipeline of the active spectrum.</td></tr>
+  <tr><td>Centre</td><td>The plot (or the map, PCA or digitizer canvas), with view, curve and export controls above it.</td></tr>
+  <tr><td>Right panel</td><td>Tabs: Preprocess, Peaks, Mineral ID, PCA, Map, Digitizer.</td></tr>
+</table>
+<p>Errors and notices appear briefly at the bottom of the screen. Every number field accepts typed values; sliders preview live.</p>
+
+<h2 id="loading">4. Loading data</h2>
+<h3>Text tables</h3>
+<p>Wavenum detects the delimiter (comma, tab, semicolon, spaces), skips header and metadata lines (including RRUFF
+<code>##KEY=value</code> lines) and uses the first numeric column as the x axis. If a file has several intensity columns
+a column picker appears: choose one, or add all of them as separate spectra. Excel workbooks (<code>.xlsx</code>) work the same way.</p>
+<h3>Instrument files</h3>
+<p>JCAMP-DX, Thermo SPC, Nicolet SPA, Bruker OPUS, Agilent ASP, PANalytical XRDML, Rigaku RAS, Bruker UXD and Renishaw WDF
+files are read directly. A <code>.cif</code> crystal structure is converted to a computed powder pattern (Cu Kα). Files that hold several
+spectra (maps, line and depth scans) load their first non-empty spectrum in the workspace; open them in the <span class="ui">Map</span> tab to use all of them.</p>
+<h3>Which technique?</h3>
+<p>A file is loaded into the technique selected at that moment. Switch technique <em>before</em> loading. FTIR spectra are shown
+with the wavenumber axis reversed, as usual.</p>
+<h3>Spectrum arithmetic</h3>
+<p>Under <span class="ui">Arithmetic</span>: average the visible spectra, or subtract one spectrum from another with a scale factor
+(for example to remove a mounting-medium or host-mineral contribution).</p>
+
+<h2 id="pre">5. Preprocessing</h2>
+<p>Each spectrum has its own pipeline of steps, shown in the sidebar. The raw data are never changed: steps can be
+switched on and off, reordered with the arrows, removed and undone. The plot updates as you change a step.</p>
+<table>
+  <tr><th>Step</th><th>What it does</th><th>Advice</th></tr>
+  <tr><td>Crop range</td><td>Keeps an x range.</td><td>Crop first to drop detector edges or the laser line.</td></tr>
+  <tr><td>Cosmic-ray despike</td><td>Finds a sharp rise followed within a few points by a sharp fall (modified z-score of the first difference above the threshold) and replaces those points by a straight line.</td><td>Default threshold 7. Lower it only if spikes remain; narrow real peaks are protected because both edges must be steep and isolated.</td></tr>
+  <tr><td>Baseline correction</td><td>ALS, airPLS, iterative polynomial or rubberband. <span class="ui">Show baseline</span> draws the estimated background.</td><td>ALS or airPLS for fluorescence in Raman; rubberband for FTIR absorbance; polynomial for gentle slopes.</td></tr>
+  <tr><td>Smoothing</td><td>Savitzky–Golay or moving average.</td><td>Use the smallest window that removes noise; heavy smoothing broadens peaks.</td></tr>
+  <tr><td>Normalization</td><td>Min–max, vector (unit length), area, or SNV.</td><td>Normalize before comparing intensities between spectra.</td></tr>
+  <tr><td>Other steps (<span class="ui">+ Add step</span>)</td><td>Derivatives, transmittance ↔ absorbance, nm → Raman shift (enter the laser wavelength), resampling, x-axis shift.</td><td>Calibrate the x axis on a standard (e.g. silicon 520.7 cm⁻¹) before reading band positions.</td></tr>
+</table>
+<p>Save a pipeline as a JSON preset and load it later, or apply it to all spectra of the technique at once.</p>
+
+<h2 id="plot">6. Plot, curves and figures</h2>
+<h3>Views</h3>
+<p><span class="ui">Overlay</span> draws spectra on one axis; <span class="ui">Stacked</span> offsets them vertically. Zoom by dragging,
+double-click to reset, and use the Plotly toolbar to pan or zoom further.</p>
+<h3>Curve selector</h3>
+<p><span class="ui">Curves</span> lists everything on the plot: each spectrum, the baseline, fitted sum, components, residual, the
+library reference and peak markers. Untick a curve to hide it; the plot and the axis range adjust immediately and the
+exported figure contains exactly what is shown. <span class="ui">Show all</span> and <span class="ui">Hide extras</span> are shortcuts.
+Clicking a legend entry does the same.</p>
+<h3>Figure export</h3>
+<table>
+  <tr><th>Setting</th><th>Options</th></tr>
+  <tr><td>Format</td><td>PNG, JPG, TIFF (raster); SVG and PDF (vector); EPS (high-resolution image inside an EPS file).</td></tr>
+  <tr><td>Resolution</td><td>150, 300, 600 or 1200 DPI. The DPI is stored in PNG, JPG and TIFF files so they print at the right size.</td></tr>
+  <tr><td>Size</td><td>Width and height in mm, with presets for single column (85 mm), 1.5 column (120 mm), double column (180 mm) and slides.</td></tr>
+  <tr><td>Text</td><td>Font family and size in points, axis labels, tick direction, legend on/off.</td></tr>
+</table>
+<p>For journals use PDF or SVG for line art, or TIFF at 600 DPI if the journal asks for raster files. The dialog shows the
+resulting pixel size before you save.</p>
+
+<h2 id="peaks">7. Peaks and fitting</h2>
+<h3>Finding peaks</h3>
+<p>Set the prominence and minimum height (as fractions of the intensity range) and the minimum distance between peaks, then
+click <span class="ui">Find peaks</span>. Moving a slider re-runs the search live. Tick <span class="ui">Manual edit</span> to add a peak
+by clicking the spectrum, or remove one by clicking its marker.</p>
+<h3>Fitting</h3>
+<p>Choose Lorentzian, Gaussian or Voigt profiles and, optionally, a region. <span class="ui">Fit</span> fits one profile per marked
+peak inside the region plus a straight background. The plot shows the sum, each component and the residual; the peak table
+gives centre, height, FWHM, area and R². For XRD the table also gives the d-spacing (Cu Kα1). Copy the table or save it as CSV.</p>
+<p class="note">Overlapping peaks rarely have a unique solution. Check the residual, keep the number of peaks to what the
+data support, and use Monte Carlo deconvolution to see how well each parameter is constrained.</p>
+
+<h2 id="mc">8. Monte Carlo deconvolution</h2>
+<p>Following SpecXY (Gies et al. 2024), Wavenum repeats the fit many times from random starting values: each peak starts
+anywhere within ± the maximum shift of where you marked it, with its width multiplied by 0.5–2 and its height by 0.5–1.5.
+During every run each peak may move at most ± the maximum shift. Run 1 always uses the ordinary starting values.</p>
+<ol>
+  <li>Mark the peaks and set the fit region and profile as for a normal fit.</li>
+  <li>Set <span class="ui">Runs</span> (2–1000) and <span class="ui">Max. shift</span> (axis units), then click <span class="ui">Run</span>.</li>
+  <li>Choose which runs to keep: those with R² within 0.0001, 0.001, 0.01 or 0.05 of the best, or all.</li>
+  <li>Read the mean ± standard deviation of position, FWHM, area and height for each peak (hover for the range), and inspect
+  the histogram of any peak and parameter. <span class="ui">All runs (.csv)</span> saves every run.</li>
+</ol>
+<p>A narrow histogram means the parameter is well constrained; a broad or multi-modal one means several solutions fit the data
+equally well. The best run is drawn on the plot and fills the peak table. Fitting a small region with few peaks is much faster
+than fitting the whole spectrum.</p>
+
+<h2 id="water">9. H₂O content from FTIR</h2>
+<p>For FTIR spectra the Peaks tab has an <span class="ui">H₂O content</span> card (SpecXY/SpecDB, Gies et al. 2024, Eq. 9).
+It integrates the absorbance over the band window above a straight baseline and applies the Beer–Lambert law:</p>
+<p style="text-align:center"><code>c (ppm wt H₂O) = 10⁶ · M(H₂O) · f · A / (t · ρ · ε)</code></p>
+<table>
+  <tr><th>Symbol</th><th>Meaning</th><th>Unit in Wavenum</th></tr>
+  <tr><td>A</td><td>Integrated absorbance of the O–H band (default window 3000–3800 cm⁻¹)</td><td>cm⁻²</td></tr>
+  <tr><td>f</td><td>Orientation factor: 1 for the sum of three polarised spectra; 3 for an isotropic mineral measured once, or (approximately) unpolarised spectra of randomly oriented grains</td><td>–</td></tr>
+  <tr><td>t</td><td>Sample thickness</td><td>µm (converted to cm)</td></tr>
+  <tr><td>ρ</td><td>Density</td><td>g/cm³ (converted to g/L)</td></tr>
+  <tr><td>ε</td><td>Integrated molar absorption coefficient</td><td>L mol⁻¹ cm⁻²</td></tr>
+  <tr><td>M(H₂O)</td><td>18.01528 g/mol</td><td></td></tr>
+</table>
+<table>
+  <tr><th>Calibration</th><th>ε (L mol⁻¹ cm⁻²)</th></tr>
+  <tr><td>Libowitzky &amp; Rossman (1997), any mineral</td><td>246.6 × (3753 − ν̄), ν̄ = absorbance-weighted mean wavenumber of the band</td></tr>
+  <tr><td>Clinopyroxene, Bell et al. (1995)</td><td>38,300</td></tr>
+  <tr><td>Orthopyroxene, Bell et al. (1995)</td><td>80,600</td></tr>
+  <tr><td>Garnet (pyrope), Bell et al. (1995)</td><td>6,700</td></tr>
+  <tr><td>Olivine, Bell et al. (2003)</td><td>28,450</td></tr>
+  <tr><td>Olivine, Withers et al. (2012)</td><td>45,200</td></tr>
+  <tr><td>Plagioclase, Johnson &amp; Rossman (2003)</td><td>107,000</td></tr>
+  <tr><td>User-defined</td><td>any value</td></tr>
+</table>
+<p>If peaks have been fitted, the card also reports the water content from the summed areas of the fitted peaks inside the window,
+which lets you exclude bands from inclusions (as in Gies et al. 2024). The spectrum must be in absorbance with the background
+removed. Densities are filled in with typical values: replace them with your sample's.</p>
+<p>On an FTIR map, the same card in the Map tab adds an H₂O map: the integrated absorbance of every pixel multiplied by the same factor.</p>
+
+<h2 id="calc">10. Mineral calculators (Raman)</h2>
+<table>
+  <tr><th>Calculator</th><th>Input</th><th>Source</th></tr>
+  <tr><td>Olivine composition (Fo)</td><td>Positions of the ~820 and ~850 cm⁻¹ doublet (found or fitted peaks). Three estimates are given; the two-peak form is ±10 Fo.</td><td>Kuebler et al. (2006), GCA 70, 6201–6222</td></tr>
+  <tr><td>Carbonaceous-matter thermometry</td><td>Fitted D and G bands: R1, R2, FWHM of D1 and D2.</td><td>Beyssac et al. (2002); Kouketsu et al. (2014); Busemann et al. (2007, chondrite petrologic type)</td></tr>
+</table>
+<p>The cards appear when the required peaks are present and warn when a value lies outside its calibration range. Calibrate the
+x axis and fit the bands following each paper's protocol; raw maxima are not accurate enough.</p>
+
+<h2 id="id">11. Mineral identification</h2>
+<ol>
+  <li>Select the libraries to search (all are selected by default).</li>
+  <li>Adjust the score weights if needed: cosine similarity (overall shape), Pearson correlation and peak matching with a shift
+  tolerance (default 8 cm⁻¹ for Raman and FTIR).</li>
+  <li>Click <span class="ui">Identify</span>. The search copy of the spectrum is baseline-corrected automatically, so raw spectra can be searched.</li>
+  <li>Click a match to show the mirror plot (sample above, reference below) and its source and citation.</li>
+</ol>
+<p><span class="ui">Mixture check</span> fits the spectrum as a non-negative combination of the best match and each other candidate;
+fractions are spectral weights, not modal abundances. <span class="ui">Supported by several techniques</span> lists phases supported by spectra of more than one
+technique loaded for the same sample. <span class="ui">Browse library</span> finds a reference by mineral name or formula and overlays it.
+For XRD choose the X-ray tube (Cu, Co, Mo, Fe, Cr) so 2θ positions are converted correctly.</p>
+<p class="note">A high score is a suggestion, not proof. Confirm the main bands, check the mirror plot and the residual, and consider the
+geological context. Matches against small libraries are limited to the phases those libraries contain.</p>
+
+<h2 id="libs">12. Reference libraries</h2>
+<p>The counts in the header are calculated from the libraries currently installed. Bundled with every copy:</p>
+<table>
+  <tr><th>Technique</th><th>Library</th><th>Entries</th><th>Licence</th></tr>
+  <tr><td>Raman</td><td>Raman Open Database (ROD)</td><td>1,131</td><td>CC0</td></tr>
+  <tr><td>Raman</td><td>Starter minerals (synthetic profiles at literature positions)</td><td>31</td><td>MIT</td></tr>
+  <tr><td>FTIR</td><td>Starter minerals (profiles at RRUFF infrared band positions)</td><td>38</td><td>MIT</td></tr>
+  <tr><td>XRD</td><td>COD mineral structures (AMCSD-derived), powder patterns for Cu Kα</td><td>14,343 (4,107 minerals)</td><td>CC0</td></tr>
+</table>
+<p>On your own computer, <span class="ui">Mineral ID → Download &amp; build full libraries</span> downloads about 450 MB of open
+databases and builds the full set, adding about 10,000 spectra:</p>
+<table>
+  <tr><th>Technique</th><th>Library</th><th>Entries</th></tr>
+  <tr><td>Raman</td><td>RRUFF Raman (excellent quality)</td><td>5,185</td></tr>
+  <tr><td>Raman</td><td>RRUFF Raman</td><td>3,087</td></tr>
+  <tr><td>Raman</td><td>CHSOS and UCL pigments, SLoPP/SLoPP-E microplastics, carbohydrates, pharmaceutical excipients</td><td>613</td></tr>
+  <tr><td>FTIR</td><td>RRUFF infrared</td><td>882</td></tr>
+  <tr><td>FTIR</td><td>Kimmel Center, Primpke microplastics, SWGDRUG, PSLC polymers, Archaeometrielabor</td><td>1,546</td></tr>
+</table>
+<p>Your own folders of RRUFF-style <code>.txt</code> spectra can be added with <span class="ui">Import</span>. Library spectra are stored on a
+2 cm⁻¹ grid with 8-bit intensities: ample for matching, not for quantitative work. XRD references are ideal powder patterns
+(no preferred orientation, fixed peak width).</p>
+
+<h2 id="pca">13. PCA</h2>
+<p>The PCA tab runs principal component analysis on the visible spectra of the current technique (interpolated to a common axis).
+Choose the row scaling (none or vector/L2) and, optionally, a number of k-means groups (0 = off), then click <span class="ui">Run PCA</span>. The scores plot shows how spectra cluster; the loadings show
+which bands drive each component. Labels are shortened on the plot; hover for full names. Export the scores as CSV or the plot
+as a figure.</p>
+
+<h2 id="map">14. Maps</h2>
+<p>The Map tab follows SpecXY's map module (Gies et al. 2024).</p>
+<h3>Loading a map</h3>
+<table>
+  <tr><th>Layout</th><th>Description</th></tr>
+  <tr><td>Wide</td><td>One row per pixel: X, Y, then one column per axis value (header row holds the axis).</td></tr>
+  <tr><td>Long</td><td>One row per point: X, Y, axis value, intensity.</td></tr>
+  <tr><td>Matrix (SpecXY)</td><td>Column 1 is the axis; every other column is one pixel, from the bottom-left, left to right then upwards. Enter nX and nY.</td></tr>
+  <tr><td>Grid / image</td><td>A value grid (CSV) or image: loaded as an element map layer.</td></tr>
+  <tr><td>Renishaw <code>.wdf</code></td><td>Maps, line scans and depth scans. Line and depth scans are shown as a strip along the scan.</td></tr>
+</table>
+<p>A value grid or image with the same size as the loaded spectral map is added as a <em>layer</em> of the same area, so element maps
+from EPMA, EDS or LA-ICP-MS can be compared pixel by pixel. Try <span class="ui">Open an example map…</span>: a 40 × 30 pixel Raman map of a
+quartz grain with a hematite inclusion in calcite, with matching SiO₂, CaO and Fe₂O₃ maps.</p>
+<h3>Map types</h3>
+<table>
+  <tr><th>Type</th><th>Value per pixel</th></tr>
+  <tr><td>Intensity at x₁</td><td>Signal at one position.</td></tr>
+  <tr><td>Area x₁–x₂</td><td>Integral above the straight line joining the window ends.</td></tr>
+  <tr><td>Ratio, log ratio</td><td>Signal at x₁ divided by signal at x₂ (or the ratio of their logarithms).</td></tr>
+  <tr><td>Position, FWHM</td><td>Band position (parabolic interpolation) and width in the window.</td></tr>
+  <tr><td>Quality</td><td>Signal quality index (0–100) from the noise of the spectrum.</td></tr>
+  <tr><td>Total intensity</td><td>Added automatically on loading.</td></tr>
+</table>
+<p>Every type can be multiplied by a calibration factor C and rescaled to 0–1. Colour scales, log scale and 2–98 % clipping
+are set per layer.</p>
+<h3>Tools</h3>
+<ul>
+  <li><span class="ui">Click modes</span>: pixel spectrum, region mean (two corners) and line profile (two ends). Spectra can be sent to the workspace; profiles saved as CSV.</li>
+  <li><span class="ui">Map calculator</span>: A + − × ÷ B between layers.</li>
+  <li><span class="ui">Mask</span>: keep pixels of a layer within a value range; other tools then use only those pixels.</li>
+  <li><span class="ui">Classes (k-means)</span>: groups pixels by spectral shape in x₁–x₂ (area-normalized). Each class mean is sent to the workspace for identification.</li>
+  <li>Every layer exports as CSV, and the map as a figure.</li>
+</ul>
+
+<h2 id="dig">15. Digitizer</h2>
+<p>Recover a spectrum from a published figure (PNG, JPG or a PDF page):</p>
+<ol>
+  <li>Load the image or PDF page in the Digitizer tab.</li>
+  <li>Click the four calibration points in order (two on the x axis, two on the y axis) and type their values.</li>
+  <li>Click the curve to pick its colour and adjust the colour tolerance: for every pixel column between the x calibration points
+  Wavenum takes the mean position of pixels close to that colour.</li>
+  <li>Check the trace, then <span class="ui">Send to workspace</span>. <span class="ui">Reset points</span> starts again.</li>
+</ol>
+<p>The digitizer assumes linear axes. Accuracy depends on the image resolution; check positions against the original values.</p>
+
+<h2 id="sessions">16. Sessions and export</h2>
+<ul>
+  <li><span class="ui">Save session</span> (sidebar, under Arithmetic · session · export) writes a <code>.wavenum.json</code> file with all spectra, pipelines, peaks and figure settings; opening that file again restores it.</li>
+  <li><span class="ui">Data .csv / .txt</span> exports the processed spectra; the peak table, Monte Carlo runs, PCA scores and map layers each have their own CSV button.</li>
+  <li>Figures: see <a href="#plot">section 6</a>.</li>
+</ul>
+
+<h2 id="formats">17. File formats</h2>
+<table>
+  <tr><th>Format</th><th>Extensions</th></tr>
+  <tr><td>Delimited text, RRUFF text</td><td><code>.txt .csv .xy .xye .dat .asc .dpt .prn</code></td></tr>
+  <tr><td>Excel</td><td><code>.xlsx</code></td></tr>
+  <tr><td>JCAMP-DX</td><td><code>.jdx .dx .jcm .jcamp</code></td></tr>
+  <tr><td>Thermo / Galactic SPC</td><td><code>.spc</code> (new format)</td></tr>
+  <tr><td>Nicolet OMNIC</td><td><code>.spa</code></td></tr>
+  <tr><td>Bruker OPUS</td><td><code>.0 .1 …</code></td></tr>
+  <tr><td>Agilent</td><td><code>.asp</code></td></tr>
+  <tr><td>PANalytical, Rigaku, Bruker/Siemens</td><td><code>.xrdml .ras .uxd</code></td></tr>
+  <tr><td>Renishaw WiRE</td><td><code>.wdf</code> (single spectra, maps, line and depth scans)</td></tr>
+  <tr><td>Crystal structure</td><td><code>.cif</code> (computed powder pattern)</td></tr>
+  <tr><td>Figures for the digitizer</td><td><code>.png .jpg .pdf</code></td></tr>
+</table>
+<p>Not supported: old-format SPC, Horiba, WITec, Bruker <code>.raw/.brml</code>, PerkinElmer <code>.sp</code>. Export those to text or JCAMP-DX.</p>
+
+<h2 id="desktop">18. Desktop app, web app and hosted site</h2>
+<table>
+  <tr><th></th><th>Desktop app</th><th>Web app on your computer</th><th>Public website</th></tr>
+  <tr><td>Where data are processed</td><td>Your computer</td><td>Your computer</td><td>The website's server</td></tr>
+  <tr><td>Libraries</td><td>Bundled; full set can be downloaded</td><td>Bundled; full set can be downloaded</td><td>Bundled only</td></tr>
+  <tr><td>Import folders, build libraries</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+  <tr><td>CIF files</td><td>Yes</td><td>Yes (with the optional XRD packages)</td><td>No</td></tr>
+</table>
+<p>Use your own computer for unpublished data. To run the web app locally see the README on GitHub.</p>
+
+<h2 id="trouble">19. Troubleshooting</h2>
+<table>
+  <tr><th>Problem</th><th>What to try</th></tr>
+  <tr><td>A file does not load</td><td>Check the technique and the format list; export to text or JCAMP-DX; for text files make sure the first numeric column is the axis.</td></tr>
+  <tr><td>Wrong or no matches</td><td>Correct the baseline, crop to the useful range, calibrate the axis, widen the tolerance, and check that the mineral is in the libraries (library browser).</td></tr>
+  <tr><td>Fit does not converge or looks wrong</td><td>Fit a smaller region, remove doubtful peaks, try another profile, or run Monte Carlo deconvolution.</td></tr>
+  <tr><td>Monte Carlo is slow</td><td>Use a region with fewer peaks or fewer runs; the desktop app runs fits in parallel.</td></tr>
+  <tr><td>A spike survives despiking</td><td>Lower the threshold step by step; very broad artefacts are better removed by cropping.</td></tr>
+  <tr><td>Map looks scrambled</td><td>Choose the right <span class="ui">Read text as</span> layout, and for the matrix layout enter nX and nY.</td></tr>
+</table>
+<p>Bug reports and sample files are welcome on <a href="https://github.com/kishangeo/Wavenum/issues">GitHub</a>.</p>
+
+<h2 id="cite">20. Citing Wavenum and the data</h2>
+<p>Tiwari, K. (2026). <em>Wavenum: local-first Raman, FTIR and XRD processing and mineral identification</em>. Zenodo.
+<a href="https://doi.org/10.5281/zenodo.24421170">https://doi.org/10.5281/zenodo.24421170</a></p>
+<p>Please also cite the data and methods you used:</p>
+<ul>
+  <li>RRUFF: Lafuente et al. (2015). ROD: El Mendili et al. (2019). COD: Gražulis et al. (2009). AMCSD: Downs &amp; Hall-Wallace (2003).</li>
+  <li>Maps, Monte Carlo deconvolution and H₂O quantification follow SpecXY: Gies, N. B., Lanari, P., Hermann, J. (2024), <em>Computers &amp; Geosciences</em> 189, 105626, <a href="https://doi.org/10.1016/j.cageo.2024.105626">doi:10.1016/j.cageo.2024.105626</a>.</li>
+  <li>Absorption coefficients: Libowitzky &amp; Rossman (1997) <em>Am. Mineral.</em> 82, 1111–1115; Bell et al. (1995) <em>Am. Mineral.</em> 80, 465–474; Bell et al. (2003) <em>J. Geophys. Res.</em> 108; Withers et al. (2012) <em>Chem. Geol.</em>; Johnson &amp; Rossman (2003) <em>Am. Mineral.</em> 88.</li>
+  <li>Calculators: Kuebler et al. (2006); Beyssac et al. (2002); Kouketsu et al. (2014); Busemann et al. (2007).</li>
+</ul>
+<p>Wavenum is released under the MIT licence. Bundled reference data keep their own licences.</p>
+</main>
+<script>
+  // version from the app (manual.html?v=x.y.z), so the printed manual names the running version
+  try { const v = new URLSearchParams(location.search).get('v'); if (v) document.getElementById('ver').textContent = v } catch (e) {}
+</script>
+</body>
+</html>

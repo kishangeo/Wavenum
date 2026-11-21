@@ -7,7 +7,7 @@ authors:
     given-names: Kishan
     email: kishantiwari@iitkgp.ac.in
     affiliation: "Indian Institute of Technology Kharagpur"
-version: 0.7.0
+version: 0.7.1
 date-released: 2026-11-21
 license: MIT
 doi: 10.5281/zenodo.24421170

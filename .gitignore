@@ -30,5 +30,5 @@ papers_raman software/
 databases/library/user_*
 
 # Vercel build output and local CLI state
-public/
+/public/
 .vercel/

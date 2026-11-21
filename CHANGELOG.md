@@ -2,6 +2,10 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.7.1 (2026-11-21)
+- Include the user manual (frontend/public/manual.html), which 0.7.0 left out of the repository because of
+  an over-broad ignore rule.
+
 ## 0.7.0 (2026-11-21)
 - H₂O quantification from FTIR (Beer–Lambert, after SpecXY/SpecDB) for spectra, fitted peaks and maps, with
   published absorption coefficients for pyroxenes, garnet, olivine and plagioclase and the Libowitzky &
