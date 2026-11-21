@@ -1,0 +1,9 @@
+{
+  "title": "Wavenum: local-first Raman, FTIR and XRD processing and mineral identification",
+  "upload_type": "software",
+  "description": "Wavenum is an open-source application for Raman, FTIR and XRD spectra: a non-destructive processing pipeline, peak finding and fitting with Monte Carlo deconvolution, library-based mineral identification with cross-technique checks, PCA, spectral and element maps, a plot digitizer, and publication figure export.",
+  "creators": [{ "name": "Tiwari, Kishan", "affiliation": "Indian Institute of Technology Kharagpur" }],
+  "license": "MIT",
+  "keywords": ["Raman spectroscopy", "FTIR", "XRD", "mineral identification", "spectral processing", "hyperspectral maps", "meteorites"],
+  "related_identifiers": [{ "identifier": "https://github.com/kishangeo/Wavenum", "relation": "isSupplementTo", "scheme": "url" }]
+}

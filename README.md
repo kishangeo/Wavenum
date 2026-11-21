@@ -226,8 +226,10 @@ For interface work run `npm run dev` in `frontend/` (it proxies `/api` to the ba
 
 If Wavenum helps your research, please cite it as:
 
-> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification*.
-> https://github.com/kishangeo/Wavenum
+> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.6.0).
+> Zenodo. https://github.com/kishangeo/Wavenum
+
+The Zenodo DOI of each release is listed on the [Releases](https://github.com/kishangeo/Wavenum/releases) page; [CITATION.cff](CITATION.cff) has the details.
 
 ## Licence
 

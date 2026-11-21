@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use Wavenum, please cite it as below."
+title: "Wavenum: local-first Raman, FTIR and XRD processing and mineral identification"
+type: software
+authors:
+  - family-names: Tiwari
+    given-names: Kishan
+    email: kishantiwari@iitkgp.ac.in
+    affiliation: "Indian Institute of Technology Kharagpur"
+version: 0.6.0
+date-released: 2026-11-21
+license: MIT
+repository-code: "https://github.com/kishangeo/Wavenum"
+url: "https://wavenum.vercel.app"
+keywords: [Raman spectroscopy, FTIR, XRD, mineral identification, spectral processing, hyperspectral maps, meteorites]
