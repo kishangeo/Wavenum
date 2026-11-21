@@ -11,6 +11,11 @@
 
 ---
 
+<p align="center">
+  <img src="docs/screenshot.jpg" alt="Wavenum identifying a quartz Raman spectrum: processing pipeline on the left, mirror plot of sample against the quartz reference in the centre, ranked library matches on the right" width="100%">
+  <br><em>A quartz Raman spectrum after despiking and baseline correction, identified against the libraries (mirror plot: sample above, reference below).</em>
+</p>
+
 Wavenum is a browser-based spectroscopy workbench with a small Python backend. It runs entirely on
 your own computer: spectra are never uploaded anywhere. It was built for identifying minerals in
 meteorites and rocks, and also works for pigments, polymers and other materials covered by the
