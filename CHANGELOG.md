@@ -6,6 +6,10 @@ Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 - H₂O quantification from FTIR (Beer–Lambert, after SpecXY/SpecDB) for spectra, fitted peaks and maps, with
   published absorption coefficients for pyroxenes, garnet, olivine and plagioclase and the Libowitzky &
   Rossman (1997) general calibration.
+- User manual (20 sections) in the app under Help, saved as PDF from the print dialog; also at /manual.html.
+- Version number in the header, linking to the release notes.
+- The header shows the reference data searched for the current technique: spectra, distinct phases and libraries.
+- Map layers without any values (e.g. a band window outside the axis) are refused with a message.
 
 ## 0.6.0 (2026-11-21)
 - Monte Carlo peak deconvolution after SpecXY: repeated fits from random starts with a per-peak maximum shift,

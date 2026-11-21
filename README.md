@@ -90,6 +90,15 @@ saved as a JSON preset and batch-applied to all spectra.
   sent to the workspace, pixel spectra, region means and line profiles, CSV export of every layer.
 - An example Raman map with matching SiO₂, CaO and Fe₂O₃ element maps is in **Open an example map…**.
 
+## User manual
+
+The full manual is built into the app: click **Help** in the header (it can be saved as a PDF from there).
+It is also on the website at [wavenum.vercel.app/manual.html](https://wavenum.vercel.app/manual.html) and in
+this repository as [`frontend/public/manual.html`](frontend/public/manual.html).
+
+The header shows the version and how much reference data Wavenum is searching for the selected technique
+(spectra, distinct phase names and libraries), counted from the libraries actually installed.
+
 ## Installation
 
 Requirements: Python 3.10 or newer, and Node.js 18 or newer (only to build the interface).

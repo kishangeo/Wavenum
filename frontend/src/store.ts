@@ -64,7 +64,7 @@ const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 const COMMANDS: Record<string, string> = {
   '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/peaks/mc': 'peaks_mc', '/libraries': 'libraries',
   '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
-  '/match': 'match_spectrum', '/pca': 'pca', '/examples': 'examples', '/config': 'config', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
+  '/match': 'match_spectrum', '/pca': 'pca', '/examples': 'examples', '/config': 'config', '/stats': 'stats', '/libraries/build': 'libraries_build', '/libraries/build/status': 'libraries_build_status',
 }
 
 async function viaTauri<T>(path: string, body?: unknown): Promise<T> {
@@ -135,7 +135,7 @@ type State = {
   spectra: Spectrum[]; activeId: string | null
   plotMode: 'overlay' | 'stacked'; showBaseline: boolean; peakEdit: boolean
   matches: Match[]; mixture: Mixture | null; selMatch: number | null
-  fig: Fig; hiddenCurves: string[]; history: { id: string; pipeline: Step[] }[]; error: string | null
+  fig: Fig; hiddenCurves: string[]; history: { id: string; pipeline: Step[] }[]; error: string | null; help: boolean
   set: (p: Partial<State>) => void
   setTechnique: (t: Technique) => void
   addSpectrum: (name: string, x: number[], y: number[], technique?: Technique) => void
@@ -170,7 +170,7 @@ export const useStore = create<State>((set, get) => {
     matches: [], mixture: null, selMatch: null,
     fig: { font: 'Arial', size: 10, xLabel: '', yLabel: '', ticks: 'outside', legend: true, widthMm: 180, heightMm: 110, dpi: 600, format: 'png' },
     hiddenCurves: [],
-    history: [], error: null,
+    history: [], error: null, help: false,
     set: p => set(p),
     setTechnique: technique => set(st => ({
       technique, matches: [], mixture: null, selMatch: null,

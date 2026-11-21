@@ -208,7 +208,14 @@ export default function MapPanel() {
   useEffect(() => { import('./store').then(s => s.api<Example[]>('/examples')).then(e => setExamples(e.filter(x => x.map))).catch(() => {}) }, [])
   const active = ms.layers.find(l => l.id === ms.active)
 
-  const addLayer = (l: Layer) => ms.set({ layers: [...useMap.getState().layers, l], active: l.id })
+  const addLayer = (l: Layer) => {
+    // e.g. a band window outside the map's axis: say so instead of drawing an empty map
+    if (!l.values.some(v => Number.isFinite(v) && v !== 0)) {
+      const ax = m?.axis
+      return st.fail(`“${l.name}” has no values${ax ? `: check the positions against the map's axis (${Math.round(Math.min(ax[0], ax[ax.length - 1]))}–${Math.round(Math.max(ax[0], ax[ax.length - 1]))})` : ''}`)
+    }
+    ms.set({ layers: [...useMap.getState().layers, l], active: l.id })
+  }
 
   // a new spectral map replaces the old one; a value grid becomes a layer of the current map when it fits
   const accept = (nm: SpecMap) => {

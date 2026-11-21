@@ -107,6 +107,11 @@ def config():
     return dict(read_only=READ_ONLY, desktop=False)
 
 
+@app.get('/api/stats')
+def stats():
+    return library.stats()
+
+
 @app.get('/api/libraries')
 def libraries():
     return library.list_libraries()

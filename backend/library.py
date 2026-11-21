@@ -108,6 +108,17 @@ def list_libraries():
     return out
 
 
+def stats():
+    """Reference data per technique: spectra, libraries and distinct phase names (shown in the interface)."""
+    out = {}
+    for lib in list_libraries():
+        t = out.setdefault(lib['technique'], dict(spectra=0, libraries=0, phases=set()))
+        t['spectra'] += lib['n']
+        t['libraries'] += 1
+        t['phases'].update(e['name'].strip().lower() for e in load(lib['id'])[0]['entries'])
+    return {k: dict(v, phases=len(v['phases'])) for k, v in out.items()}
+
+
 def search(q, technique, limit=60):
     """Entries whose name or formula contains q (case-insensitive)."""
     q = q.strip().lower()
