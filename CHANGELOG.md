@@ -3,6 +3,8 @@
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
 ## Unreleased
+- CIF files load on the website and without pymatgen: a built-in reader (backend/crystal.py, a port of the
+  desktop app's) computes the powder pattern, giving the same peaks as pymatgen.
 - Community minerals pack (databases/community): new meteorite shock minerals from published Raman peaks
   (wangdaodeite, akimotoite, hemleyite, majorite, calculated poirierite), the El Ali meteorite phosphates (elaliite,
   elkinstantonite, olsenite) and recent minerals from Eur. J. Mineral. (ellinaite, nannoniite, moabite, silesiaite,

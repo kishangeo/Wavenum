@@ -111,7 +111,7 @@ python -m venv .venv
 # Windows:      .venv\Scripts\activate
 # macOS/Linux:  source .venv/bin/activate
 pip install -r requirements.txt
-pip install -r requirements-xrd.txt   # optional: .cif files and building the XRD library (pymatgen)
+pip install -r requirements-xrd.txt   # optional: building the COD XRD library (pymatgen); .cif files load without it
 
 cd frontend
 npm ci
@@ -137,7 +137,6 @@ differs from running Wavenum on your own computer:
   unpublished data.
 - It is read-only: *Download & build full libraries* and folder *Import* are switched off, and only the
   libraries in the repository (ROD, the COD-derived XRD patterns and the Raman and FTIR starter sets) are available.
-- Loading `.cif` files is off, because pymatgen and its dependencies are too large for a Vercel function.
 
 To try the same read-only mode locally, set `WAVENUM_READ_ONLY=1` before starting the server.
 

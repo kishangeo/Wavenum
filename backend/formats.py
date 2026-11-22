@@ -173,12 +173,14 @@ def read_uxd(raw):
 
 
 def read_cif(raw):
-    """Crystal structure -> computed Cu K-alpha powder pattern (pymatgen), as a profile."""
+    """Crystal structure -> computed Cu K-alpha powder pattern, as a profile (pymatgen if installed, else crystal.py)."""
     try:
         import pymatgen  # noqa: F401  (optional: pip install -r requirements-xrd.txt)
     except ImportError:
-        raise ValueError('Loading CIF files needs pymatgen (pip install -r requirements-xrd.txt); '
-                         'it is not installed on this server')
+        from crystal import cif_profile
+        text = raw.decode('utf-8', 'replace') if isinstance(raw, (bytes, bytearray)) else raw
+        x, y = cif_profile(text)
+        return _xy(x, y, '2theta (Cu Ka, computed)', 'Intensity')
 
     def go(path):
         import warnings
