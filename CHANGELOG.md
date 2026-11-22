@@ -2,6 +2,10 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.9.1 (2026-11-22)
+- CIF files load on the website: the atomic scattering table now ships with the backend.
+- Google Search Console verification.
+
 ## 0.9.0 (2026-11-22)
 - robots.txt and sitemap.xml for search engines.
 - CIF files load on the website and without pymatgen: a built-in reader (backend/crystal.py, a port of the
