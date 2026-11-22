@@ -6,7 +6,24 @@
       "formula": "FeTiO3",
       "system": "trigonal",
       "technique": "raman",
-      "peaks": [[176, 40], [275, 50], [563, 40], [740, 100]],
+      "peaks": [
+        [
+          176,
+          40
+        ],
+        [
+          275,
+          50
+        ],
+        [
+          563,
+          40
+        ],
+        [
+          740,
+          100
+        ]
+      ],
       "source": "doi:10.1111/maps.13426",
       "note": "Suizhou L6 chondrite (Xie et al. 2020, Meteorit. Planet. Sci.). Band centres of the reported ranges 174-179, 273-277, 560-567, 738-743 cm-1; the 738-743 band is diagnostic. Relative intensities approximate."
     },
@@ -15,7 +32,28 @@
       "formula": "(Mg,Fe)SiO3",
       "system": "trigonal",
       "technique": "raman",
-      "peaks": [[285, 15], [408, 20], [480, 25], [618, 35], [799, 100]],
+      "peaks": [
+        [
+          285,
+          15
+        ],
+        [
+          408,
+          20
+        ],
+        [
+          480,
+          25
+        ],
+        [
+          618,
+          35
+        ],
+        [
+          799,
+          100
+        ]
+      ],
       "source": "https://nipr.repo.nii.ac.jp/record/13407/files/M_BercziSzaniszlo_2_P.pdf",
       "note": "NWA 5011 L6 chondrite shock vein. 799 cm-1 is the main band. Relative intensities approximate."
     },
@@ -24,7 +62,32 @@
       "formula": "(Fe,Mg)SiO3",
       "system": "trigonal",
       "technique": "raman",
-      "peaks": [[342, 15], [403, 20], [476, 25], [611, 30], [673, 30], [795, 100]],
+      "peaks": [
+        [
+          342,
+          15
+        ],
+        [
+          403,
+          20
+        ],
+        [
+          476,
+          25
+        ],
+        [
+          611,
+          30
+        ],
+        [
+          673,
+          30
+        ],
+        [
+          795,
+          100
+        ]
+      ],
       "source": "doi:10.1038/srep42674",
       "note": "Suizhou L6 chondrite (Bindi et al. 2017, Sci. Rep.). Fe analogue of akimotoite; strongest band near 795 cm-1. Relative intensities approximate."
     },
@@ -33,7 +96,24 @@
       "formula": "Mg3(MgSi)(SiO4)3",
       "system": "tetragonal",
       "technique": "raman",
-      "peaks": [[586, 40], [650, 50], [930, 100], [1068, 25]],
+      "peaks": [
+        [
+          586,
+          40
+        ],
+        [
+          650,
+          50
+        ],
+        [
+          930,
+          100
+        ],
+        [
+          1068,
+          25
+        ]
+      ],
       "source": "https://journals.uair.arizona.edu/index.php/maps/article/viewFile/15585/15573",
       "note": "Majoritic garnet in Sixiangkou L6 chondrite shock veins. 930 cm-1 is the most consistently reported band. Relative intensities approximate."
     },
@@ -42,9 +122,450 @@
       "formula": "(Mg,Fe)2SiO4",
       "system": "orthorhombic",
       "technique": "raman",
-      "peaks": [[480, 50], [849, 100], [855, 90]],
+      "peaks": [
+        [
+          480,
+          50
+        ],
+        [
+          849,
+          100
+        ],
+        [
+          855,
+          90
+        ]
+      ],
       "source": "doi:10.1038/s43247-020-00090-7",
       "note": "First-principles calculated Raman bands below 900 cm-1 (Tomioka et al. 2021, Commun. Earth Environ.); not a measured spectrum."
+    },
+    {
+      "name": "Elaliite",
+      "formula": "Fe2+8Fe3+(PO4)O8",
+      "system": "trigonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          487,
+          25
+        ],
+        [
+          938,
+          100
+        ]
+      ],
+      "source": "doi:10.2138/am-2023-9225",
+      "note": "El Ali IAB iron meteorite, IMA 2022-087 (Herd et al. 2024, Am. Mineral.). Sharp PO4 band at 938, broad hump at 487 cm-1."
+    },
+    {
+      "name": "Elkinstantonite",
+      "formula": "Fe4(PO4)2O",
+      "system": "monoclinic",
+      "technique": "raman",
+      "peaks": [
+        [
+          940,
+          100
+        ],
+        [
+          975,
+          90
+        ]
+      ],
+      "source": "doi:10.2138/am-2023-9225",
+      "note": "El Ali IAB iron meteorite, IMA 2022-088 (Herd et al. 2024). Peaks between 930 and 1020 cm-1 including the 940/975 doublet; only the doublet is listed."
+    },
+    {
+      "name": "Olsenite",
+      "formula": "KFe4(PO4)3",
+      "system": "orthorhombic",
+      "technique": "raman",
+      "peaks": [
+        [
+          648,
+          15
+        ],
+        [
+          968,
+          100
+        ]
+      ],
+      "source": "doi:10.2138/am-2023-9225",
+      "note": "El Ali IAB iron meteorite, IMA 2022-100 (Herd et al. 2024). Single PO4 stretching mode at 968, weak band at 648 cm-1."
+    },
+    {
+      "name": "Ellinaite",
+      "formula": "CaCr2O4",
+      "system": "orthorhombic",
+      "technique": "raman",
+      "peaks": [
+        [
+          107,
+          20
+        ],
+        [
+          123,
+          20
+        ],
+        [
+          140,
+          25
+        ],
+        [
+          204,
+          20
+        ],
+        [
+          243,
+          20
+        ],
+        [
+          324,
+          25
+        ],
+        [
+          337,
+          25
+        ],
+        [
+          387,
+          25
+        ],
+        [
+          441,
+          30
+        ],
+        [
+          470,
+          30
+        ],
+        [
+          556,
+          50
+        ],
+        [
+          598,
+          60
+        ],
+        [
+          689,
+          100
+        ],
+        [
+          1300,
+          10
+        ]
+      ],
+      "source": "doi:10.5194/ejm-33-727-2021",
+      "note": "Post-spinel oxide, Hatrurim Basin and Juina kimberlite inclusions (Sharygin et al. 2021, Eur. J. Mineral.). Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Nannoniite",
+      "formula": "Al2(OH)5F",
+      "system": "monoclinic",
+      "technique": "raman",
+      "peaks": [
+        [
+          147,
+          50
+        ],
+        [
+          187,
+          50
+        ],
+        [
+          251,
+          50
+        ],
+        [
+          303,
+          50
+        ],
+        [
+          371,
+          50
+        ],
+        [
+          446,
+          50
+        ],
+        [
+          534,
+          30
+        ],
+        [
+          561,
+          50
+        ],
+        [
+          697,
+          50
+        ],
+        [
+          900,
+          50
+        ],
+        [
+          976,
+          50
+        ],
+        [
+          1021,
+          50
+        ]
+      ],
+      "source": "doi:10.5194/ejm-36-1011-2024",
+      "note": "Cetine di Cotorniano mine, Tuscany (2024). Bands 100-1200 cm-1; O-H stretching region not included. Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Moabite",
+      "formula": "NiFe3+(PO4)O",
+      "system": "orthorhombic",
+      "technique": "raman",
+      "peaks": [
+        [
+          115,
+          50
+        ],
+        [
+          130,
+          50
+        ],
+        [
+          160,
+          50
+        ],
+        [
+          179,
+          50
+        ],
+        [
+          198,
+          50
+        ],
+        [
+          255,
+          50
+        ],
+        [
+          307,
+          50
+        ],
+        [
+          361,
+          50
+        ],
+        [
+          388,
+          50
+        ],
+        [
+          410,
+          50
+        ],
+        [
+          423,
+          50
+        ],
+        [
+          449,
+          50
+        ],
+        [
+          469,
+          50
+        ],
+        [
+          545,
+          50
+        ],
+        [
+          590,
+          50
+        ],
+        [
+          628,
+          50
+        ],
+        [
+          292,
+          25
+        ],
+        [
+          650,
+          25
+        ],
+        [
+          843,
+          70
+        ],
+        [
+          871,
+          70
+        ],
+        [
+          918,
+          70
+        ],
+        [
+          988,
+          50
+        ],
+        [
+          1019,
+          50
+        ],
+        [
+          1090,
+          50
+        ],
+        [
+          1157,
+          50
+        ]
+      ],
+      "source": "doi:10.5194/ejm-37-353-2025",
+      "note": "Natural oxyphosphate (2025). P-O stretching (843, 871, 918) weighted up. Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Silesiaite",
+      "formula": "Ca2Fe3+Sn(Si2O7)(Si2O6OH)",
+      "system": "monoclinic",
+      "technique": "raman",
+      "peaks": [
+        [
+          544,
+          100
+        ],
+        [
+          592,
+          90
+        ],
+        [
+          735,
+          80
+        ],
+        [
+          843,
+          20
+        ],
+        [
+          989,
+          25
+        ],
+        [
+          1034,
+          20
+        ]
+      ],
+      "source": "doi:10.5194/ejm-33-165-2021",
+      "note": "El Valle-Boinas skarn, Spain (2021). Sharp bands 544, 592, 735; broad weak 843, 989, 1034 cm-1. Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Kenoargentotetrahedrite-(Zn)",
+      "formula": "Ag6(Cu4Zn2)Sb4S12",
+      "system": "cubic",
+      "technique": "raman",
+      "peaks": [
+        [
+          160,
+          25
+        ],
+        [
+          201,
+          25
+        ],
+        [
+          214,
+          30
+        ],
+        [
+          346,
+          50
+        ],
+        [
+          353,
+          100
+        ]
+      ],
+      "source": "doi:10.5194/ejm-36-397-2024",
+      "note": "Yindongpo Au deposit, China (2024). Main Sb-S band 353 with shoulder 346 cm-1. Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Batoniite",
+      "formula": "[Al8(OH)14(H2O)18](SO4)5·5H2O",
+      "system": "triclinic",
+      "technique": "raman",
+      "peaks": [
+        [
+          250,
+          15
+        ],
+        [
+          343,
+          15
+        ],
+        [
+          457,
+          20
+        ],
+        [
+          620,
+          15
+        ],
+        [
+          995,
+          100
+        ],
+        [
+          1097,
+          10
+        ],
+        [
+          1127,
+          15
+        ],
+        [
+          1629,
+          8
+        ],
+        [
+          3230,
+          15
+        ],
+        [
+          3487,
+          20
+        ],
+        [
+          3623,
+          15
+        ]
+      ],
+      "source": "doi:10.5194/ejm-35-703-2023",
+      "note": "Cetine di Cotorniano mine (2023). Very strong SO4 band at 995 cm-1; broad O-H band 2800-3750 cm-1. Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Belmonteite",
+      "formula": "CaMn2(AsO4)2(H2O)5·2H2O",
+      "system": "monoclinic",
+      "technique": "raman",
+      "peaks": [
+        [
+          815,
+          50
+        ],
+        [
+          839,
+          100
+        ],
+        [
+          891,
+          40
+        ]
+      ],
+      "source": "doi:10.5194/ejm-38-531-2026",
+      "note": "Gambatesa mine, Italy (2026). Strong AsO4 band 839 with shoulders 815 and 891 cm-1; other bands not listed in the text. Relative intensities approximate (the paper lists positions only)."
     }
   ]
 }
