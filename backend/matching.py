@@ -1,4 +1,4 @@
-"""Library search: cosine + Pearson + shift-tolerant peak matching, optional 2-component NNLS.
+"""Library search: cosine + Pearson + shift-tolerant peak matching, optional two-phase mixture check.
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 """
@@ -15,6 +15,7 @@ import library as L
 # Wavelength the XRD library was computed at: pymatgen's 'CuKa', the weighted K-alpha average.
 CU_KA = 1.54184
 PREFILTER = 300  # ponytail: peak scoring only for the best N by first-pass score; raise if recall matters
+POOL, SECOND, FIRST = 12, 5, 3  # mixture check: phases of the sample, phases of each residual, phases subtracted
 
 
 def peak_score(sample, ref, tol):
@@ -79,7 +80,8 @@ def _match_spectra(x, y, technique, lib_ids, tol, w, peaks):
             cands.append((float(cos[k]), float(pear[k]), lid, int(k)))
     cands.sort(key=lambda c: -(w[0] * c[0] + w[1] * max(c[1], 0)))
     out = []
-    for cos, pear, lid, k in cands[:PREFILTER]:
+    # with no weight on the correlations there is no first-pass ranking: score the peaks of every candidate
+    for cos, pear, lid, k in (cands[:PREFILTER] if w[0] + w[1] > 0 else cands):
         meta, M = L.load(lid)
         e = meta['entries'][k]
         rp = np.array([p for p in e['peaks'] if lo <= p[0] <= hi]).reshape(-1, 2)
@@ -99,32 +101,75 @@ def _col(t, rng, blur):
     return uniform_filter1d(row, blur, mode='nearest')
 
 
-def _mixture(first, second, b, rng, blur):
-    """Best non-negative 2-component combination: one phase from `first` (top matches of the
-    sample) and one from `second` (top matches of what the best single phase leaves unexplained).
-    b: blurred sample over the sample range."""
-    ss = float((b ** 2).sum()) or 1.0
-    single = max(1 - nnls(_col(t, rng, blur)[:, None], b)[1] ** 2 / ss for t in first)
-    best = None
-    for t1 in first:
-        for t2 in second:
-            if t1['name'].lower() == t2['name'].lower():
+def _mixture(res, g, rng, x, y, technique, lib_ids, tol, w):
+    """Two-phase check. Candidates: the best phases of the sample plus the best phases of what each of
+    the three best single phases leaves unexplained. Every pair is fitted by non-negative least squares
+    and scored like a single reference (cosine, Pearson, peaks) with the fitted sum as the reference;
+    the best pair is compared with the best single phase."""
+    i0, i1 = rng
+    gg = g[i0:i1]
+    # blurred over twice the tolerance so a small shift does not leave a fake residual
+    blur = 2 * max(1, round(tol / L.GRIDS[technique][2])) + 1
+    qraw = L.to_grid(x, y, technique)[0][i0:i1].astype(float) / 255
+    b = uniform_filter1d(qraw, blur, mode='nearest')
+    ss = float(b @ b) or 1.0
+    sp = _sample_peaks(gg, qraw)
+    pool = _distinct(list(res), POOL)
+    first = pool[:FIRST]
+    names = {t['name'].lower() for t in pool}
+    cols = {}
+
+    def col(t):
+        if t['name'] not in cols:
+            cols[t['name']] = _col(t, rng, blur)
+        return cols[t['name']]
+
+    def rpk(t, k=1.0):
+        return [[p[0], p[1] * k] for p in t['ref_peaks'] if gg[0] <= p[0] <= gg[-1]]
+
+    def score(fit, rp):
+        nf = float(np.linalg.norm(fit) * np.linalg.norm(b))
+        cos = float(fit @ b) / nf if nf else 0.0
+        pear = float(np.corrcoef(fit, b)[0, 1]) if fit.std() and b.std() else 0.0
+        return _combine(cos, pear, peak_score(sp, np.array(rp, float).reshape(-1, 2), tol)[0], w)
+
+    single_r2 = single = 0.0
+    for t in first:
+        c = col(t)
+        k, r = nnls(c[:, None], b)
+        single_r2 = max(single_r2, 1 - r ** 2 / ss)
+        single = max(single, score(c, rpk(t)))
+        left = np.clip(b - k[0] * c, 0, None)
+        if left.max() > 0.15 * b.max():
+            try:
+                res2 = _match_spectra(gg, left, technique, lib_ids, tol, w, None)[0]
+            except ValueError:
                 continue
-            coef, res = nnls(np.column_stack([_col(t1, rng, blur), _col(t2, rng, blur)]), b)
-            r2 = 1 - res ** 2 / ss
-            if coef.min() > 0 and (best is None or r2 > best['r2']):
-                f = coef / coef.sum()
-                best = dict(r2=r2, second_peak=t2['peak'],
-                            components=[dict(name=t1['name'], fraction=float(f[0])),
-                                        dict(name=t2['name'], fraction=float(f[1]))])
+            for t2 in _distinct(res2, SECOND):
+                if t2['name'].lower() not in names:
+                    names.add(t2['name'].lower())
+                    pool.append(t2)
+    best = None
+    for t1, t2 in combinations(pool, 2):
+        c1, c2 = col(t1), col(t2)
+        k, r = nnls(np.column_stack([c1, c2]), b)
+        if k.min() <= 0:
+            continue
+        v = score(k[0] * c1 + k[1] * c2, rpk(t1, k[0]) + rpk(t2, k[1]))
+        if best is None or v > best[0]:
+            best = (v, t1, t2, k, 1 - r ** 2 / ss)
     if best is None:
         return None
-    best.update(single_r2=single, gain=best['r2'] - single,
-                # a mixture needs a better fit, a non-trivial share, and a second phase whose own
-                # peaks are actually present in what the first phase leaves unexplained
-                likely=bool(best['r2'] - single > 0.05 and min(c['fraction'] for c in best['components']) > 0.1
-                            and best['second_peak'] >= 0.6))
-    return best
+    v, t1, t2, k, r2 = best
+    ev = []  # the peaks of each phase must be present in what the other phase leaves unexplained
+    for ta, tb, kb in ((t1, t2, k[1]), (t2, t1, k[0])):
+        left = np.clip(b - kb * col(tb), 0, None)
+        ev.append(peak_score(_sample_peaks(gg, left), np.array(rpk(ta), float).reshape(-1, 2), tol)[0])
+    f = k / k.sum()
+    gain = (v - single) / 100
+    return dict(r2=r2, single_r2=single_r2, gain=gain, second_peak=min(ev),
+                components=[dict(name=t1['name'], fraction=float(f[0])), dict(name=t2['name'], fraction=float(f[1]))],
+                likely=bool(gain > 0.04 and f.min() > 0.1 and min(ev) >= 0.6))
 
 
 def _match_xrd(x, y, lib_ids, tol, w, peaks, wavelength):
@@ -182,18 +227,7 @@ def match(x, y, technique, lib_ids, tol=8.0, weights=(0.4, 0.2, 0.4), mixture=Fa
         return dict(matches=_distinct(_match_xrd(x, y, lib_ids, tol, weights, peaks, wavelength), n), mixture=None)
     res, g, q, rng = _match_spectra(x, y, technique, lib_ids, tol, weights, peaks)
     top = _distinct(res, n)
-    mix = None
-    if mixture and top:
-        # Subtract the best single phase, then search again on what is left. Everything is
-        # blurred over twice the tolerance so a small shift does not leave a fake residual.
-        i0, i1 = rng
-        blur = 2 * max(1, round(tol / L.GRIDS[technique][2])) + 1
-        b = uniform_filter1d(L.to_grid(x, y, technique)[0][i0:i1].astype(float) / 255, blur, mode='nearest')
-        c = _col(top[0], rng, blur)
-        left = np.clip(b - nnls(c[:, None], b)[0][0] * c, 0, None)
-        if left.max() > 0.15 * b.max():
-            res2 = _match_spectra(g[i0:i1], left, technique, lib_ids, tol, weights, None)[0]
-            mix = _mixture(top[:3], _distinct(res2, 5), b, rng, blur)
+    mix = _mixture(res, g, rng, x, y, technique, lib_ids, tol, weights) if mixture and top else None
     for t in top:
         _, M = L.load(t.pop('_lid'))
         j0, j1 = t.pop('_range')

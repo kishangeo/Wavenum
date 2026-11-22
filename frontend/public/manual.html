@@ -231,8 +231,10 @@ x axis and fit the bands following each paper's protocol; raw maxima are not acc
   <li>Click <span class="ui">Identify</span>. The search copy of the spectrum is baseline-corrected automatically, so raw spectra can be searched.</li>
   <li>Click a match to show the mirror plot (sample above, reference below) and its source and citation.</li>
 </ol>
-<p><span class="ui">Mixture check</span> fits the spectrum as a non-negative combination of the best match and each other candidate;
-fractions are spectral weights, not modal abundances. <span class="ui">Supported by several techniques</span> lists phases supported by spectra of more than one
+<p><span class="ui">Mixture check</span> fits the spectrum as a non-negative combination of two candidate phases, taken from the best matches of the
+spectrum and of what each of the three best single phases leaves unexplained. It reports a possible mixture only when the pair scores
+clearly better than the best single phase and each phase has its own peaks in the spectrum; treat the two names as candidates to check.
+The fractions are spectral weights, not modal abundances. <span class="ui">Supported by several techniques</span> lists phases supported by spectra of more than one
 technique loaded for the same sample. <span class="ui">Browse library</span> finds a reference by mineral name or formula and overlays it.
 For XRD choose the X-ray tube (Cu, Co, Mo, Fe, Cr) so 2θ positions are converted correctly.</p>
 <p class="note">A high score is a suggestion, not proof. Confirm the main bands, check the mirror plot and the residual, and consider the
@@ -245,7 +247,7 @@ geological context. Matches against small libraries are limited to the phases th
   <tr><td>Raman</td><td>Raman Open Database (ROD)</td><td>1,131</td><td>CC0</td></tr>
   <tr><td>Raman</td><td>Starter minerals (synthetic profiles at literature positions)</td><td>31</td><td>MIT</td></tr>
   <tr><td>Raman</td><td>Community minerals: recently described minerals from published Raman peaks, including meteorite minerals (shock phases such as tissintite, ahrensite, lingunite and kopernikite; El Ali phosphates); source DOI shown with each match</td><td>24</td><td>MIT</td></tr>
-  <tr><td>XRD</td><td>Community minerals: d-spacings from published structures (kopernikite)</td><td>1</td><td>MIT</td></tr>
+  <tr><td>XRD</td><td>Community minerals: d-spacings from published structures (kopernikite, reidite, hemleyite, elgoresyite)</td><td>4</td><td>MIT</td></tr>
   <tr><td>FTIR</td><td>Starter minerals (profiles at RRUFF infrared band positions)</td><td>38</td><td>MIT</td></tr>
   <tr><td>XRD</td><td>COD mineral structures (AMCSD-derived), powder patterns for Cu Kα</td><td>14,343 (4,107 minerals)</td><td>CC0</td></tr>
 </table>

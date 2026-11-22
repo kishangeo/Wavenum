@@ -2,6 +2,14 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.10.0 (2026-11-23)
+- Match weights with peaks only now score the peaks of every library entry (before, the candidates were not ranked first, so
+  the result was arbitrary).
+- Mixture check rewritten: candidate phases come from the sample and from what each of the three best single phases leaves
+  unexplained, every pair is scored like a single reference, and a mixture is flagged only when both phases have their own
+  peaks in the spectrum. In tests it names both phases more often and flags far fewer pure spectra.
+- Community pack: XRD patterns for reidite, hemleyite and elgoresyite, calculated from Crystallography Open Database structures.
+
 ## 0.9.1 (2026-11-22)
 - CIF files load on the website: the atomic scattering table now ships with the backend.
 - Google Search Console verification.

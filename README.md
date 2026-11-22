@@ -63,7 +63,7 @@ saved as a JSON preset and batch-applied to all spectra.
 - Library search scored by cosine similarity, Pearson correlation and shift-tolerant peak matching
   (adjustable weights and tolerance), with a mirror plot of sample against reference.
 - Automatic baseline correction of the search copy, so raw spectra can be searched directly.
-- Two-component mixture check (non-negative least squares on the residual).
+- Two-phase mixture check: pairs of candidate phases are fitted by non-negative least squares and scored like a single reference.
 - **Cross-technique identification:** load Raman, FTIR and/or XRD data of the same sample and list the
   phases supported by more than one technique.
 - Library browser: look up any reference by mineral name or formula and overlay it.
@@ -147,10 +147,10 @@ straight after installation:
 
 | Technique | Library | Entries | Licence |
 |---|---|---|---|
-| Raman | Raman Open Database (ROD) | 1,131 | CC0 |
+| Raman | Raman Open Database (ROD); 806 of its entries are RRUFF spectra, so they repeat spectra of the full RRUFF libraries below | 1,131 | CC0 |
 | Raman | Starter minerals (synthetic profiles at literature peak positions) | 31 | MIT (this project) |
 | Raman | [Community minerals](databases/community/README.md): recently described minerals (meteorite shock phases, El Ali phosphates and others) from published Raman peaks, source DOI per entry | 24 | MIT (this project) |
-| XRD | [Community minerals](databases/community/README.md): d-spacings from published structures | 1 | MIT (this project) |
+| XRD | [Community minerals](databases/community/README.md): d-spacings from published structures (kopernikite, reidite, hemleyite, elgoresyite) | 4 | MIT (this project) |
 | FTIR | Starter minerals (synthetic profiles at RRUFF infrared band positions) | 38 | MIT (this project) |
 | XRD | COD mineral structures 9000000–9017999 (AMCSD-derived), powder patterns computed for Cu Kα (1.54184 Å) | 14,343 (4,107 minerals) | CC0 |
 
@@ -247,7 +247,7 @@ For interface work run `npm run dev` in `frontend/` (it proxies `/api` to the ba
 
 If Wavenum helps your research, please cite it as:
 
-> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.9.1).
+> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.10.0).
 > Zenodo. https://doi.org/10.5281/zenodo.24421170
 
 This DOI always resolves to the latest version; each release also has its own DOI on Zenodo
