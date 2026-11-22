@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.5",
+    "@vercel/analytics": "^2.0.1",
     "jspdf": "^3.0.4",
     "pdfjs-dist": "^4.10.38",
     "plotly.js-dist-min": "^2.35.2",
