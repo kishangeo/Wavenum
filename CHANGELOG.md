@@ -2,7 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
-## Unreleased
+## 0.8.1 (2026-11-22)
 - Monte Carlo fits run in batches of 10 with a progress bar, so the hosted site no longer times out.
 - Example maps can be opened from the Data panel's example list; PCA labels keep the end of long names;
   the legend no longer sits under the plot toolbar; pipeline delete buttons use an icon.
