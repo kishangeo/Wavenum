@@ -16,7 +16,7 @@ export default function Sidebar() {
   const mine = st.spectra.filter(s => s.technique === st.technique)
   const others = st.spectra.length - mine.length
   const [examples, setExamples] = useState<Example[]>([])
-  useEffect(() => { api<Example[]>('/examples').then(e => setExamples(e.filter(x => !x.map))).catch(() => setExamples([])) }, [])
+  useEffect(() => { api<Example[]>('/examples').then(e => setExamples(e)).catch(() => setExamples([])) }, [])
   // the tip belongs to the technique it was shown for, so switching technique hides it
   const [hint, setHint] = useState<{ tech: string; text: string } | null>(null)
   const exHint = hint?.tech === st.technique ? hint.text : ''
@@ -106,13 +106,18 @@ export default function Sidebar() {
 
       {examples.length > 0 && (
         <div className="space-y-1">
-          <select className="field" value="" onChange={e => { if (e.target.value) openExample(e.target.value) }} title="Load a bundled example file">
+          <select className="field" value="" onChange={e => { const v = e.target.value; if (v.startsWith('map:')) st.set({ tab: 'map', mapExample: v.slice(4) }); else if (v) openExample(v) }} title="Load a bundled example file">
             <option value="">Open an example file…</option>
             {(['raman', 'ftir', 'xrd'] as const).map(t => (
               <optgroup key={t} label={TECH[t].label}>
-                {examples.filter(e => e.technique === t).map(e => <option key={e.file} value={e.file}>{e.title}</option>)}
+                {examples.filter(e => e.technique === t && !e.map).map(e => <option key={e.file} value={e.file}>{e.title}</option>)}
               </optgroup>
             ))}
+            {examples.some(e => e.map) && (
+              <optgroup label="Maps (open in the Map tab)">
+                {examples.filter(e => e.map).map(e => <option key={e.file} value={'map:' + e.file}>{e.title}</option>)}
+              </optgroup>
+            )}
           </select>
           {exHint && <p className="text-[11px] text-slate-500">{exHint} <button className="text-slate-400 hover:text-rose-500" onClick={() => setExHint('')}><XIcon className="h-3 w-3" /></button></p>}
         </div>
@@ -189,7 +194,7 @@ export default function Sidebar() {
                 <span className={`flex-1 truncate ${step.enabled ? '' : 'text-slate-400 line-through'}`}>{i + 1}. {STEP_LABEL[step.type]}</span>
                 <button className="px-0.5 hover:text-teal-500" title="Move up" onClick={() => move(i, -1)}><UpIcon className="h-3 w-3" /></button>
                 <button className="px-0.5 hover:text-teal-500" title="Move down" onClick={() => move(i, 1)}><DownIcon className="h-3 w-3" /></button>
-                <button className="px-0.5 text-slate-400 hover:text-rose-500" title="Remove step" onClick={() => st.setPipeline(active.id, active.pipeline.filter(s => s.id !== step.id))}>✕</button>
+                <button className="px-0.5 text-slate-400 hover:text-rose-500" title="Remove step" onClick={() => st.setPipeline(active.id, active.pipeline.filter(s => s.id !== step.id))}><XIcon className="h-3 w-3" /></button>
               </li>
             ))}
           </ol>

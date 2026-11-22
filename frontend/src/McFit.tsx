@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api, dataOf, download, useStore, type Fit, type FitRow, type Spectrum } from './store'
 
 type Mc = { best: Fit; runs: { r2: number; table: FitRow[] }[]; centers: number[]; max_shift: number }
+const BATCH = 10
 const PARAMS = [['center', 'Position'], ['fwhm', 'FWHM'], ['area', 'Area'], ['height', 'Height']] as const
 type Param = (typeof PARAMS)[number][0]
 
@@ -24,23 +25,36 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
   const [peak, setPeak] = useState(0)
   const [param, setParam] = useState<Param>('center')
   const [busy, setBusy] = useState(false)
+  const [done, setDone] = useState(0)
   const [res, setRes] = useState<{ id: string; mc: Mc } | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const mc = res?.id === a.id ? res.mc : null
   const bestR2 = mc ? Math.max(...mc.runs.map(r => r.r2)) : 0
   const kept = mc ? mc.runs.filter(r => r.r2 >= bestR2 - tol) : []
 
+  // ponytail: batches of 10 keep each request under the hosted server's time limit; one call would be faster locally
   const run = async () => {
     setBusy(true)
+    setDone(0)
     try {
       const d = dataOf(a)
-      const r = await api<Mc>('/peaks/mc', {
-        x: d.x, y: d.y, centers: a.peaks.map(p => p.x), profile, runs, max_shift: shift,
-        xmin: range[0] === '' ? null : +range[0], xmax: range[1] === '' ? null : +range[1],
-      })
-      setRes({ id: a.id, mc: r })
+      const body = { x: d.x, y: d.y, centers: a.peaks.map(p => p.x), profile, max_shift: shift,
+        xmin: range[0] === '' ? null : +range[0], xmax: range[1] === '' ? null : +range[1] }
+      let r: Mc | null = null
+      for (let k = 0; k < runs; k += BATCH) {
+        const n = Math.min(BATCH, runs - k)
+        // every batch starts with the default-start fit; keep that run only once
+        const b = await api<Mc>('/peaks/mc', { ...body, runs: Math.max(2, k ? n + 1 : n), seed: k + 1 })
+        if (!r) r = b
+        else {
+          r.runs.push(...b.runs.slice(1, n + 1))
+          if (b.best.r2 > r.best.r2) r.best = b.best
+        }
+        setDone(r!.runs.length)
+      }
+      setRes({ id: a.id, mc: r! })
       setPeak(0)
-      st.patch(a.id, { fit: r.best })
+      st.patch(a.id, { fit: r!.best })
     } catch (e) { st.fail(e) } finally { setBusy(false) }
   }
 
@@ -73,7 +87,8 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
         <label>Runs <input className="field" type="number" min={2} max={1000} value={runs} onChange={e => setRuns(Math.max(2, Math.min(1000, +e.target.value || 2)))} /></label>
         <label>Max. shift ± <input className="field" type="number" min={0} step="any" value={shift} onChange={e => setShift(Math.max(0, +e.target.value))} /></label>
       </div>
-      <button className="btn btn-primary w-full" disabled={!a.peaks.length || busy} onClick={run}>{busy ? `Running ${runs} fits…` : `Run ${runs} fits`}</button>
+      <button className="btn btn-primary w-full" disabled={!a.peaks.length || busy} onClick={run}>{busy ? `Running fits… ${done} / ${runs}` : `Run ${runs} fits`}</button>
+      {busy && <div className="h-1 rounded bg-slate-200 dark:bg-slate-800"><div className="h-1 rounded bg-teal-500 transition-all" style={{ width: `${(100 * done) / runs}%` }} /></div>}
       <p className="text-[11px] text-slate-500">
         Repeats the fit from random starts (position within ± max. shift of each marked peak, width ×0.5–2, height ×0.5–1.5); each peak may
         move at most ± max. shift. The best fit is drawn; the spread shows how well each parameter is constrained (SpecXY, Gies et al. 2024).

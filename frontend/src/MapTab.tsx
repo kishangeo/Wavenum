@@ -248,6 +248,11 @@ export default function MapPanel() {
     if (st.technique !== ex.technique) st.setTechnique(ex.technique)
     await load(await exampleFile(file))
   }
+  // example chosen in the Data panel's list
+  useEffect(() => {
+    const f = st.mapExample
+    if (f && examples.length) { st.set({ mapExample: undefined }); loadExample(f) }
+  }, [st.mapExample, examples.length])
   const addMetric = () => {
     if (!m?.axis) return
     const a = +x1, b = x2 === '' ? a : +x2

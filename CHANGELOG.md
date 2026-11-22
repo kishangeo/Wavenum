@@ -2,6 +2,11 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## Unreleased
+- Monte Carlo fits run in batches of 10 with a progress bar, so the hosted site no longer times out.
+- Example maps can be opened from the Data panel's example list; PCA labels keep the end of long names;
+  the legend no longer sits under the plot toolbar; pipeline delete buttons use an icon.
+
 ## 0.8.0 (2026-11-21)
 - Layout for phones and tablets: one panel at a time on phones (Data, Plot, Tools bar), plot beside a side panel on
   tablets; popovers stay on screen; no Plotly toolbar on touch screens.

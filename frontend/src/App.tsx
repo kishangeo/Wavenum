@@ -23,7 +23,8 @@ export default function App() {
   const ts = stats?.[st.technique]
   // below 1280 px not all three panels fit: phones show one panel, tablets the plot plus one side panel
   const [pane, setPane] = useState<'data' | 'plot' | 'tools'>('plot')
-  useEffect(() => { dispatchEvent(new Event('resize')) }, [pane]) // Plotly re-measures panels that became visible
+  useEffect(() => { dispatchEvent(new Event('resize')) }, [pane])
+  useEffect(() => { if (st.mapExample) setPane('tools') }, [st.mapExample]) // Plotly re-measures panels that became visible
   const sideCls = pane === 'data' ? 'flex' : 'hidden xl:flex'
   const plotCls = pane === 'plot' ? 'flex' : 'hidden md:flex'
   const toolCls = pane === 'tools' ? 'flex' : pane === 'plot' ? 'hidden md:flex' : 'hidden xl:flex'

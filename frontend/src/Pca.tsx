@@ -16,7 +16,7 @@ function pcaFigure(res: Res, dark: boolean, technique: keyof typeof TECH, fig: R
   const fg = dark && !print ? '#cbd5e1' : '#0f172a', grid = dark && !print ? '#1e293b' : '#e2e8f0', bg = dark && !print ? '#0b1220' : '#ffffff'
   const ax = { color: fg, gridcolor: grid, zerolinecolor: grid, showline: true, linecolor: fg, mirror: true, automargin: true, ticks: fig.ticks }
   const pct = (i: number) => `PC${i + 1} (${(res.explained[i] * 100).toFixed(1)}%)`
-  const short = (n: string) => (n.length > 18 ? n.slice(0, 17) + '…' : n)
+  const short = (n: string) => (n.length > 18 ? n.slice(0, 7) + '…' + n.slice(-10) : n)
   // pad the score axes so labels at the edges are not clipped
   const pad = (v: number[]) => { const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return [lo - 0.12 * r, hi + 0.18 * r] }
   const pc1 = res.scores.map(s => s[0]), pc2 = res.scores.map(s => s[1] ?? 0)

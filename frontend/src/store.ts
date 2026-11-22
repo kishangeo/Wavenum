@@ -131,7 +131,7 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
 }
 
 type State = {
-  technique: Technique; dark: boolean; tab: Tab
+  technique: Technique; dark: boolean; tab: Tab; mapExample?: string
   spectra: Spectrum[]; activeId: string | null
   plotMode: 'overlay' | 'stacked'; showBaseline: boolean; peakEdit: boolean
   matches: Match[]; mixture: Mixture | null; selMatch: number | null
