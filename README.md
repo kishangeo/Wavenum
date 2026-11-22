@@ -251,7 +251,7 @@ If Wavenum helps your research, please cite it as:
 > Zenodo. https://doi.org/10.5281/zenodo.24421170
 
 This DOI always resolves to the latest version; each release also has its own DOI on Zenodo
-(0.6.0: [10.5281/zenodo.24421171](https://doi.org/10.5281/zenodo.24421171); 0.7.1: [10.5281/zenodo.24421683](https://doi.org/10.5281/zenodo.24421683); 0.8.0: [10.5281/zenodo.24424618](https://doi.org/10.5281/zenodo.24424618); 0.8.1: [10.5281/zenodo.24433269](https://doi.org/10.5281/zenodo.24433269)). [CITATION.cff](CITATION.cff) has the details.
+(0.6.0: [10.5281/zenodo.24421171](https://doi.org/10.5281/zenodo.24421171); 0.7.1: [10.5281/zenodo.24421683](https://doi.org/10.5281/zenodo.24421683); 0.8.0: [10.5281/zenodo.24424618](https://doi.org/10.5281/zenodo.24424618); 0.8.1: [10.5281/zenodo.24433269](https://doi.org/10.5281/zenodo.24433269); 0.9.0: [10.5281/zenodo.24434188](https://doi.org/10.5281/zenodo.24434188)). [CITATION.cff](CITATION.cff) has the details.
 
 ## Licence
 
