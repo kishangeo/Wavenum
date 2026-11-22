@@ -23,6 +23,9 @@ databases/library/*
 !databases/library/_minerals.json
 !databases/library/community_raman.json
 !databases/library/community_raman.npy
+!databases/library/community_ftir.json
+!databases/library/community_ftir.npy
+!databases/library/community_xrd.json
 
 # third-party sample files and papers (not ours to redistribute)
 samples/formats/

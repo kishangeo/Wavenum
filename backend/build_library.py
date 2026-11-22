@@ -121,22 +121,36 @@ COMMUNITY = ROOT / 'databases' / 'community' / 'minerals.json'
 
 
 def build_community():
-    """Community minerals pack (databases/community/minerals.json): literature peaks drawn as Lorentzians."""
+    """Community minerals pack (databases/community/minerals.json).
+
+    Raman and FTIR entries: literature band positions drawn as Lorentzians. XRD entries: peaks are
+    [d-spacing in angstrom, relative intensity], stored as 2-theta for Cu K-alpha like the COD library.
+    """
     pack = json.loads(COMMUNITY.read_text(encoding='utf-8'))
-    items = []
+    spectra, xrd = dict(raman=[], ftir=[]), []
     for m in pack['minerals']:
         missing = {'name', 'formula', 'system', 'technique', 'peaks', 'source'} - set(m)
         assert not missing, f"{m.get('name')}: missing {sorted(missing)}"
-        assert m['technique'] == 'raman', f"{m['name']}: only Raman entries are supported so far"
-        assert m['peaks'] and all(len(p) == 2 and 50 <= p[0] <= 4000 for p in m['peaks']), f"{m['name']}: bad peaks"
-        g = L.grid('raman')
-        w = 8  # Lorentzian HWHM, cm-1: shock phases in meteorites give broad bands
+        t = m['technique']
+        assert t in ('raman', 'ftir', 'xrd'), f"{m['name']}: technique must be raman, ftir or xrd"
+        lo, hi = (0.7, 50) if t == 'xrd' else (50, 4000)
+        assert m['peaks'] and all(len(p) == 2 and lo <= p[0] <= hi for p in m['peaks']), f"{m['name']}: bad peaks"
+        info = f"{m['source']} | {m.get('note', '')}".strip(' |')
+        if t == 'xrd':
+            pk = sorted([round(float(2 * np.degrees(np.arcsin(1.54184 / (2 * d)))), 3), float(i)] for d, i in m['peaks'] if d > 0.78)
+            xrd.append(dict(name=m['name'], formula=m['formula'], system=m['system'], info=info, peaks=pk))
+            continue
+        g = L.grid(t)
+        w = 8 if t == 'raman' else 16  # Lorentzian HWHM, cm-1: shock phases give broad Raman bands; infrared bands are broader
         y = sum(i * w * w / ((g - c) ** 2 + w * w) for c, i in m['peaks'])
-        items.append(dict(name=m['name'], formula=m['formula'], system=m['system'], x=g, y=y,
-                          info=f"{m['source']} | {m.get('note', '')}".strip(' |')))
-    n = L.save_spectra('community_raman', 'Community minerals (literature peaks)', 'raman',
-                       'Wavenum community pack: synthetic profiles from published peak positions; source DOI per entry.', items)
-    print('community_raman', n)
+        spectra[t].append(dict(name=m['name'], formula=m['formula'], system=m['system'], x=g, y=y, info=info))
+    cite = 'Wavenum community pack: published peak positions; source DOI per entry.'
+    n = L.save_spectra('community_raman', 'Community minerals (literature peaks)', 'raman', cite, spectra['raman'])
+    if spectra['ftir']:
+        n += L.save_spectra('community_ftir', 'Community minerals (literature FTIR bands)', 'ftir', cite, spectra['ftir'])
+    if xrd:
+        n += L.save_peaks('community_xrd', 'Community minerals (literature d-spacings)', 'xrd', cite, xrd)
+    print('community', n)
     return n
 
 

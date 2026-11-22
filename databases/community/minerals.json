@@ -566,6 +566,402 @@
       ],
       "source": "doi:10.5194/ejm-38-531-2026",
       "note": "Gambatesa mine, Italy (2026). Strong AsO4 band 839 with shoulders 815 and 891 cm-1; other bands not listed in the text. Relative intensities approximate (the paper lists positions only)."
+    },
+    {
+      "name": "Tissintite",
+      "formula": "(Ca,Na,□)AlSi2O6",
+      "system": "monoclinic",
+      "technique": "raman",
+      "peaks": [
+        [
+          203,
+          30
+        ],
+        [
+          377,
+          50
+        ],
+        [
+          415,
+          25
+        ],
+        [
+          523,
+          25
+        ],
+        [
+          572,
+          20
+        ],
+        [
+          693,
+          100
+        ],
+        [
+          1000,
+          50
+        ]
+      ],
+      "source": "doi:10.1016/j.epsl.2015.03.057",
+      "note": "Type material, Tissint martian meteorite (Ma et al. 2015, EPSL). Jadeite-like spectrum. Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Ahrensite",
+      "formula": "Fe2SiO4",
+      "system": "cubic",
+      "technique": "raman",
+      "peaks": [
+        [
+          212,
+          40
+        ],
+        [
+          294,
+          35
+        ],
+        [
+          576,
+          20
+        ],
+        [
+          672,
+          30
+        ],
+        [
+          795,
+          70
+        ],
+        [
+          843,
+          100
+        ],
+        [
+          916,
+          30
+        ]
+      ],
+      "source": "doi:10.1016/j.gca.2016.04.042",
+      "note": "Type material, Tissint (Ma et al. 2016, GCA): 212 broad, 294 sharper, 843 the most intense, 916 broad; noisy spectrum. Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Donwilhelmsite",
+      "formula": "CaAl4Si2O11",
+      "system": "hexagonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          280,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          500,
+          50
+        ],
+        [
+          618,
+          60
+        ],
+        [
+          850,
+          60
+        ],
+        [
+          912,
+          100
+        ]
+      ],
+      "source": "doi:10.2138/am-2020-7393",
+      "note": "Lunar meteorite Oued Awlitis 001 (Fritz et al. 2020, Am. Mineral.). Spectrum includes contributions of surrounding glass. Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Zagamiite",
+      "formula": "CaAl2Si3.5O11",
+      "system": "hexagonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          631,
+          60
+        ],
+        [
+          917,
+          100
+        ]
+      ],
+      "source": "doi:10.1111/maps.13735",
+      "note": "Shergottite NWA 7397 (Yoshida et al. 2021, MAPS), bands assigned to the CAS phase after Beck et al. (2004). Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Reidite",
+      "formula": "ZrSiO4",
+      "system": "tetragonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          297,
+          50
+        ],
+        [
+          325,
+          40
+        ],
+        [
+          404,
+          40
+        ],
+        [
+          459,
+          50
+        ],
+        [
+          555,
+          50
+        ],
+        [
+          840,
+          100
+        ],
+        [
+          884,
+          60
+        ]
+      ],
+      "source": "doi:10.1029/2020GL089583",
+      "note": "Lunar meteorite Sayh al Uhaymir 169 (Xing et al. 2020, GRL). Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Xieite",
+      "formula": "FeCr2O4",
+      "system": "orthorhombic",
+      "technique": "raman",
+      "peaks": [
+        [
+          605,
+          100
+        ],
+        [
+          665,
+          40
+        ]
+      ],
+      "source": "doi:10.1007/s11434-008-0407-1",
+      "note": "Suizhou L6 chondrite (Chen et al. 2008, Chin. Sci. Bull.): strong band at 605 with a shoulder at 665 cm-1."
+    },
+    {
+      "name": "Liebermannite (synthetic)",
+      "formula": "KAlSi3O8",
+      "system": "tetragonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          214,
+          50
+        ],
+        [
+          288,
+          50
+        ],
+        [
+          511,
+          50
+        ],
+        [
+          544,
+          50
+        ],
+        [
+          726,
+          50
+        ],
+        [
+          762,
+          100
+        ]
+      ],
+      "source": "doi:10.1111/maps.13000",
+      "note": "Synthetic end-member (Ma et al. 2018, MAPS). Natural type liebermannite in Zagami gave featureless Raman spectra. Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Lingunite",
+      "formula": "NaAlSi3O8",
+      "system": "tetragonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          210,
+          40
+        ],
+        [
+          274,
+          40
+        ],
+        [
+          763,
+          100
+        ]
+      ],
+      "source": "doi:10.2138/am.2013.4300",
+      "note": "Taiban L chondrite melt vein (Acosta-Maeda et al. 2013, Am. Mineral.); 763 cm-1 is the SiO6 symmetric stretch of the hollandite structure. Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Kopernikite",
+      "formula": "K(Ti7Cr3+)O16",
+      "system": "tetragonal",
+      "technique": "raman",
+      "peaks": [
+        [
+          130,
+          30
+        ],
+        [
+          184,
+          30
+        ],
+        [
+          278,
+          30
+        ],
+        [
+          354,
+          50
+        ],
+        [
+          502,
+          40
+        ],
+        [
+          607,
+          40
+        ],
+        [
+          680,
+          100
+        ],
+        [
+          727,
+          50
+        ],
+        [
+          798,
+          50
+        ]
+      ],
+      "source": "doi:10.1180/mgm.2026.10230",
+      "note": "Morasko IAB-MG iron meteorite (Galuskin et al. 2026, Mineral. Mag.). Centres of the reported ranges 127-133, 180-187, 273-283, 350-357, 500-503, 603-611, 679-681, 722-732, 786-811 cm-1. Relative intensities approximate (positions from the text)."
+    },
+    {
+      "name": "Kopernikite",
+      "formula": "K(Ti7Cr3+)O16",
+      "system": "tetragonal",
+      "technique": "xrd",
+      "peaks": [
+        [
+          7.1386,
+          29.9
+        ],
+        [
+          5.0477,
+          37.9
+        ],
+        [
+          3.5693,
+          12.5
+        ],
+        [
+          3.1925,
+          100.0
+        ],
+        [
+          2.5239,
+          11.8
+        ],
+        [
+          2.4716,
+          57.0
+        ],
+        [
+          2.2574,
+          14.1
+        ],
+        [
+          2.2198,
+          36.4
+        ],
+        [
+          2.032,
+          3.7
+        ],
+        [
+          1.9799,
+          8.4
+        ],
+        [
+          1.885,
+          36.8
+        ],
+        [
+          1.6826,
+          25.1
+        ],
+        [
+          1.6668,
+          3.6
+        ],
+        [
+          1.5828,
+          40.3
+        ],
+        [
+          1.4767,
+          10.4
+        ],
+        [
+          1.4469,
+          4.0
+        ],
+        [
+          1.4173,
+          2.7
+        ],
+        [
+          1.3909,
+          30.6
+        ],
+        [
+          1.3403,
+          7.7
+        ],
+        [
+          1.3256,
+          7.4
+        ],
+        [
+          1.2746,
+          3.4
+        ],
+        [
+          1.1898,
+          3.9
+        ],
+        [
+          1.1529,
+          4.0
+        ],
+        [
+          1.1149,
+          5.1
+        ],
+        [
+          1.1099,
+          8.5
+        ]
+      ],
+      "source": "doi:10.1180/mgm.2026.10230",
+      "note": "Powder pattern calculated from the single-crystal structure (CIF) of Galuskin et al. 2026; d-spacings in angstrom."
     }
   ]
 }

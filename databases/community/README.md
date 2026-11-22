@@ -16,14 +16,15 @@ Add an entry to `minerals.json` and open a pull request:
   "name": "Mineral name",
   "formula": "Chemical formula",
   "system": "crystal system",
-  "technique": "raman",
+  "technique": "raman",   (or "ftir", "xrd")
   "peaks": [[position_cm-1, relative_intensity_0_to_100], ...],
   "source": "doi:10.xxxx/xxxxx",
   "note": "Locality, sample, and anything a user should know (e.g. calculated, approximate intensities)."
 }
 ```
 
-Only Raman entries are supported so far. Take positions from the paper's text or table, not by
+`technique` is `raman`, `ftir` (band positions in cm-1) or `xrd` (peaks are
+`[d-spacing in angstrom, relative intensity]`). Take positions from the paper's text or table, not by
 guessing; say in `note` if intensities are approximate or the bands are calculated. A GitHub
 workflow checks every entry and rebuilds the library when the pack changes.
 

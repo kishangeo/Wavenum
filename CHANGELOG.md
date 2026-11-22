@@ -6,7 +6,10 @@ Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 - Community minerals pack (databases/community): new meteorite shock minerals from published Raman peaks
   (wangdaodeite, akimotoite, hemleyite, majorite, calculated poirierite), the El Ali meteorite phosphates (elaliite,
   elkinstantonite, olsenite) and recent minerals from Eur. J. Mineral. (ellinaite, nannoniite, moabite, silesiaite,
-  kenoargentotetrahedrite-(Zn), batoniite, belmonteite): 15 entries, each with its source DOI.
+  kenoargentotetrahedrite-(Zn), batoniite, belmonteite): and shock minerals from the type descriptions (tissintite, ahrensite,
+  donwilhelmsite, zagamiite, reidite, xieite, liebermannite, lingunite, kopernikite): 24 Raman entries, each with
+  its source DOI.
+- The community pack also takes XRD entries (d-spacings; kopernikite from its published structure) and FTIR entries.
 - Download & build full libraries also fetches the latest community pack; a GitHub workflow checks new entries
   and rebuilds the library.
 

@@ -150,7 +150,8 @@ straight after installation:
 |---|---|---|---|
 | Raman | Raman Open Database (ROD) | 1,131 | CC0 |
 | Raman | Starter minerals (synthetic profiles at literature peak positions) | 31 | MIT (this project) |
-| Raman | [Community minerals](databases/community/README.md): recently described minerals (meteorite shock phases, El Ali phosphates and others) from published Raman peaks, source DOI per entry | 15 | MIT (this project) |
+| Raman | [Community minerals](databases/community/README.md): recently described minerals (meteorite shock phases, El Ali phosphates and others) from published Raman peaks, source DOI per entry | 24 | MIT (this project) |
+| XRD | [Community minerals](databases/community/README.md): d-spacings from published structures | 1 | MIT (this project) |
 | FTIR | Starter minerals (synthetic profiles at RRUFF infrared band positions) | 38 | MIT (this project) |
 | XRD | COD mineral structures 9000000–9017999 (AMCSD-derived), powder patterns computed for Cu Kα (1.54184 Å) | 14,343 (4,107 minerals) | CC0 |
 
