@@ -1,0 +1,29 @@
+# Rebuild the community minerals library when the pack changes; check pull requests that add minerals.
+# Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
+name: Community minerals library
+on:
+  push:
+    branches: [main]
+    paths: ['databases/community/**']
+  pull_request:
+    paths: ['databases/community/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install numpy scipy
+      # checks every entry (fields, peak positions, source) and writes databases/library/community_raman.*
+      - run: python backend/build_library.py community
+      - name: Commit the rebuilt library
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "Kishan Tiwari"
+          git config user.email "kishantiwari@iitkgp.ac.in"
+          git add databases/library/community_raman.json databases/library/community_raman.npy
+          git diff --cached --quiet || (git commit -m "Rebuild community minerals library" && git push)

@@ -2,7 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
-Usage:  python backend/build_library.py [starter] [sgd] [rod] [cod]   (no args = all)
+Usage:  python backend/build_library.py [community] [starter] [sgd] [rod] [cod]   (no args = all)
 """
 import json
 import re
@@ -115,6 +115,29 @@ def build_starter():
     n = L.save_spectra('starter', 'Starter minerals (synthetic)', 'raman',
                        'Built-in synthetic Lorentzian profiles from characteristic literature peak positions.', items)
     print('starter', n)
+
+
+COMMUNITY = ROOT / 'databases' / 'community' / 'minerals.json'
+
+
+def build_community():
+    """Community minerals pack (databases/community/minerals.json): literature peaks drawn as Lorentzians."""
+    pack = json.loads(COMMUNITY.read_text(encoding='utf-8'))
+    items = []
+    for m in pack['minerals']:
+        missing = {'name', 'formula', 'system', 'technique', 'peaks', 'source'} - set(m)
+        assert not missing, f"{m.get('name')}: missing {sorted(missing)}"
+        assert m['technique'] == 'raman', f"{m['name']}: only Raman entries are supported so far"
+        assert m['peaks'] and all(len(p) == 2 and 50 <= p[0] <= 4000 for p in m['peaks']), f"{m['name']}: bad peaks"
+        g = L.grid('raman')
+        w = 8  # Lorentzian HWHM, cm-1: shock phases in meteorites give broad bands
+        y = sum(i * w * w / ((g - c) ** 2 + w * w) for c, i in m['peaks'])
+        items.append(dict(name=m['name'], formula=m['formula'], system=m['system'], x=g, y=y,
+                          info=f"{m['source']} | {m.get('note', '')}".strip(' |')))
+    n = L.save_spectra('community_raman', 'Community minerals (literature peaks)', 'raman',
+                       'Wavenum community pack: synthetic profiles from published peak positions; source DOI per entry.', items)
+    print('community_raman', n)
+    return n
 
 
 def build_starter_ftir():
@@ -315,6 +338,6 @@ def build_cod():
 
 
 if __name__ == '__main__':
-    steps = dict(starter=build_starter, starter_ftir=build_starter_ftir, cod=build_cod, sgd=build_sgd, rod=build_rod)
+    steps = dict(community=build_community, starter=build_starter, starter_ftir=build_starter_ftir, cod=build_cod, sgd=build_sgd, rod=build_rod)
     for name in (sys.argv[1:] or list(steps)):
         steps[name]()

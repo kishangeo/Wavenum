@@ -1,0 +1,50 @@
+{
+  "about": "Wavenum community minerals pack: reference peaks for minerals not yet in RRUFF or the Raman Open Database, taken from the published literature. Each entry needs name, formula, system, technique, peaks [[position, relative intensity 0-100], ...] and source (a DOI or URL). Add new minerals by pull request; see README.md in this folder. Curated by Kishan Tiwari <kishantiwari@iitkgp.ac.in>.",
+  "minerals": [
+    {
+      "name": "Wangdaodeite",
+      "formula": "FeTiO3",
+      "system": "trigonal",
+      "technique": "raman",
+      "peaks": [[176, 40], [275, 50], [563, 40], [740, 100]],
+      "source": "doi:10.1111/maps.13426",
+      "note": "Suizhou L6 chondrite (Xie et al. 2020, Meteorit. Planet. Sci.). Band centres of the reported ranges 174-179, 273-277, 560-567, 738-743 cm-1; the 738-743 band is diagnostic. Relative intensities approximate."
+    },
+    {
+      "name": "Akimotoite",
+      "formula": "(Mg,Fe)SiO3",
+      "system": "trigonal",
+      "technique": "raman",
+      "peaks": [[285, 15], [408, 20], [480, 25], [618, 35], [799, 100]],
+      "source": "https://nipr.repo.nii.ac.jp/record/13407/files/M_BercziSzaniszlo_2_P.pdf",
+      "note": "NWA 5011 L6 chondrite shock vein. 799 cm-1 is the main band. Relative intensities approximate."
+    },
+    {
+      "name": "Hemleyite",
+      "formula": "(Fe,Mg)SiO3",
+      "system": "trigonal",
+      "technique": "raman",
+      "peaks": [[342, 15], [403, 20], [476, 25], [611, 30], [673, 30], [795, 100]],
+      "source": "doi:10.1038/srep42674",
+      "note": "Suizhou L6 chondrite (Bindi et al. 2017, Sci. Rep.). Fe analogue of akimotoite; strongest band near 795 cm-1. Relative intensities approximate."
+    },
+    {
+      "name": "Majorite",
+      "formula": "Mg3(MgSi)(SiO4)3",
+      "system": "tetragonal",
+      "technique": "raman",
+      "peaks": [[586, 40], [650, 50], [930, 100], [1068, 25]],
+      "source": "https://journals.uair.arizona.edu/index.php/maps/article/viewFile/15585/15573",
+      "note": "Majoritic garnet in Sixiangkou L6 chondrite shock veins. 930 cm-1 is the most consistently reported band. Relative intensities approximate."
+    },
+    {
+      "name": "Poirierite (calculated)",
+      "formula": "(Mg,Fe)2SiO4",
+      "system": "orthorhombic",
+      "technique": "raman",
+      "peaks": [[480, 50], [849, 100], [855, 90]],
+      "source": "doi:10.1038/s43247-020-00090-7",
+      "note": "First-principles calculated Raman bands below 900 cm-1 (Tomioka et al. 2021, Commun. Earth Environ.); not a measured spectrum."
+    }
+  ]
+}

@@ -182,7 +182,8 @@ def _run_build():
     import build_library as B
     import download_databases as D
     steps = [('Downloading Spectragryph / RRUFF collections', D.spectragryph), ('Downloading Raman Open Database', D.rod),
-             ('Downloading COD mineral structures', D.cod), ('Building starter library', B.build_starter), ('Building FTIR starter library', B.build_starter_ftir),
+             ('Downloading COD mineral structures', D.cod), ('Updating community minerals pack', D.community),
+             ('Building community minerals library', B.build_community), ('Building starter library', B.build_starter), ('Building FTIR starter library', B.build_starter_ftir),
              ('Computing XRD patterns (COD)', B.build_cod), ('Building Spectragryph / RRUFF libraries', B.build_sgd),
              ('Building Raman Open Database library', B.build_rod)]
     try:
@@ -203,7 +204,7 @@ def build_libraries():
         raise HTTPException(403, READ_ONLY_MSG)
     if _build['running']:
         raise HTTPException(409, 'A build is already running')
-    _build.update(running=True, step='Starting', done=0, total=7, log=[], error=None)
+    _build.update(running=True, step='Starting', done=0, total=10, log=[], error=None)
     threading.Thread(target=_run_build, daemon=True).start()
     return _build
 

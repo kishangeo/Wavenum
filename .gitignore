@@ -21,6 +21,8 @@ databases/library/*
 !databases/library/rod_raman.npy
 !databases/library/cod_minerals_xrd.json
 !databases/library/_minerals.json
+!databases/library/community_raman.json
+!databases/library/community_raman.npy
 
 # third-party sample files and papers (not ours to redistribute)
 samples/formats/

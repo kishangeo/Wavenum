@@ -101,6 +101,18 @@ def rod():
     print(f'  downloaded {n} new, {len(list(out.glob("*.rod")))} on disk')
 
 
+COMMUNITY_URL = 'https://raw.githubusercontent.com/kishangeo/Wavenum/main/databases/community/minerals.json'
+COMMUNITY = Path(__file__).resolve().parent.parent / 'databases' / 'community' / 'minerals.json'
+
+
+def community():
+    """Latest community minerals pack from GitHub (kept as is if offline)."""
+    try:
+        fetch(COMMUNITY_URL, COMMUNITY, timeout=60)
+    except Exception as e:
+        print('community pack not updated:', e)
+
+
 def cod():
     out = RAW / 'cod_amcsd'
     out.mkdir(parents=True, exist_ok=True)

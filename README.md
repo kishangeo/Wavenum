@@ -150,12 +150,14 @@ straight after installation:
 |---|---|---|---|
 | Raman | Raman Open Database (ROD) | 1,131 | CC0 |
 | Raman | Starter minerals (synthetic profiles at literature peak positions) | 31 | MIT (this project) |
+| Raman | [Community minerals](databases/community/README.md): new meteorite shock minerals from published peak positions, source DOI per entry | 5 | MIT (this project) |
 | FTIR | Starter minerals (synthetic profiles at RRUFF infrared band positions) | 38 | MIT (this project) |
 | XRD | COD mineral structures 9000000–9017999 (AMCSD-derived), powder patterns computed for Cu Kα (1.54184 Å) | 14,343 (4,107 minerals) | CC0 |
 
 The full set adds about 10,000 more spectra, including the RRUFF Raman and infrared collections. These
 are not redistributed here. Click **Mineral ID → Download & build full libraries** in the app, or run
-(about 450 MB; files already downloaded are reused):
+(about 450 MB; files already downloaded are reused). Running it again updates the libraries: new Raman Open
+Database entries and the latest [community minerals pack](databases/community/README.md) are fetched.
 
 ```bash
 python backend/download_databases.py
