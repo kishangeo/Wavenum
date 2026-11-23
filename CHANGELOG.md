@@ -2,6 +2,10 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.10.2 (2026-11-23)
+- Plot toolbar moved to a vertical column in its own margin, so it no longer overlaps the legend (spectrum, PCA and map
+  plots). Exported figures are unchanged.
+
 ## 0.10.1 (2026-11-23)
 - Interface refresh: white header, segmented technique switch, panels separated by hairline gaps, one corner radius,
   softer buttons and cards, system UI font.

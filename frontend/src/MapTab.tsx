@@ -67,7 +67,7 @@ function mapFigure(ms: MapState, dark: boolean, fig: ReturnType<typeof useStore.
   if (a && ms.tool === 'line') shapes.push(b ? { type: 'line', x0: a[0], y0: a[1], x1: b[0], y1: b[1], line: { color: '#f8fafc', width: 2 } } : { type: 'circle', x0: a[0] - 0.3, x1: a[0] + 0.3, y0: a[1] - 0.3, y1: a[1] + 0.3, line: { color: '#f8fafc' } })
   const ax = { color: fg, showgrid: false, zeroline: false, showline: true, linecolor: fg, mirror: true, ticks: fig.ticks, automargin: true }
   const layout = {
-    paper_bgcolor: bg, plot_bgcolor: bg, font: { family: fig.font, size: ptToPx(fig.size), color: fg }, margin: { l: 60, r: 20, t: 30, b: 50 },
+    paper_bgcolor: bg, plot_bgcolor: bg, font: { family: fig.font, size: ptToPx(fig.size), color: fg }, modebar: { orientation: 'v', bgcolor: 'rgba(0,0,0,0)', color: fg + '80', activecolor: '#0d9488' }, margin: { l: 60, r: print || touch() ? 20 : 48, t: 30, b: 50 },
     title: { text: `${m.name}: ${layer.name}`, font: { size: ptToPx(fig.size) } },
     // a line or depth scan (one row) fills the plot instead of keeping equal X/Y scales
     xaxis: { ...ax, title: { text: fig.xLabel || (m.ny === 1 ? 'Position along scan (µm)' : 'X (µm)') }, constrain: 'domain' },

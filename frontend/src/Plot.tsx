@@ -104,7 +104,7 @@ export function figure(st: S, print: boolean) {
     .map(s => `${s.id}:${s.visible}:${JSON.stringify(s.pipeline.map(p => [p.enabled, p.params]))}:${s.peaks.length}:${s.fit?.r2 ?? ''}:${s.proc ? 1 : 0}`).join('|')
   const layout = {
     paper_bgcolor: bg, plot_bgcolor: bg, font: { family: st.fig.font, size: fontPx, color: fg },
-    margin: { l: 70, r: 20, t: touch() ? 20 : 36, b: 55 }, showlegend: st.fig.legend && data.some(t => t.showlegend !== false),
+    modebar: { orientation: 'v', bgcolor: 'rgba(0,0,0,0)', color: fg + '80', activecolor: '#0d9488' }, margin: { l: 70, r: print || touch() ? 20 : 48, t: touch() ? 20 : 36, b: 55 }, showlegend: st.fig.legend && data.some(t => t.showlegend !== false),
     legend: { x: 1, xanchor: 'right', y: 1, bgcolor: 'rgba(0,0,0,0)' },
     hovermode: 'x', shapes, annotations,
     uirevision: `${st.technique}|${match ? 'mirror' : st.plotMode}|${st.showBaseline}|${st.hiddenCurves.join(',')}|${sig}`,

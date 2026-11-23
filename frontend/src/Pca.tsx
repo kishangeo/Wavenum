@@ -30,7 +30,7 @@ function pcaFigure(res: Res, dark: boolean, technique: keyof typeof TECH, fig: R
     ...res.loadings.slice(0, 2).map((l, i) => ({ x: res.x, y: l, name: `PC${i + 1} loading`, xaxis: 'x2', yaxis: 'y2', line: { width: 1.3, color: GROUP[i + 1] } })),
   ]
   const layout = {
-    paper_bgcolor: bg, plot_bgcolor: bg, font: { family: fig.font, color: fg, size: ptToPx(fig.size) }, margin: { l: 70, r: 30, t: 20, b: 50 },
+    paper_bgcolor: bg, plot_bgcolor: bg, font: { family: fig.font, color: fg, size: ptToPx(fig.size) }, modebar: { orientation: 'v', bgcolor: 'rgba(0,0,0,0)', color: fg + '80', activecolor: '#0d9488' }, margin: { l: 70, r: print || touch() ? 30 : 48, t: 20, b: 50 },
     showlegend: fig.legend, legend: { x: 1, xanchor: 'right', y: 0.36, bgcolor: 'rgba(0,0,0,0)' },
     xaxis: { ...ax, title: { text: pct(0) }, domain: [0, 1], anchor: 'y', range: pad(pc1) }, yaxis: { ...ax, title: { text: pct(1) }, domain: [0.5, 1], range: pad(pc2) },
     xaxis2: { ...ax, title: { text: TECH[technique].x }, anchor: 'y2', autorange: TECH[technique].reversed ? 'reversed' : true },
