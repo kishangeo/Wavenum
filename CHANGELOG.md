@@ -2,6 +2,12 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.10.1 (2026-11-23)
+- Interface refresh: white header, segmented technique switch, panels separated by hairline gaps, one corner radius,
+  softer buttons and cards, system UI font.
+- Accessibility: visible keyboard focus rings, tool tabs announced as tabs, error messages read out by screen readers,
+  help window as a proper modal, dark scrollbars and menus in dark mode, reduced motion respected.
+
 ## 0.10.0 (2026-11-23)
 - Match weights with peaks only now score the peaks of every library entry (before, the candidates were not ranked first, so
   the result was arbitrary).

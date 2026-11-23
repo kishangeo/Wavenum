@@ -93,7 +93,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="flex w-full min-w-0 flex-1 flex-col gap-2 overflow-y-auto border-r border-slate-200 p-2 dark:border-slate-800">
+    <aside className="flex w-full min-w-0 flex-1 flex-col gap-2.5 overflow-y-auto bg-slate-50 p-2.5 dark:bg-slate-950">
       <label
         onDragOver={e => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)}
         onDrop={e => { e.preventDefault(); setOver(false); upload(e.dataTransfer.files) }}
@@ -148,7 +148,7 @@ export default function Sidebar() {
             className={`flex items-center gap-1 rounded border px-1 py-0.5 ${s.id === st.activeId ? 'border-teal-500 bg-teal-500/10' : 'border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
             <input type="checkbox" title="Show / hide" checked={s.visible} onClick={e => e.stopPropagation()} onChange={e => st.patch(s.id, { visible: e.target.checked })} />
             <input type="color" title="Colour" value={s.color} onClick={e => e.stopPropagation()} onChange={e => st.patch(s.id, { color: e.target.value })} className="h-5 w-5 shrink-0 cursor-pointer border-0 bg-transparent p-0" />
-            <input className="min-w-0 flex-1 bg-transparent text-xs outline-none" title="Rename" value={s.name} onChange={e => st.patch(s.id, { name: e.target.value })} />
+            <input className="min-w-0 flex-1 bg-transparent text-xs outline-none focus-visible:underline" aria-label="Rename spectrum" title="Rename" value={s.name} onChange={e => st.patch(s.id, { name: e.target.value })} />
             <button title="Delete" className="px-1 text-slate-400 hover:text-rose-500" onClick={e => { e.stopPropagation(); st.remove(s.id) }}><XIcon /></button>
           </li>
         ))}

@@ -2,12 +2,19 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 html, body, #root { height: 100%; }
-body { @apply bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 text-sm; }
+html { color-scheme: light; -webkit-tap-highlight-color: transparent; }
+html.dark { color-scheme: dark; }
+button, a, input, select, textarea { touch-action: manipulation; }
+:where(button, a, input, select, textarea, [tabindex]):focus-visible { @apply outline-2 outline-offset-1 outline-teal-500; }
+select { @apply bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-200; }
+table, .tabular { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; } }
+body { font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif; -webkit-font-smoothing: antialiased; @apply bg-slate-100/70 text-slate-800 dark:bg-slate-950 dark:text-slate-200 text-sm; }
 
 @layer components {
-  .btn { @apply inline-flex items-center justify-center gap-1 rounded px-2 py-1 text-xs font-medium border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700; }
-  .btn-primary { @apply border-teal-600 bg-teal-600 text-white hover:bg-teal-700 dark:border-teal-500 dark:bg-teal-600 dark:hover:bg-teal-500; }
-  .field { @apply w-full rounded border border-slate-300 bg-white px-1.5 py-0.5 text-xs dark:border-slate-700 dark:bg-slate-900; }
-  .card { @apply rounded border border-slate-200 bg-white p-2 dark:border-slate-800 dark:bg-slate-900; }
-  .label { @apply text-[11px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400; }
+  .btn { @apply transition-colors active:translate-y-px disabled:cursor-not-allowed inline-flex items-center justify-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium border border-slate-300/80 bg-white shadow-xs shadow-slate-900/5 hover:border-slate-400 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700; }
+  .btn-primary { @apply border-teal-700 bg-teal-600 text-white shadow-teal-900/20 hover:border-teal-800 hover:bg-teal-700 dark:border-teal-500 dark:bg-teal-600 dark:hover:bg-teal-500; }
+  .field { @apply transition-colors focus-visible:border-teal-500 w-full rounded-md border border-slate-300 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-900; }
+  .card { @apply rounded-lg border border-slate-200 bg-white p-2.5 shadow-xs shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900; }
+  .label { @apply text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400; }
 }
