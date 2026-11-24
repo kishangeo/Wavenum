@@ -148,7 +148,7 @@ export default function DigitizerPanel() {
         <p className="text-slate-500">Click the four points on the image in order, then type their axis values (linear axes).</p>
         {NAMES.map((n, i) => (
           <label key={n} className="flex items-center gap-2">
-            <span className={`w-10 ${d.pts[i] ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`}>{d.pts[i] ? <CheckIcon className="h-3 w-3" /> : <CircleIcon className="h-3 w-3" />} {n}</span>
+            <span className={`inline-flex w-14 shrink-0 items-center gap-1 whitespace-nowrap ${d.pts[i] ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`}>{d.pts[i] ? <CheckIcon className="h-3 w-3" /> : <CircleIcon className="h-3 w-3" />} {n}</span>
             <input className="field" placeholder={`${n} value`} value={d.vals[i]} onChange={e => d.set({ vals: d.vals.map((s, k) => (k === i ? e.target.value : s)) })} />
           </label>
         ))}

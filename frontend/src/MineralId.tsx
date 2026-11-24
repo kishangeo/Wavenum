@@ -1,7 +1,7 @@
 // Mineral ID tab: libraries, browsing, matching, cross-technique identification. Author: Kishan Tiwari
 import { useEffect, useState } from 'react'
 import { XIcon } from './icons'
-import { TECH, api, appConfig, dataOf, useActive, useStore, type Lib, type Match, type Mixture, type Technique } from './store'
+import { TECH, api, appConfig, inTauri, dataOf, useActive, useStore, type Lib, type Match, type Mixture, type Technique } from './store'
 
 // K-alpha weighted averages (the XRD library is computed for Cu K-alpha 1.54184 A), plus Cu K-alpha-1
 const TUBES: [string, number][] = [['Cu Kα', 1.54184], ['Cu Kα1', 1.5406], ['Co Kα', 1.79026], ['Mo Kα', 0.71073], ['Fe Kα', 1.93736], ['Cr Kα', 2.29100]]
@@ -20,7 +20,7 @@ function BuildLibraries({ onDone }: { onDone: () => void }) {
     return () => clearTimeout(t)
   }, [b])
   const start = async () => {
-    if (!window.confirm('Download about 450 MB of open spectral databases (RRUFF, Raman Open Database, COD minerals and others) and build the full libraries? This takes a while; files already downloaded are reused.')) return
+    if (!window.confirm('Download about 315 MB of open spectral databases (RRUFF and others) and build the full libraries? This takes a while; files already downloaded are reused.')) return
     try { setB(await api<BuildStatus>('/libraries/build', {})) } catch (e) { fail(e) }
   }
   const pct = b && b.total ? Math.round((100 * b.done) / b.total) : 0
@@ -144,7 +144,7 @@ export default function MineralId() {
           ))}
           {readOnly
             ? <p className="text-[11px] text-slate-500">Hosted version: open libraries only. Run Wavenum on your own computer for the full RRUFF collections and your own imports.</p>
-            : <BuildLibraries onDone={refresh} />}
+            : !inTauri && <BuildLibraries onDone={refresh} />}
           {st.technique !== 'xrd' && !readOnly && (
             <div className="flex gap-1 pt-1">
               <input className="field" placeholder="Folder of RRUFF .txt files, e.g. D:\RRUFF\raman" value={folder} onChange={e => setFolder(e.target.value)} />

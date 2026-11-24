@@ -60,7 +60,17 @@ export const defaultPipeline = (x: number[]): Step[] =>
   (['crop', 'despike', 'baseline', 'smooth', 'normalize'] as StepType[]).map(t => newStep(t, x, false))
 
 // In the desktop app (Tauri) requests go to Rust commands; in the browser to the Python server.
-const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+export const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+const WEB = 'https://wavenum.vercel.app' // relative links (the manual) open from the website in the desktop app
+
+// Desktop app: the webview cannot open new tabs, so links leaving the app go to the system browser.
+if (inTauri) document.addEventListener('click', e => {
+  const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
+  if (!a || a.hasAttribute('download') || (a.target !== '_blank' && a.origin === location.origin)) return
+  e.preventDefault()
+  const url = a.origin === location.origin ? WEB + a.pathname + a.search : a.href
+  import('@tauri-apps/api/core').then(({ invoke }) => invoke('open_url', { url })).catch(err => useStore.getState().fail(err))
+})
 const COMMANDS: Record<string, string> = {
   '/process': 'process', '/peaks/find': 'peaks_find', '/peaks/fit': 'peaks_fit', '/peaks/mc': 'peaks_mc', '/libraries': 'libraries',
   '/libraries/search': 'libraries_search', '/libraries/entry': 'libraries_entry', '/libraries/import': 'libraries_import',
@@ -246,9 +256,22 @@ export function interp(x: number[], y: number[], xi: number[]): number[] {
 }
 
 export function download(name: string, text: string, type = 'text/plain') {
+  saveBlob(name, new Blob([text], { type }))
+}
+
+/** Save a file: a browser download on the website, a Save As dialog in the desktop app (its webview has no downloads). */
+export async function saveBlob(name: string, blob: Blob) {
+  if (inTauri) {
+    try {
+      const { invoke } = await import('@tauri-apps/api/core')
+      const path = await invoke<string>('save_file', new Uint8Array(await blob.arrayBuffer()), { headers: { 'x-name': encodeURIComponent(name) } })
+      if (path) useStore.getState().set({ error: `Saved to ${path}` })
+    } catch (e) { useStore.getState().fail(e) }
+    return
+  }
   const a = document.createElement('a')
-  a.href = URL.createObjectURL(new Blob([text], { type }))
+  a.href = URL.createObjectURL(blob)
   a.download = name
   a.click()
-  URL.revokeObjectURL(a.href)
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000)
 }

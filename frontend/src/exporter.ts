@@ -1,6 +1,7 @@
 // Publication figure export shared by every plot: PNG, JPG, TIFF, EPS (raster at the chosen DPI, with the
 // DPI written into the file), SVG and PDF (vector). Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 import Plotly from 'plotly.js-dist-min'
+import { saveBlob } from './store'
 
 export type ExportFormat = 'png' | 'jpg' | 'tiff' | 'eps' | 'svg' | 'pdf'
 export const FORMATS: { id: ExportFormat; label: string; vector: boolean }[] = [
@@ -13,12 +14,7 @@ const CSS_DPI = 96 // Plotly lays figures out in CSS pixels
 export const mmToCss = (mm: number) => Math.round((mm / 25.4) * CSS_DPI)
 
 function saveBytes(bytes: Uint8Array | Blob, name: string, type: string) {
-  const blob = bytes instanceof Blob ? bytes : new Blob([bytes as BlobPart], { type })
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = name
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000)
+  saveBlob(name, bytes instanceof Blob ? bytes : new Blob([bytes as BlobPart], { type }))
 }
 
 function dataUrlBytes(url: string): Uint8Array {

@@ -2,6 +2,17 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.11.0 (2026-11-24)
+- Digitizer: axis-calibration labels (Xmin, Xmax, Ymin, Ymax) stay on one line with their icons.
+- Phones: the Raman / XRD / FTIR switch gets its own full-width row under the logo, theme and Help buttons, and tool tab
+  labels stay on one line.
+- Desktop app: the installer now carries every reference library (RRUFF Raman and FTIR, pigments, microplastics,
+  polymers, drugs and the others, besides ROD and COD XRD), so nothing has to be downloaded or built after installing.
+- Desktop app: exports (figures, CSV, presets, sessions) open a Save As dialog to choose the folder and name, and links (website, release
+  notes, manual) open in the system browser. Before, both did nothing.
+- Tablets: the header fits on one line (the tagline shows on wide screens only).
+- Desktop app packaged for the Microsoft Store; privacy policy page (/privacy.html).
+
 ## 0.10.2 (2026-11-23)
 - Plot toolbar moved to a vertical column in its own margin, so it no longer overlaps the legend (spectrum, PCA and map
   plots). Exported figures are unchanged.
