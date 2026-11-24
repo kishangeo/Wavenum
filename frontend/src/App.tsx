@@ -111,6 +111,7 @@ function Help({ version, onClose }: { version: string; onClose: () => void }) {
           <span className="flex-1 text-sm font-semibold">Wavenum user manual · v{version}</span>
           <button className="btn btn-primary" onClick={() => frame?.contentWindow?.print()}>Save as PDF / print</button>
           <a className="btn" href={src} target="_blank" rel="noopener noreferrer">Open in new tab</a>
+          <a className="hidden text-xs text-slate-500 underline sm:inline" href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy</a>
           <button className="btn" aria-label="Close" onClick={onClose}><XIcon /></button>
         </div>
         <iframe ref={el => { frame = el }} src={src} title="Wavenum user manual" className="min-h-0 flex-1 bg-white" />

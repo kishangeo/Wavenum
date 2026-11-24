@@ -2,6 +2,10 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.11.1 (2026-11-24)
+- Desktop app: Google Tag Manager is loaded on the website only, so the desktop app makes no analytics calls.
+- Privacy policy states the website's Google Analytics use; Privacy link in the Help window.
+
 ## 0.11.0 (2026-11-24)
 - Digitizer: axis-calibration labels (Xmin, Xmax, Ymin, Ymax) stay on one line with their icons.
 - Phones: the Raman / XRD / FTIR switch gets its own full-width row under the logo, theme and Help buttons, and tool tab
