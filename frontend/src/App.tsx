@@ -1,5 +1,6 @@
 // Wavenum shell: header + three-panel studio. Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 import { useEffect, useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { MoonIcon, SunIcon, XIcon } from './icons'
 import DigitizerPanel, { DigitizerCanvas } from './Digitizer'
 import MineralId from './MineralId'
@@ -91,6 +92,7 @@ export default function App() {
         <button type="button" role="alert" aria-live="assertive" title="Dismiss" onClick={() => st.set({ error: null })}
           className="fixed bottom-3 left-1/2 z-50 -translate-x-1/2 cursor-pointer rounded bg-slate-900 px-3 py-2 text-xs text-white shadow-lg dark:bg-slate-100 dark:text-slate-900">{st.error}</button>
       )}
+      <Analytics />
     </div>
   )
 }
