@@ -31,8 +31,8 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
   const bestR2 = mc ? Math.max(...mc.runs.map(r => r.r2)) : 0
   const kept = mc ? mc.runs.filter(r => r.r2 >= bestR2 - tol) : []
 
-  // Website: each request must finish within the host's time limit, so the runs go out in small batches,
-  // several at once (each lands on its own server instance). Desktop: one call uses every CPU core.
+  // Website: each request must finish within the host's time limit, so the runs go out in batches,
+  // a few at once. Desktop: one call uses every CPU core.
   const run = async () => {
     setBusy(true)
     setDone(0)
@@ -40,23 +40,26 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
       const d = dataOf(a)
       const body = { x: d.x, y: d.y, centers: a.peaks.map(p => p.x), profile, max_shift: shift,
         xmin: range[0] === '' ? null : +range[0], xmax: range[1] === '' ? null : +range[1] }
-      const batch = inTauri ? runs : Math.max(2, Math.min(10, Math.floor(40 / a.peaks.length)))
-      // the first batch also holds the default-start fit; the others only random starts
-      const jobs: { runs: number; seed: number; base: boolean }[] = []
-      for (let k = 0; k < runs; k += batch) jobs.push({ runs: Math.min(batch, runs - k), seed: k + 1, base: k === 0 })
+      // each request stops after `budget` seconds and returns the runs it finished; ask again until all are done
+      const batch = inTauri ? runs : Math.ceil(runs / 3)
       const got: Mc[] = []
-      let next = 0, n = 0
+      let asked = 0, n = 0, seed = 1
       const worker = async () => {
-        while (next < jobs.length) {
-          const i = next++
-          got[i] = await api<Mc>('/peaks/mc', { ...body, ...jobs[i] })
+        while (asked < runs) {
+          const k = Math.min(batch, runs - asked)
+          const i = got.length, base = asked === 0  // the first request also holds the default-start fit
+          asked += k
+          got.push(undefined as unknown as Mc)
+          got[i] = await api<Mc>('/peaks/mc', { ...body, runs: Math.max(base ? 2 : 1, k), seed: seed++, base, budget: inTauri ? null : 20 })
+          asked -= k - got[i].runs.length  // runs the budget cut off go back in the queue
           setDone(n += got[i].runs.length)
+          if (!got[i].runs.length) throw new Error('No Monte Carlo run converged')
         }
       }
-      // ponytail: 6 requests in flight; raise it if the host allows more parallel function instances
-      await Promise.all(Array.from({ length: Math.min(6, jobs.length) }, worker))
-      // batch 0 comes first, so run 1 is always the default-start fit
-      const r: Mc = { ...got[0], runs: got.flatMap(g => g.runs), best: got.reduce((p, g) => (g.best.r2 > p.best.r2 ? g : p)).best }
+      // ponytail: 3 requests in flight; the host may run them on one instance, so more only slows each
+      await Promise.all(Array.from({ length: Math.min(3, Math.ceil(runs / batch)) }, worker))
+      // request 0 comes first, so run 1 is always the default-start fit
+      const r: Mc = { ...got[0], runs: got.flatMap(g => g.runs).slice(0, runs), best: got.reduce((p, g) => (g.best.r2 > p.best.r2 ? g : p)).best }
       setRes({ id: a.id, mc: r })
       setPeak(0)
       st.patch(a.id, { fit: r.best })

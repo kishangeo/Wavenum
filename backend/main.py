@@ -85,13 +85,14 @@ class McReq(FitReq):
     max_shift: float = 5.0
     seed: int = 1
     base: bool = True  # include the default-start fit (first batch only)
+    budget: float | None = None  # seconds; return early with the runs done so far
 
 
 @app.post('/api/peaks/mc')
 def mc_fit(r: McReq):
     if not 1 <= r.runs <= 1000:
         raise HTTPException(400, 'Runs must be between 1 and 1000')
-    return _guard(pk.mc_fit, r.x, r.y, r.centers, r.profile, r.xmin, r.xmax, r.runs, r.max_shift, r.seed, r.base)
+    return _guard(pk.mc_fit, r.x, r.y, r.centers, r.profile, r.xmin, r.xmax, r.runs, r.max_shift, r.seed, r.base, r.budget)
 
 
 @app.post('/api/map/wdf')
