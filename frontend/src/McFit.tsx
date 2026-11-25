@@ -3,7 +3,7 @@
 // Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 import Plotly from 'plotly.js-dist-min'
 import { useEffect, useRef, useState } from 'react'
-import { api, dataOf, download, useStore, type Fit, type FitRow, type Spectrum } from './store'
+import { api, dataOf, download, inTauri, useStore, type Fit, type FitRow, type Spectrum } from './store'
 
 type Mc = { best: Fit; runs: { r2: number; table: FitRow[] }[]; centers: number[]; max_shift: number }
 const PARAMS = [['center', 'Position'], ['fwhm', 'FWHM'], ['area', 'Area'], ['height', 'Height']] as const
@@ -31,7 +31,8 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
   const bestR2 = mc ? Math.max(...mc.runs.map(r => r.r2)) : 0
   const kept = mc ? mc.runs.filter(r => r.r2 >= bestR2 - tol) : []
 
-  // ponytail: about 40 peak-fits per request keep each request under the hosted server's time limit; one call would be faster locally
+  // Website: each request must finish within the host's time limit, so the runs go out in small batches,
+  // several at once (each lands on its own server instance). Desktop: one call uses every CPU core.
   const run = async () => {
     setBusy(true)
     setDone(0)
@@ -39,22 +40,26 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
       const d = dataOf(a)
       const body = { x: d.x, y: d.y, centers: a.peaks.map(p => p.x), profile, max_shift: shift,
         xmin: range[0] === '' ? null : +range[0], xmax: range[1] === '' ? null : +range[1] }
-      const BATCH = Math.max(1, Math.min(10, Math.floor(40 / a.peaks.length)))
-      let r: Mc | null = null
-      for (let k = 0; k < runs; k += BATCH) {
-        const n = Math.min(BATCH, runs - k)
-        // every batch starts with the default-start fit; keep that run only once
-        const b = await api<Mc>('/peaks/mc', { ...body, runs: Math.max(2, k ? n + 1 : n), seed: k + 1 })
-        if (!r) r = b
-        else {
-          r.runs.push(...b.runs.slice(1, n + 1))
-          if (b.best.r2 > r.best.r2) r.best = b.best
+      const batch = inTauri ? runs : Math.max(2, Math.min(10, Math.floor(40 / a.peaks.length)))
+      // the first batch also holds the default-start fit; the others only random starts
+      const jobs: { runs: number; seed: number; base: boolean }[] = []
+      for (let k = 0; k < runs; k += batch) jobs.push({ runs: Math.min(batch, runs - k), seed: k + 1, base: k === 0 })
+      const got: Mc[] = []
+      let next = 0, n = 0
+      const worker = async () => {
+        while (next < jobs.length) {
+          const i = next++
+          got[i] = await api<Mc>('/peaks/mc', { ...body, ...jobs[i] })
+          setDone(n += got[i].runs.length)
         }
-        setDone(r!.runs.length)
       }
-      setRes({ id: a.id, mc: r! })
+      // ponytail: 6 requests in flight; raise it if the host allows more parallel function instances
+      await Promise.all(Array.from({ length: Math.min(6, jobs.length) }, worker))
+      // batch 0 comes first, so run 1 is always the default-start fit
+      const r: Mc = { ...got[0], runs: got.flatMap(g => g.runs), best: got.reduce((p, g) => (g.best.r2 > p.best.r2 ? g : p)).best }
+      setRes({ id: a.id, mc: r })
       setPeak(0)
-      st.patch(a.id, { fit: r!.best })
+      st.patch(a.id, { fit: r.best })
     } catch (e) { st.fail(e) } finally { setBusy(false) }
   }
 

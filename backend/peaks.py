@@ -78,19 +78,23 @@ def _mc_run(job):
         return None
 
 
-def mc_fit(x, y, centers, profile='lorentzian', xmin=None, xmax=None, runs=100, max_shift=5.0, seed=1):
+def mc_fit(x, y, centers, profile='lorentzian', xmin=None, xmax=None, runs=100, max_shift=5.0, seed=1, base=True):
     """Monte Carlo peak deconvolution (after SpecXY, Gies et al. 2024): repeat the fit from random starts
     (centre within +-max_shift, width x0.5-2, height x0.5-1.5) and return every run plus the best fit, so the
-    spread of equally good solutions can be seen. Run 0 uses the ordinary start values."""
+    spread of equally good solutions can be seen. Run 0 uses the ordinary start values; base=False skips it
+    (later batches of a run split over several requests)."""
     x, y = np.asarray(x, float), np.asarray(y, float)
-    base = fit(x, y, centers, profile, xmin, xmax, max_shift=max_shift)
-    cs = sorted(c for c in centers if base['x'][0] <= c <= base['x'][-1])
-    xs, ys = np.asarray(base['x']), np.asarray(base['fit']) + np.asarray(base['residual'])
+    m = (x >= (xmin if xmin is not None else -np.inf)) & (x <= (xmax if xmax is not None else np.inf))
+    xs, ys = x[m], y[m]
+    first = fit(xs, ys, centers, profile, max_shift=max_shift) if base else None
+    cs = sorted(c for c in centers if len(xs) and xs[0] <= c <= xs[-1])
+    if not cs:
+        raise ValueError('No peaks inside the fit range')
     step = float(np.median(np.diff(xs)))
     span = xs[-1] - xs[0]
     rng = np.random.default_rng(seed)
     jobs = []
-    for _ in range(int(runs) - 1):
+    for _ in range(int(runs) - (1 if base else 0)):
         starts = []
         for c in cs:
             gaps = [abs(c - o) for o in cs if o != c]
@@ -99,19 +103,25 @@ def mc_fit(x, y, centers, profile='lorentzian', xmin=None, xmax=None, runs=100, 
             h = max(float(np.interp(c0, xs, ys) - ys.min()), 1e-9)
             starts.append((c0, sig * rng.uniform(0.5, 2), h * rng.uniform(0.5, 1.5)))
         jobs.append((xs, ys, cs, profile, starts, max_shift))
+    pool = (os.cpu_count() or 2) // 2  # physical cores
     try:  # one fit takes ~0.1-1 s, so spread the runs over the CPU cores
         from concurrent.futures import ProcessPoolExecutor
+        if pool < 2 or len(jobs) < 8:
+            raise RuntimeError('starting worker processes costs more than it saves here')
         with ProcessPoolExecutor(max(1, (os.cpu_count() or 2) // 2)) as ex:  # physical cores
             results = list(ex.map(_mc_run, jobs, chunksize=max(1, len(jobs) // (4 * max(1, (os.cpu_count() or 2) // 2)))))
     except Exception:  # no process pool (e.g. some hosted environments)
         results = [_mc_run(j) for j in jobs]
-    out, best = [dict(r2=base['r2'], table=base['table'])], base
+    out = [dict(r2=first['r2'], table=first['table'])] if first else []
+    best = first
     for r in results:
         if r is None:
             continue
         out.append(dict(r2=r['r2'], table=r['table']))
-        if r['r2'] > best['r2']:
+        if best is None or r['r2'] > best['r2']:
             best = r
+    if best is None:
+        raise ValueError('No Monte Carlo run converged')
     return dict(best=best, runs=out, centers=cs, max_shift=max_shift)
 
 
@@ -134,4 +144,6 @@ if __name__ == '__main__':  # self-check
     assert max(cs) - min(cs) < 1 and all(abs(run['table'][1]['center'] - 502) <= 6 + 1e-9 for run in mc['runs'])
     for prof in ('gaussian', 'voigt'):
         assert fit(xs, ys, [464, 500], prof)['r2'] > 0.9
+    nb = mc_fit(xs, ys, [462, 502], 'lorentzian', runs=5, max_shift=6, seed=2, base=False)
+    assert len(nb['runs']) == 5 and nb['best']['r2'] > 0.99
     print('peaks ok')

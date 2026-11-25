@@ -2,6 +2,9 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## Unreleased
+- Monte Carlo deconvolution on the website runs several batches at once, so it finishes several times faster.
+
 ## 0.12.2 (2026-11-25)
 - Mineral ID keeps its library list when you switch tabs and come back (it showed 0 entries).
 - Library browser: a slow reply to an earlier search no longer replaces the results of the current one.
