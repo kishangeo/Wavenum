@@ -195,9 +195,39 @@ def read_cif(raw):
     return _with_tempfile(raw, '.cif', go)
 
 
+def read_specdb(raw):
+    """specDB MATLAB project (.mat v7.3 = HDF5): data2save.DB holds x_signal / y_signal per entry and
+    data2save.Meta.SampleName the names. Grids differ between entries, so this returns a list of spectra;
+    entries with several y rows (spot maps) give their mean, as specDB plots them."""
+    import io
+    import h5py
+    h = h5py.File(io.BytesIO(raw), 'r')
+    try:
+        db, meta = h['data2save/DB'], h['data2save/Meta']
+    except KeyError:
+        raise ValueError('Not a specDB file (no data2save.DB); only specDB .mat files are supported')
+    out = []
+    for i in range(db['x_signal'].shape[0]):
+        x, y = (np.asarray(h[db[k][i, 0]][()], float) for k in ('x_signal', 'y_signal'))
+        x = x.ravel()
+        if x.size < 3 or y.size % x.size:
+            continue
+        rows = y.reshape(-1, x.size)
+        name = ''.join(map(chr, h[meta['SampleName'][i, 0]][()].ravel())) or f'spectrum {i + 1}'
+        if len(rows) > 1:
+            name += f' (mean of {len(rows)})'
+        y = rows.mean(0)
+        ok = np.isfinite(x) & np.isfinite(y)
+        if ok.sum() >= 3:
+            out.append(dict(name=name, x=x[ok].tolist(), y=y[ok].tolist()))
+    if not out:
+        raise ValueError('No spectra found in specDB file')
+    return dict(columns=[], data=[], spectra=out)
+
+
 READERS = {'.jdx': read_jcamp, '.dx': read_jcamp, '.jcm': read_jcamp, '.jcamp': read_jcamp, '.spc': read_spc,
            '.spa': read_spa, '.wdf': read_wdf, '.asp': read_asp, '.xrdml': read_xrdml, '.ras': read_ras,
-           '.uxd': read_uxd, '.cif': read_cif}
+           '.uxd': read_uxd, '.cif': read_cif, '.mat': read_specdb}
 
 
 def reader_for(name):

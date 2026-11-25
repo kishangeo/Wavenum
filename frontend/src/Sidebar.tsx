@@ -10,6 +10,8 @@ export default function Sidebar() {
   const st = useStore()
   const active = useActive()
   const [pending, setPending] = useState<Pending[]>([])
+  type Named = { name: string; x: number[]; y: number[] }
+  const [picks, setPicks] = useState<{ file: string; spectra: Named[]; sel: number[] }[]>([])
   const [over, setOver] = useState(false)
   const [subId, setSubId] = useState('')
   const [subK, setSubK] = useState('1')
@@ -46,9 +48,10 @@ export default function Sidebar() {
         if (f.name.toLowerCase().endsWith('.wavenum.json')) { st.loadSession(JSON.parse(await f.text())); continue }
         const fd = new FormData()
         fd.append('file', f)
-        const t = await api<{ columns: string[]; data: number[][] }>('/parse', fd)
+        const t = await api<{ columns: string[]; data: number[][]; spectra?: Named[] }>('/parse', fd)
         const name = f.name.replace(/\.[^.]+$/, '')
-        if (t.columns.length === 2) st.addSpectrum(name, t.data[0], t.data[1])
+        if (t.spectra) setPicks(p => [...p, { file: name, spectra: t.spectra!, sel: [] }])
+        else if (t.columns.length === 2) st.addSpectrum(name, t.data[0], t.data[1])
         else setPending(p => [...p, { name, ...t, xi: 0, yi: 1 }])
       } catch (e) { st.fail(`${f.name}: ${e instanceof Error ? e.message : e}`) }
     }
@@ -99,7 +102,7 @@ export default function Sidebar() {
         onDrop={e => { e.preventDefault(); setOver(false); upload(e.dataTransfer.files) }}
         className={`flex cursor-pointer flex-col items-center rounded border-2 border-dashed p-3 text-center text-xs ${over ? 'border-teal-500 bg-teal-500/10' : 'border-slate-300 dark:border-slate-700'}`}>
         <span className="font-medium">Drop spectra here or click to browse</span>
-        <span className="text-slate-500">text · xlsx · JCAMP · SPC · SPA · OPUS · WDF · ASP · XRDML · RAS · UXD · CIF</span>
+        <span className="text-slate-500">text · xlsx · JCAMP · SPC · SPA · OPUS · WDF · ASP · XRDML · RAS · UXD · CIF · specDB .mat</span>
         <span className="text-slate-500">loads as <b>{TECH[st.technique].label}</b> — switch technique first if needed</span>
         <input type="file" multiple className="hidden" onChange={e => { if (e.target.files) upload(e.target.files); e.target.value = '' }} />
       </label>
@@ -140,6 +143,24 @@ export default function Sidebar() {
           </div>
         </div>
       ))}
+
+      {picks.map((p, k) => {
+        const add = (idx: number[]) => { idx.forEach(i => st.addSpectrum(p.spectra[i].name, p.spectra[i].x, p.spectra[i].y)); setPicks(a => a.filter((_, i) => i !== k)) }
+        return (
+          <div key={k} className="card space-y-1 text-xs">
+            <div className="font-medium">{p.file}: {p.spectra.length} spectra, choose which to add</div>
+            <select multiple size={8} className="field h-auto" aria-label="Spectra in the file"
+              value={p.sel.map(String)} onChange={e => { const sel = Array.from(e.target.selectedOptions, o => +o.value); setPicks(a => a.map((q, i) => (i === k ? { ...q, sel } : q))) }}>
+              {p.spectra.map((s, i) => <option key={i} value={i}>{s.name}</option>)}
+            </select>
+            <div className="flex gap-1">
+              <button className="btn btn-primary flex-1" disabled={!p.sel.length} onClick={() => add(p.sel)}>Add {p.sel.length || ''} selected</button>
+              <button className="btn" onClick={() => add(p.spectra.map((_, i) => i))}>All</button>
+              <button className="btn" onClick={() => setPicks(a => a.filter((_, i) => i !== k))}>Cancel</button>
+            </div>
+          </div>
+        )
+      })}
 
       <div className="label">Spectra ({mine.length}){others > 0 && <span className="normal-case"> · {others} in other techniques</span>}</div>
       <ul className="space-y-1">

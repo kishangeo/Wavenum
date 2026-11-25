@@ -196,6 +196,7 @@ owners listed on the Spectragryph page for the other collections.
 | Rigaku | `.ras` | synthetic input only |
 | Bruker / Siemens | `.uxd` | synthetic input only |
 | Renishaw WiRE | `.wdf` (single spectra, maps, line and depth scans) | yes, real files |
+| specDB (MATLAB FTIR database) | `.mat` (v7.3); a picker lists every spectrum, spot maps as their mean | yes, real files |
 
 Files containing several spectra load the first non-empty one in the workspace; open them in the Map tab to use all of them. Old-format SPC, Horiba, WITec, Bruker
 `.raw/.brml` and PerkinElmer `.sp` are not supported; export those to text or JCAMP-DX.
@@ -247,7 +248,7 @@ For interface work run `npm run dev` in `frontend/` (it proxies `/api` to the ba
 
 If Wavenum helps your research, please cite it as:
 
-> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.11.1).
+> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.12.0).
 > Zenodo. https://doi.org/10.5281/zenodo.24421170
 
 This DOI always resolves to the latest version; each release also has its own DOI on Zenodo

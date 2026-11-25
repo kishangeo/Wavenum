@@ -10,3 +10,4 @@ python-multipart>=0.0.9
 jcamp>=1.3
 brukeropus>=1.4
 renishawWiRE>=0.1.16
+h5py>=3.10

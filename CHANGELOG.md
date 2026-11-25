@@ -2,6 +2,9 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.12.0 (2026-11-25)
+- Import specDB MATLAB FTIR databases (.mat v7.3): pick any or all of the stored spectra; spot maps load as their mean.
+
 ## 0.11.1 (2026-11-24)
 - Desktop app: Google Tag Manager is loaded on the website only, so the desktop app makes no analytics calls.
 - Privacy policy states the website's Google Analytics use; Privacy link in the Help window.

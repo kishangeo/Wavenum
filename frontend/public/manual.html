@@ -115,7 +115,7 @@ On touch screens pinch to zoom, drag to pan and double-tap to reset the plot.</p
 a column picker appears: choose one, or add all of them as separate spectra. Excel workbooks (<code>.xlsx</code>) work the same way.</p>
 <h3>Instrument files</h3>
 <p>JCAMP-DX, Thermo SPC, Nicolet SPA, Bruker OPUS, Agilent ASP, PANalytical XRDML, Rigaku RAS, Bruker UXD and Renishaw WDF
-files are read directly. A <code>.cif</code> crystal structure is converted to a computed powder pattern (Cu Kα). Files that hold several
+files are read directly. A specDB FTIR database (<code>.mat</code>) opens a list of all its spectra to choose from; spot maps load as their mean spectrum. A <code>.cif</code> crystal structure is converted to a computed powder pattern (Cu Kα). Files that hold several
 spectra (maps, line and depth scans) load their first non-empty spectrum in the workspace; open them in the <span class="ui">Map</span> tab to use all of them.</p>
 <h3>Which technique?</h3>
 <p>A file is loaded into the technique selected at that moment. Switch technique <em>before</em> loading. FTIR spectra are shown
@@ -337,6 +337,7 @@ are set per layer.</p>
   <tr><td>Agilent</td><td><code>.asp</code></td></tr>
   <tr><td>PANalytical, Rigaku, Bruker/Siemens</td><td><code>.xrdml .ras .uxd</code></td></tr>
   <tr><td>Renishaw WiRE</td><td><code>.wdf</code> (single spectra, maps, line and depth scans)</td></tr>
+  <tr><td>specDB (MATLAB)</td><td><code>.mat</code> (v7.3 FTIR database)</td></tr>
   <tr><td>Crystal structure</td><td><code>.cif</code> (computed powder pattern)</td></tr>
   <tr><td>Figures for the digitizer</td><td><code>.png .jpg .pdf</code></td></tr>
 </table>
