@@ -7,7 +7,8 @@
 <p align="center">
   Local-first Raman, FTIR and XRD processing, peak analysis and mineral identification.<br>
   Created by <a href="https://kishangeo.github.io/">Kishan Tiwari</a><br><br>
-  <a href="https://doi.org/10.5281/zenodo.24421170"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24421170.svg" alt="DOI 10.5281/zenodo.24421170"></a>
+  <a href="https://doi.org/10.5281/zenodo.24421170"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24421170.svg" alt="DOI 10.5281/zenodo.24421170"></a><br><br>
+  <a href="https://apps.microsoft.com/detail/9MW3K9068R9X?mode=direct"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get Wavenum from the Microsoft Store" width="200"></a>
 </p>
 
 ---
@@ -100,6 +101,10 @@ The header shows the version and how much reference data Wavenum is searching fo
 (spectra, distinct phase names and libraries), counted from the libraries actually installed.
 
 ## Installation
+
+On Windows, the simplest way is the desktop app from the
+[Microsoft Store](https://apps.microsoft.com/detail/9MW3K9068R9X): it needs no Python or Node.js and works offline.
+To run it from source instead:
 
 Requirements: Python 3.10 or newer, and Node.js 18 or newer (only to build the interface).
 
