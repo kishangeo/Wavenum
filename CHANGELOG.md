@@ -2,6 +2,9 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## Unreleased
+- specDB .mat files are read in the browser on the website (no upload; the hosted site rejected these large files), switch to FTIR and plot the first spectrum at once; the picker offers the rest.
+
 ## 0.12.0 (2026-11-25)
 - Import specDB MATLAB FTIR databases (.mat v7.3): pick any or all of the stored spectra; spot maps load as their mean.
 - Vercel Web Analytics on the website only (the desktop app makes no analytics calls); privacy policy updated.

@@ -48,9 +48,18 @@ export default function Sidebar() {
         if (f.name.toLowerCase().endsWith('.wavenum.json')) { st.loadSession(JSON.parse(await f.text())); continue }
         const fd = new FormData()
         fd.append('file', f)
-        const t = await api<{ columns: string[]; data: number[][]; spectra?: Named[] }>('/parse', fd)
+        // specDB .mat files are often 100+ MB: read them in the browser instead of uploading (hosting limit ~4.5 MB)
+        const browserMat = f.name.toLowerCase().endsWith('.mat') && !('__TAURI_INTERNALS__' in window)
+        const t = browserMat
+          ? { columns: [] as string[], data: [] as number[][], spectra: await (await import('./specdb')).readSpecDB(await f.arrayBuffer()) }
+          : await api<{ columns: string[]; data: number[][]; spectra?: Named[] }>('/parse', fd)
         const name = f.name.replace(/\.[^.]+$/, '')
-        if (t.spectra) setPicks(p => [...p, { file: name, spectra: t.spectra!, sel: [] }])
+        if (t.spectra) {
+          // specDB is an FTIR database: switch to FTIR, then plot the first spectrum so the file visibly loads
+          if (useStore.getState().technique !== 'ftir') st.setTechnique('ftir')
+          st.addSpectrum(t.spectra[0].name, t.spectra[0].x, t.spectra[0].y)
+          if (t.spectra.length > 1) setPicks(p => [...p, { file: name, spectra: t.spectra!.slice(1), sel: [] }])
+        }
         else if (t.columns.length === 2) st.addSpectrum(name, t.data[0], t.data[1])
         else setPending(p => [...p, { name, ...t, xi: 0, yi: 1 }])
       } catch (e) { st.fail(`${f.name}: ${e instanceof Error ? e.message : e}`) }
@@ -148,7 +157,7 @@ export default function Sidebar() {
         const add = (idx: number[]) => { idx.forEach(i => st.addSpectrum(p.spectra[i].name, p.spectra[i].x, p.spectra[i].y)); setPicks(a => a.filter((_, i) => i !== k)) }
         return (
           <div key={k} className="card space-y-1 text-xs">
-            <div className="font-medium">{p.file}: {p.spectra.length} spectra, choose which to add</div>
+            <div className="font-medium">{p.file}: first spectrum plotted; {p.spectra.length} more to choose from</div>
             <select multiple size={8} className="field h-auto" aria-label="Spectra in the file"
               value={p.sel.map(String)} onChange={e => { const sel = Array.from(e.target.selectedOptions, o => +o.value); setPicks(a => a.map((q, i) => (i === k ? { ...q, sel } : q))) }}>
               {p.spectra.map((s, i) => <option key={i} value={i}>{s.name}</option>)}
