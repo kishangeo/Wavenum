@@ -92,7 +92,7 @@ export default function App() {
         <button type="button" role="alert" aria-live="assertive" title="Dismiss" onClick={() => st.set({ error: null })}
           className="fixed bottom-3 left-1/2 z-50 -translate-x-1/2 cursor-pointer rounded bg-slate-900 px-3 py-2 text-xs text-white shadow-lg dark:bg-slate-100 dark:text-slate-900">{st.error}</button>
       )}
-      <Analytics />
+      {!('__TAURI_INTERNALS__' in window) && <Analytics />}
     </div>
   )
 }
