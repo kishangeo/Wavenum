@@ -230,7 +230,7 @@ def build_sgd():
             t = {2: 'ftir', 3: 'raman'}.get(r['method']) or tech or _technique(r['xlabel'])
             if t is None:
                 continue
-            name, info = (_rruff_name(r['title']) if lib_id.startswith('rruff') else (r['title'], ''))
+            name, info = (_rruff_name(r['title']) if lib_id.startswith('rruff') else (r['title'].strip().rstrip(';').strip(), ''))
             f, s = minerals.get(name.lower(), ['', ''])
             # RRUFF records carry the ideal formula, '##CHEMISTRY=Ca_2_(Mg,Fe^2+^)_5_...', in a
             # 50-character field: use it when it fits, else the COD formula for that mineral.

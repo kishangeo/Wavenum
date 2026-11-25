@@ -38,11 +38,14 @@ function BuildLibraries({ onDone }: { onDone: () => void }) {
   )
 }
 
+// the tab unmounts when another tab is picked; keep the list so coming back shows it at once
+let libCache: Lib[] | null = null
+
 export default function MineralId() {
   const st = useStore()
   const a = useActive()
   const tech = TECH[st.technique]
-  const [libs, setLibs] = useState<Lib[] | null>(null)  // null while loading
+  const [libs, setLibs] = useState<Lib[] | null>(libCache)  // null while loading
   const [readOnly, setReadOnly] = useState(false)
   useEffect(() => { appConfig().then(c => setReadOnly(c.read_only)) }, [])
   const [off, setOff] = useState<Set<string>>(new Set())  // deselected library ids
@@ -55,17 +58,19 @@ export default function MineralId() {
   const [folder, setFolder] = useState('')
   const [busy, setBusy] = useState('')
   const [q, setQ] = useState('')
-  const [hits, setHits] = useState<Hit[]>([])
+  const [found, setFound] = useState<{ q: string; hits: Hit[] }>({ q: '', hits: [] })
+  const hits = found.q === q ? found.hits : []
   const [cross, setCross] = useState<Cross[] | null>(null)
 
-  const refresh = () => api<Lib[]>('/libraries').then(setLibs).catch(st.fail)
+  const refresh = () => api<Lib[]>('/libraries').then(l => setLibs(libCache = l)).catch(st.fail)
   useEffect(() => { refresh() }, [])
-  useEffect(() => { setTol(tech.tol); setHits([]); setQ('') }, [st.technique])
+  useEffect(() => { setTol(tech.tol); setFound({ q: '', hits: [] }); setQ('') }, [st.technique])
   // library browser: search as you type
   useEffect(() => {
-    if (q.trim().length < 2) return setHits([])
-    const t = setTimeout(() => api<Hit[]>(`/libraries/search?technique=${st.technique}&q=${encodeURIComponent(q)}`).then(setHits).catch(st.fail), 200)
-    return () => clearTimeout(t)
+    if (q.trim().length < 2) return
+    let live = true  // a reply to an older query must not overwrite a newer one
+    const t = setTimeout(() => api<Hit[]>(`/libraries/search?technique=${st.technique}&q=${encodeURIComponent(q)}`).then(h => live && setFound({ q, hits: h })).catch(e => live && st.fail(e)), 200)
+    return () => { live = false; clearTimeout(t) }
   }, [q, st.technique])
 
   const mine = (libs ?? []).filter(l => l.technique === st.technique)
@@ -168,7 +173,7 @@ export default function MineralId() {
             ))}
           </ul>
         )}
-        {q.trim().length >= 2 && !hits.length && <p className="text-[11px] text-slate-500">No {tech.label} reference matches “{q}”.</p>}
+        {q.trim().length >= 2 && found.q === q && !hits.length && <p className="text-[11px] text-slate-500">No {tech.label} reference matches “{q}”.</p>}
       </div>
 
       <div className="card space-y-1.5">

@@ -47,7 +47,8 @@ export default function App() {
         <div className="flex-1" />
         {ts && (
           <span className="hidden text-xs text-slate-500 lg:inline" title={`${TECH[st.technique].label} reference data: ${ts.spectra.toLocaleString()} spectra from ${ts.libraries} libraries, ${ts.phases.toLocaleString()} distinct mineral and phase names. Sources and citations: Mineral ID tab and Help.`}>
-            <b className="font-semibold text-slate-700 dark:text-slate-300">{ts.spectra.toLocaleString()}</b> reference spectra · {ts.phases.toLocaleString()} phases · {ts.libraries} {ts.libraries === 1 ? 'library' : 'libraries'}
+            <span className="2xl:hidden"><b className="font-semibold text-slate-700 dark:text-slate-300">{ts.spectra.toLocaleString(undefined, { notation: 'compact' })}</b> spectra · {ts.phases.toLocaleString(undefined, { notation: 'compact' })} phases</span>
+            <span className="hidden 2xl:inline"><b className="font-semibold text-slate-700 dark:text-slate-300">{ts.spectra.toLocaleString()}</b> reference spectra · {ts.phases.toLocaleString()} phases · {ts.libraries} {ts.libraries === 1 ? 'library' : 'libraries'}</span>
           </span>
         )}
         <button className="btn" onClick={() => st.set({ help: true })}>Help</button>

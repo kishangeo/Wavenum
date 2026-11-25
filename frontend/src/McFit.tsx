@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react'
 import { api, dataOf, download, useStore, type Fit, type FitRow, type Spectrum } from './store'
 
 type Mc = { best: Fit; runs: { r2: number; table: FitRow[] }[]; centers: number[]; max_shift: number }
-const BATCH = 10
 const PARAMS = [['center', 'Position'], ['fwhm', 'FWHM'], ['area', 'Area'], ['height', 'Height']] as const
 type Param = (typeof PARAMS)[number][0]
 
@@ -32,7 +31,7 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
   const bestR2 = mc ? Math.max(...mc.runs.map(r => r.r2)) : 0
   const kept = mc ? mc.runs.filter(r => r.r2 >= bestR2 - tol) : []
 
-  // ponytail: batches of 10 keep each request under the hosted server's time limit; one call would be faster locally
+  // ponytail: about 40 peak-fits per request keep each request under the hosted server's time limit; one call would be faster locally
   const run = async () => {
     setBusy(true)
     setDone(0)
@@ -40,6 +39,7 @@ export default function McFit({ a, profile, range }: { a: Spectrum; profile: str
       const d = dataOf(a)
       const body = { x: d.x, y: d.y, centers: a.peaks.map(p => p.x), profile, max_shift: shift,
         xmin: range[0] === '' ? null : +range[0], xmax: range[1] === '' ? null : +range[1] }
+      const BATCH = Math.max(1, Math.min(10, Math.floor(40 / a.peaks.length)))
       let r: Mc | null = null
       for (let k = 0; k < runs; k += BATCH) {
         const n = Math.min(BATCH, runs - k)

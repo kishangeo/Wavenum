@@ -2,6 +2,14 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## 0.12.2 (2026-11-25)
+- Mineral ID keeps its library list when you switch tabs and come back (it showed 0 entries).
+- Library browser: a slow reply to an earlier search no longer replaces the results of the current one.
+- Monte Carlo deconvolution sends fewer fits per request when many peaks are marked, so runs with 10 peaks finish on the website.
+- Header: shorter reference-data summary on mid-width screens, so the theme button no longer wraps in XRD mode.
+- New example: carbonaceous matter Raman (D and G bands) to try the carbon geothermometers.
+- UCL pigment names lose their trailing semicolons; release binaries no longer contain local build paths.
+
 ## 0.12.1 (2026-11-25)
 - specDB .mat files are read in the browser on the website (no upload; the hosted site rejected these large files), switch to FTIR and plot the first spectrum at once; the picker offers the rest.
 

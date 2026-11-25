@@ -253,7 +253,7 @@ For interface work run `npm run dev` in `frontend/` (it proxies `/api` to the ba
 
 If Wavenum helps your research, please cite it as:
 
-> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.12.1).
+> Tiwari, K. (2026). *Wavenum: local-first Raman, FTIR and XRD processing and mineral identification* (version 0.12.2).
 > Zenodo. https://doi.org/10.5281/zenodo.24421170
 
 This DOI always resolves to the latest version; each release also has its own DOI on Zenodo

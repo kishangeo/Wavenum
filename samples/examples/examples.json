@@ -18,6 +18,12 @@
     "learn": "Workbook with several intensity columns: pick one, or add all as separate spectra."
   },
   {
+    "file": "graphite_cm_raman.csv",
+    "technique": "raman",
+    "title": "Carbonaceous matter Raman (D and G bands)",
+    "learn": "Synthetic poorly ordered graphite: D1 1350, G 1582, D2 1620 cm⁻¹ on a sloping background (R2 ≈ 0.45). Mark the three bands in Peaks, fit, and read the Beyssac and Kouketsu temperatures."
+  },
+  {
     "file": "calcite_ftir_descending.jdx",
     "technique": "ftir",
     "title": "Calcite FTIR (JCAMP-DX)",

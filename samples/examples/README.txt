@@ -11,6 +11,7 @@ Included synthetic, spec-compliant sample files:
 7. alpha_quartz.cif             - Crystallographic Information File (.cif) for Alpha-Quartz (P 32 2 1)
 8. hematite_raman_figure.png    - Clean spectrum image for testing the Plot Digitizer
 9. hematite_raman_figure.pdf    - Clean 1-page PDF spectrum figure for testing PDF Digitizer
+10. graphite_cm_raman.csv      - Synthetic carbonaceous matter Raman (D1, G, D2 bands) for the carbon geothermometers
 
 Note on Proprietary Binary Vendor Formats (.wdf, .0 OPUS, .spa, .spc):
 Because proprietary binary instrument files have complex vendor-specific headers, test those with real instrument files from open-source test suites (links provided in chat).

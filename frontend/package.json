@@ -1,7 +1,7 @@
 {
   "name": "wavenum",
   "private": true,
-  "version": "0.12.1",
+  "version": "0.12.2",
   "author": "Kishan Tiwari <kishantiwari@iitkgp.ac.in>",
   "license": "MIT",
   "homepage": "https://github.com/kishangeo/Wavenum",
