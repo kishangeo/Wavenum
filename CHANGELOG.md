@@ -2,7 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
-## Unreleased
+## 0.12.1 (2026-11-25)
 - specDB .mat files are read in the browser on the website (no upload; the hosted site rejected these large files), switch to FTIR and plot the first spectrum at once; the picker offers the rest.
 
 ## 0.12.0 (2026-11-25)
