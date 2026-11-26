@@ -10,7 +10,7 @@ import Peaks from './Peaks'
 import Plot from './Plot'
 import Preprocess from './Preprocess'
 import Sidebar from './Sidebar'
-import { TECH, api, useStore, type Technique } from './store'
+import { TECH, api, inTauri, useStore, type Technique } from './store'
 
 declare const __APP_VERSION__: string
 type Stats = Record<string, { spectra: number; libraries: number; phases: number }>
@@ -50,6 +50,12 @@ export default function App() {
             <span className="2xl:hidden"><b className="font-semibold text-slate-700 dark:text-slate-300">{ts.spectra.toLocaleString(undefined, { notation: 'compact' })}</b> spectra · {ts.phases.toLocaleString(undefined, { notation: 'compact' })} phases</span>
             <span className="hidden 2xl:inline"><b className="font-semibold text-slate-700 dark:text-slate-300">{ts.spectra.toLocaleString()}</b> reference spectra · {ts.phases.toLocaleString()} phases · {ts.libraries} {ts.libraries === 1 ? 'library' : 'libraries'}</span>
           </span>
+        )}
+        {!inTauri && (
+          <a className="btn btn-primary" href="https://apps.microsoft.com/detail/9MW3K9068R9X?mode=direct" target="_blank" rel="noopener noreferrer"
+            title="Wavenum for Windows from the Microsoft Store: works offline with every reference library built in">
+            <span className="sm:hidden">App</span><span className="hidden sm:inline">Windows app</span>
+          </a>
         )}
         <button className="btn" onClick={() => st.set({ help: true })}>Help</button>
         <div className="order-last flex w-full gap-0.5 rounded-lg bg-slate-100 p-0.5 sm:order-none sm:w-auto dark:bg-slate-800">
@@ -93,7 +99,7 @@ export default function App() {
         <button type="button" role="alert" aria-live="assertive" title="Dismiss" onClick={() => st.set({ error: null })}
           className="fixed bottom-3 left-1/2 z-50 -translate-x-1/2 cursor-pointer rounded bg-slate-900 px-3 py-2 text-xs text-white shadow-lg dark:bg-slate-100 dark:text-slate-900">{st.error}</button>
       )}
-      {!('__TAURI_INTERNALS__' in window) && <Analytics />}
+      {!inTauri && <Analytics />}
     </div>
   )
 }
