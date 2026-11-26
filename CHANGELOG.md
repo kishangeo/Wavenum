@@ -2,6 +2,10 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
+## Unreleased
+- Website: peak fitting and Monte Carlo work on FTIR spectra again (spectra stored from high to low wavenumber were reported as having no peaks in the fit range).
+- Desktop app: Monte Carlo and peak fitting use exact derivatives, so Gaussian and Voigt Monte Carlo runs are about 7 times faster.
+
 ## 0.12.3 (2026-11-26)
 - Monte Carlo deconvolution is 3 to 6 times faster: the runs are fitted directly with SciPy (Levenberg-Marquardt, the method lmfit uses, with exact derivatives), and on the website each request stops at a time budget so long Voigt fits no longer hit the time limit.
 

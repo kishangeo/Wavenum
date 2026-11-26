@@ -17,6 +17,7 @@ MODELS = dict(gaussian=GaussianModel, lorentzian=LorentzianModel, voigt=VoigtMod
 def find(x, y, prominence=0.05, height=0.0, distance=10.0):
     """prominence/height are fractions of the spectrum's intensity range; distance is in x units."""
     x, y = np.asarray(x, float), np.asarray(y, float)
+    o = np.argsort(x, kind='stable'); x, y = x[o], y[o]  # FTIR axes run high to low
     rng = float(y.max() - y.min()) or 1.0
     step = float(np.median(np.abs(np.diff(x)))) or 1.0
     idx, _ = find_peaks(y, prominence=prominence * rng, height=y.min() + height * rng,
@@ -31,6 +32,7 @@ def fit(x, y, centers, profile='lorentzian', xmin=None, xmax=None, starts=None, 
     starts: optional (center, sigma, height) start values per peak (Monte Carlo runs); max_shift: limit on
     how far each centre may move from the given one (SpecXY-style), instead of the default window."""
     x, y = np.asarray(x, float), np.asarray(y, float)
+    o = np.argsort(x, kind='stable'); x, y = x[o], y[o]  # FTIR axes run high to low
     m = (x >= (xmin if xmin is not None else -np.inf)) & (x <= (xmax if xmax is not None else np.inf))
     x, y = x[m], y[m]
     centers = sorted(c for c in centers if x[0] <= c <= x[-1])
@@ -57,7 +59,7 @@ def fit(x, y, centers, profile='lorentzian', xmin=None, xmax=None, starts=None, 
         p[f'p{i}_amplitude'].set(h * sig * 2.5, min=0)
         pars.update(p)
         model = model + mod
-    # Monte Carlo runs: bounded effort per run (an unconverged run just scores a lower R²)
+    # Monte Carlo runs: bounded effort per run (an unconverged run just scores a lower RÂ²)
     res = model.fit(y, pars, x=x, max_nfev=None if starts is None else 100 * (len(pars) + 1))
     comps = res.eval_components(x=x)
     ss_tot = float(((y - y.mean()) ** 2).sum()) or 1.0
@@ -178,6 +180,7 @@ def mc_fit(x, y, centers, profile='lorentzian', xmin=None, xmax=None, runs=100, 
     (later batches of a run split over several requests). budget: stop starting new runs after this many
     seconds and return the runs done so far (the website's requests have a time limit)."""
     x, y = np.asarray(x, float), np.asarray(y, float)
+    o = np.argsort(x, kind='stable'); x, y = x[o], y[o]  # FTIR axes run high to low
     m = (x >= (xmin if xmin is not None else -np.inf)) & (x <= (xmax if xmax is not None else np.inf))
     xs, ys = x[m], y[m]
     first = fit(xs, ys, centers, profile, max_shift=max_shift) if base else None
@@ -237,6 +240,10 @@ if __name__ == '__main__':  # self-check
         assert fit(xs, ys, [464, 500], prof)['r2'] > 0.9
     nb = mc_fit(xs, ys, [462, 502], 'lorentzian', runs=5, max_shift=6, seed=2, base=False)
     assert len(nb['runs']) == 5 and nb['best']['r2'] > 0.99
+    # FTIR order (high to low x) with a region gives the same fit
+    rd = fit(xs[::-1], ys[::-1], [464, 500], 'lorentzian', xmin=400)
+    assert abs(rd['table'][0]['center'] - t[0]['center']) < 0.01, rd['table']
+    assert len(mc_fit(xs[::-1], ys[::-1], [462, 502], 'lorentzian', xmin=400, runs=3, max_shift=6)['runs']) >= 2
     print('peaks ok')
     # fast Monte Carlo path converges for every profile
     for prof in ('gaussian', 'lorentzian', 'voigt'):
