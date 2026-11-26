@@ -2,7 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
-## Unreleased
+## 0.12.4 (2026-11-26)
 - Website: peak fitting and Monte Carlo work on FTIR spectra again (spectra stored from high to low wavenumber were reported as having no peaks in the fit range).
 - Desktop app: Monte Carlo and peak fitting use exact derivatives, so Gaussian and Voigt Monte Carlo runs are about 7 times faster.
 
