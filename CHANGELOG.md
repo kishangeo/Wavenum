@@ -2,7 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
-## Unreleased
+## 0.12.5 (2026-11-26)
 - Website: "Windows app" button in the header, linking to Wavenum in the Microsoft Store (not shown inside the desktop app).
 - Primary buttons use a darker teal, so their white labels meet the WCAG AA contrast ratio (5.5:1, was 3.7:1).
 
