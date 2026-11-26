@@ -2,7 +2,7 @@
 
 Author: Kishan Tiwari <kishantiwari@iitkgp.ac.in>
 
-## Unreleased
+## 0.12.3 (2026-11-26)
 - Monte Carlo deconvolution is 3 to 6 times faster: the runs are fitted directly with SciPy (Levenberg-Marquardt, the method lmfit uses, with exact derivatives), and on the website each request stops at a time budget so long Voigt fits no longer hit the time limit.
 
 ## 0.12.2 (2026-11-25)
